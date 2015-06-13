@@ -2,7 +2,6 @@ package com.anklebreaker.basketball.tw.recordboard;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,9 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ListView;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
@@ -22,9 +19,9 @@ import com.anklebreaker.basketball.tw.tab.BasketFragment;
  * manage the bench player and starters
  * */
 public class TeamObj {
-	
+
 	private static final String TAG = "Scoreboard.TeamObj";
-	
+
     static TeamObj ObjInstance = null;
     static final int CT_PANEL = 9;
     static final int CT_PANEL_STARTER = 5;
@@ -37,20 +34,20 @@ public class TeamObj {
     //array for 5 players
     public static ArrayList<ArrayList<Item>> gridArray = new ArrayList<ArrayList<Item>>(CT_PANEL_STARTER);//4
     //adapters:0~4 is GridViewAdapter, 5 is benchGridAdapter
-    public static RecordGridViewAdapter[] RecordGVAdapter = new RecordGridViewAdapter[CT_PANEL_STARTER +1];
-    
+    public static RecordGridViewAdapter[] RecordGVAdapter = new RecordGridViewAdapter[CT_PANEL_STARTER+1];
+
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
-    
+
     //pref
     public static final String PLAYER_FILE_NAME = "players";
     public static final String[] PLAYER_POS = new String[21];
     //
-    int[] icons = {R.drawable.r, R.drawable.two, R.drawable.three, 
-                   R.drawable.free, R.drawable.nonplayer, R.drawable.fail, 
+    int[] icons = {R.drawable.r, R.drawable.two, R.drawable.three,
+                   R.drawable.free, R.drawable.nonplayer, R.drawable.fail,
                    R.drawable.block, R.drawable.steal, R.drawable.a};
-    int[] lightIcons = {R.drawable.rr, R.drawable.lighttwo, R.drawable.lightthree, 
-                        R.drawable.freef, R.drawable.nonplayer, R.drawable.failf, 
+    int[] lightIcons = {R.drawable.rr, R.drawable.lighttwo, R.drawable.lightthree,
+                        R.drawable.freef, R.drawable.nonplayer, R.drawable.failf,
                         R.drawable.blockb, R.drawable.steals, R.drawable.aa};
 
     //
@@ -59,7 +56,7 @@ public class TeamObj {
     //text
     String[] textArray = {"","","",
                           "","","",
-                          "","",""}; 
+                          "","",""};
     //view
     public static int[] gridViewID = {R.id.gridPlayer1,R.id.gridPlayer2,
                                       R.id.gridPlayer3,R.id.gridPlayer4, R.id.gridPlayer5};
@@ -69,7 +66,7 @@ public class TeamObj {
     public TeamObj(Context c){
         mContext = c;
     }
-    //singleton 
+    //singleton
     static public TeamObj getInstance(Context c){
         if(ObjInstance == null){
             ObjInstance = new TeamObj(c);
@@ -109,11 +106,8 @@ public class TeamObj {
         for(int i=0; i< RecordGVAdapter.length-1; i++){
             RecordGVAdapter[i] = new RecordGridViewAdapter(mContext, R.layout.row_grid, gridArray.get(i));
         }
-        //bench array setting
-        RecordGVAdapter[5] = new RecordGridViewAdapter(mContext, R.layout.row_grid, benchArray);
-        
     }
-    
+
     /**
      * set starter and bench player dialog's method
      * */
@@ -152,21 +146,21 @@ public class TeamObj {
                 //update 0~4(starters), then get 0~8(3*3 square) to reset name of player
                 gridArray.get(i).get(4).setImage(null);//selectedStarters.get(i).getImage()
                 gridArray.get(i).get(4).setTitle(selectedStarters.get(i).getTitle());
-                
+
             }
-            
+
             mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, selectedStarters);
-            
+
             //check selected player's number!!!
             View rootView = ((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content);
-            
+
             //for starters
             ListView startList = (ListView)rootView.findViewById(R.id.list_item);
-            
+
             //notify data changed
             startList.setAdapter(mPlayerListAdapter);
             mPlayerListAdapter.notifyDataSetChanged();
-            
+
             //-----------------------------
             //store info of players to local storage with no duplicate number
             //-----------------------------
@@ -186,7 +180,7 @@ public class TeamObj {
         return results;
     }
     /**
-     * 
+     *
      * */
     static public void addTimeLine(PlayerObj tmpObj) {
         //update undolist by clone obj

@@ -2,17 +2,11 @@ package com.anklebreaker.basketball.tw.tab;
 
 import java.util.ArrayList;
 import java.util.Map;
-
 import com.anklebreaker.basketball.tw.R;
-import com.anklebreaker.basketball.tw.R.drawable;
-import com.anklebreaker.basketball.tw.R.id;
-import com.anklebreaker.basketball.tw.R.layout;
 import com.anklebreaker.basketball.tw.recordboard.Item;
 import com.anklebreaker.basketball.tw.recordboard.PlayerGridViewAdapter;
-import com.anklebreaker.basketball.tw.recordboard.RecordBoardPage;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,14 +26,14 @@ public final class BasketFragment extends Fragment{
 	private static final String KEY_CONTENT = "BasketFragment:Content";
 	private String mContent = "???";
 	private static Context mContext = null;
-	
+
 	public static ArrayList<Item> player_settingGrid = new ArrayList<Item>();
 	private static PlayerGridViewAdapter InitialAdapter;
 	private static Boolean setMenu_flg = false;
 	public static final String DEFAUT_STRING = "";
 
 	//Constructor:TestFragment初始化,傳進陣列裡定義好的東西進來
-	public static BasketFragment newInstance(String content, Context c) {        
+	public static BasketFragment newInstance(String content, Context c) {
 		BasketFragment fragment = new BasketFragment();
 		fragment.mContent = content;
 		mContext = c;
@@ -63,7 +57,7 @@ public final class BasketFragment extends Fragment{
         LinearLayout layout = null;
         if(mContent.equals("記錄板")){
             Log.i(TAG, "onCreateView summary");
-            SummaryPage mSummaryPage = new SummaryPage(getActivity());
+            SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
             return mSummaryPage.createSummaryPage(inflater);
         }else if(mContent.equals("比賽數據")){
             Log.i(TAG, "onCreateView 4");
@@ -115,8 +109,8 @@ public final class BasketFragment extends Fragment{
             View view = LayoutInflater.from(mContext).inflate(R.layout.gridview_player, null);
             GridView setPlayers = (GridView) view.findViewById(R.id.setplayer);
             player_settingGrid.clear();
-            
-            //set default player list in alertDialog by preferences	
+
+            //set default player list in alertDialog by preferences
             SharedPreferences pref = mContext.getSharedPreferences(TeamObj.PLAYER_FILE_NAME, Context.MODE_PRIVATE);
             Map<String,?> keys = pref.getAll();
             Log.i(TAG, "setMenuVisibility: initialize player's number");
@@ -124,11 +118,11 @@ public final class BasketFragment extends Fragment{
                 for(int i=0; i<10; i++){
                     if(i<9){
                         player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
-                                                        BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player), 
+                                                        BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
                                                         String.valueOf(i)+"號"));
-                    }else{//「+」icon	
+                    }else{//「+」icon
                         player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
-                                                        BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus), 
+                                                        BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus),
                                                         "新增球員"));
                     }
                 }
@@ -137,11 +131,11 @@ public final class BasketFragment extends Fragment{
                 for(Map.Entry<String,?> entry : keys.entrySet()){
                     player_num = pref.getString(entry.getKey(), DEFAUT_STRING);
                     player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
-                                                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player), 
+                                                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
                                                     player_num));
                 }
                 player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
-                                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus), 
+                                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus),
                                                 "新增球員"));
             }
 
@@ -158,7 +152,7 @@ public final class BasketFragment extends Fragment{
             title.setGravity(Gravity.CENTER);
             title.setTextColor(Color.WHITE);
             title.setTextSize(20);
-            
+
             Log.i(TAG, "setMenuVisibility: initialize alertdialog");
             final AlertDialog defBuilder = new AlertDialog.Builder(mContext)
             .setView(view)

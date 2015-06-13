@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 public class PlayerListAdapter extends BaseAdapter{
@@ -20,42 +19,51 @@ public class PlayerListAdapter extends BaseAdapter{
 	private static Activity activity;
 	private static ArrayList<Item> data;
 	private LayoutInflater mInflater;
-	
+
 	public PlayerListAdapter(Activity a, ArrayList<Item> d) {
         super();
         activity = a;
         data = d;
         this.mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-	
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if(convertView == null) {
 			convertView = this.mInflater.inflate(R.layout.list_item, null);
 		}
 		// set the height of every row
-		TextView number = (TextView)convertView.findViewById(R.id.number);
-		TextView name = (TextView)convertView.findViewById(R.id.name);
-		
-		TextView twomade = (TextView)convertView.findViewById(R.id.twomade);
-		TextView twotried = (TextView)convertView.findViewById(R.id.twotried);
-		TextView threemade = (TextView)convertView.findViewById(R.id.threemade);
-		TextView threetried = (TextView)convertView.findViewById(R.id.threetried);
-		TextView ftmade = (TextView)convertView.findViewById(R.id.ftmade);
-		TextView fttried = (TextView)convertView.findViewById(R.id.fttried);
-		TextView defrebound = (TextView)convertView.findViewById(R.id.defrebound);
-		TextView offrebound = (TextView)convertView.findViewById(R.id.offrebound);
-		TextView assist = (TextView)convertView.findViewById(R.id.assist);
-		TextView block = (TextView)convertView.findViewById(R.id.block);
-		TextView steal = (TextView)convertView.findViewById(R.id.steal);
-		TextView turnover = (TextView)convertView.findViewById(R.id.turnover);
-		TextView foul = (TextView)convertView.findViewById(R.id.foul);
-		TextView point = (TextView)convertView.findViewById(R.id.point);
-		
-		// set the width of every cell 
+		rowCellInit(convertView, position);
+
+
+		return convertView;
+	}
+
+	/**
+	 * init the row and cell of every player
+	 * */
+	private void rowCellInit(View cV, int pos) {
+		// all attribute in the score board(16 records)
+		TextView number = (TextView)cV.findViewById(R.id.number);
+		TextView name = (TextView)cV.findViewById(R.id.name);
+		TextView twomade = (TextView)cV.findViewById(R.id.twomade);
+		TextView twotried = (TextView)cV.findViewById(R.id.twotried);
+		TextView threemade = (TextView)cV.findViewById(R.id.threemade);
+		TextView threetried = (TextView)cV.findViewById(R.id.threetried);
+		TextView ftmade = (TextView)cV.findViewById(R.id.ftmade);
+		TextView fttried = (TextView)cV.findViewById(R.id.fttried);
+		TextView defrebound = (TextView)cV.findViewById(R.id.defrebound);
+		TextView offrebound = (TextView)cV.findViewById(R.id.offrebound);
+		TextView assist = (TextView)cV.findViewById(R.id.assist);
+		TextView block = (TextView)cV.findViewById(R.id.block);
+		TextView steal = (TextView)cV.findViewById(R.id.steal);
+		TextView turnover = (TextView)cV.findViewById(R.id.turnover);
+		TextView foul = (TextView)cV.findViewById(R.id.foul);
+		TextView point = (TextView)cV.findViewById(R.id.point);
+
+		// set the width of every cell(16 cells)
 		number.getLayoutParams().width = MultiDevInit.cellW;
 		name.getLayoutParams().width = MultiDevInit.cellW;
-		
 		twomade.getLayoutParams().width = MultiDevInit.cellW;
 		twotried.getLayoutParams().width = MultiDevInit.cellW;
 		threemade.getLayoutParams().width = MultiDevInit.cellW;
@@ -70,33 +78,15 @@ public class PlayerListAdapter extends BaseAdapter{
 		turnover.getLayoutParams().width = MultiDevInit.cellW;
 		foul.getLayoutParams().width = MultiDevInit.cellW;
 		point.getLayoutParams().width = MultiDevInit.cellW;
+
 		// set the height of the cell
 		number.getLayoutParams().height = MultiDevInit.IndicatorH;
-		
-		
-		number.setText(data.get(position).getTitle());
-		name.setText(data.get(position).getTitle());
-		/*
-		twomade.setText("0");
-		twotried.setText("0");
-		threemade.setText("0");
-		threetried.setText("0");
-		ftmade.setText("0");
-		fttried.setText("0");
-		defrebound.setText("0");
-		offrebound.setText("0");
-		assist.setText("0");
-		block.setText("0");
-		steal.setText("0");
-		turnover.setText("0");
-		foul.setText("0");
-		point.setText("0");
-		*/
-		
-		
-		return convertView;
+
+		// set the content of the player's number and name
+		number.setText(data.get(pos).getTitle());
+		name.setText(data.get(pos).getTitle());
 	}
-	
+
 	@Override
     public int getCount() {
 	    return data.size();

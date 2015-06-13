@@ -139,7 +139,7 @@ public class RecordBoardPage {
         v.findViewById(R.id.timescore).setOnDragListener(new PlayerDragListener(mActivity));
         v.findViewById(R.id.toplinear).setOnDragListener(new PlayerDragListener(mActivity));
         v.findViewById(R.id.benchBtn).setOnDragListener(new PlayerDragListener(mActivity));
-        
+
     }
     /**
      * init summary btn
@@ -226,12 +226,12 @@ public class RecordBoardPage {
         strTimeTitle.setGravity(Gravity.CENTER);
         strTimeTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, MultiDevInit.titleSize);
         strTimeTitle.setLayoutParams(timeTitleParams);
-        
+
         strTime = (TextView) v.findViewById(R.id.time);
         strTime.setGravity(Gravity.CENTER);
         strTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, MultiDevInit.contextSize);
         strTime.setLayoutParams(timeParams);
-        
+
         GameTimer.getInstance(mActivity, strTime, 180000, 100);
         strTime.setOnLongClickListener(new OnLongClickListener(){
             @Override
@@ -243,7 +243,7 @@ public class RecordBoardPage {
                 title.setGravity(Gravity.CENTER);
                 title.setTextColor(Color.WHITE);
                 title.setTextSize(20);
-                
+
                 final View rootView = LayoutInflater.from(mActivity).inflate(R.layout.time_setting, null);
                 final NumberPicker qp = (NumberPicker) rootView.findViewById(R.id.quarter);
                 qp.setMaxValue(5);
@@ -257,7 +257,7 @@ public class RecordBoardPage {
                 npS.setMinValue(0);
                 npS.setMaxValue(59);
                 npS.setValue(00);
-                
+
                 final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
                 .setView(rootView)
                 .setCustomTitle(title)
@@ -284,13 +284,13 @@ public class RecordBoardPage {
                                 }else{
                                     Toast.makeText(mActivity, "ok", Toast.LENGTH_SHORT).show();
                                 }
-                                
+
                             }
                         });
                     }
                 });
                 defBuilder.show();
-                
+
                 return false;
             }
         });
@@ -301,14 +301,14 @@ public class RecordBoardPage {
                 if(mTimer.equals("00:00:0")){
                     CustomToast("請長按以設定比賽時間");
                 }else{
-                    
+
                     if(GameTimer.gtInstance.isRunning()){
                         GameTimer.gtInstance.pause();
                     }else{
                         GameTimer.gtInstance.resume();
                     }
                 }
-                
+
             }
         });
         //init score
@@ -316,7 +316,7 @@ public class RecordBoardPage {
         strScoreTitle.setGravity(Gravity.CENTER);
         strScoreTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, MultiDevInit.titleSize);
         strScoreTitle.setLayoutParams(scoreTitleParams);
-        
+
         strScore = (TextView) v.findViewById(R.id.score);
         strScore.setGravity(Gravity.CENTER);
         strScore.setTextSize(TypedValue.COMPLEX_UNIT_SP, MultiDevInit.contextSize);
@@ -421,18 +421,18 @@ public class RecordBoardPage {
         LayoutParams SBRLparams = scoreBoardRL.getLayoutParams();
         SBRLparams.height = MultiDevInit.bktCourtH;
         SBRLparams.width = MultiDevInit.xPIXEL - MultiDevInit.bktCourtW;
-        
+
         timeTitleParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, MultiDevInit.titleH);
-        
+
         timeParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, ((MultiDevInit.bktCourtH/2) - MultiDevInit.titleH));
         timeParams.addRule(RelativeLayout.BELOW, R.id.timeTitle);//set relative position
-        
+
         scoreTitleParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, MultiDevInit.titleH);
         scoreTitleParams.addRule(RelativeLayout.BELOW, R.id.time);//set relative position
-        
+
         scoreParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, ((MultiDevInit.bktCourtH/2) - MultiDevInit.titleH));
         scoreParams.addRule(RelativeLayout.BELOW, R.id.scoreTitle);//set relative position
-        
+
         //init mainBtn
         LinearLayout layout = (LinearLayout) v.findViewById(R.id.toplinear);
         LayoutParams params = layout.getLayoutParams();
@@ -442,9 +442,9 @@ public class RecordBoardPage {
         bktCourt = (ImageView) v.findViewById(R.id.bktCourt);
         bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
         bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
-        
+
         mBall = imageViewFactory(mBall, R.layout.ball, R.id.ballIV);
-        
+
         bktCourt.setOnTouchListener(new View.OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
                 ViewGroup mRelativeBkt = (ViewGroup) v.getParent().getParent();
@@ -454,14 +454,14 @@ public class RecordBoardPage {
                 	mRelativeBkt.removeView(AddedView);
                 }
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(WC, WC);
-                
+
                 // set the touched coordination
                 params.leftMargin = (int) event.getX()-8;//have to adjust for multi-screen
                 params.topMargin = (int) event.getY()-8;//have to adjust for multi-screen
                 mRelativeBkt.addView(mBall, params);
                 //view added flg
                 touch_flg = true;
-                
+
                 animFactory((event.getX()-8), (event.getY()-8));
                 return false;
             }
@@ -475,7 +475,7 @@ public class RecordBoardPage {
                 //cal for middle diff
                 midX = (float) (disX * 0.5);
                 midY = (float) (disY * 1.2);
-                
+
                 if(midX > 0){//left side
                     midX = midX - 100;
                     midY = midY - 100;
@@ -487,7 +487,7 @@ public class RecordBoardPage {
         });
     }
     /**
-     * 
+     *
      * */
     public void doRecord(View v, MotionEvent event, GridView player){
         //identified which image in gridview was touched
@@ -501,7 +501,7 @@ public class RecordBoardPage {
         final ViewGroup mRelative = (ViewGroup) v.getParent();
         int curView = -9;
         View ChildView = null;
-        //no response to player item + ACTION_DOWN/ACTION_MOVE 
+        //no response to player item + ACTION_DOWN/ACTION_MOVE
         if(!((event.getAction() == 0 || event.getAction() == 2) && pos == 4)){
             switch (event.getAction()){
                 //--------touch the screen--------//
@@ -587,7 +587,7 @@ public class RecordBoardPage {
                                             animStart(v, mBall, mBallAnim, "mBallAnimLoc", lp.leftMargin, lp.topMargin);
                                         }
                                     }
-                                    
+
                                 }else{
                                     Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
                                 }
@@ -679,7 +679,7 @@ public class RecordBoardPage {
         path.moveTo(0, 0);
         path.curveTo(0, 0, midX, midY, disX, disY);
         // Set up the animation
-        final ObjectAnimator anim = ObjectAnimator.ofObject(this, getterStr, 
+        final ObjectAnimator anim = ObjectAnimator.ofObject(this, getterStr,
                 new PathEvaluator(), path.getPoints().toArray());
         anim.setInterpolator(new AccelerateInterpolator());
         anim.setDuration(500);
@@ -696,11 +696,11 @@ public class RecordBoardPage {
         midY = 0;
         disX = 0;
         disY = 0;
-        
+
     }
 
 	/**
-     * 
+     *
      * */
     private void deleView(ViewGroup v, int imageId) {
         ImageView touchedView = (ImageView) mActivity.findViewById(imageId);
@@ -715,38 +715,38 @@ public class RecordBoardPage {
      * */
     private void isMade(int mlastPos) {
         switch(String.valueOf(mlastPos)){
-        case "0": 
+        case "0":
             actionCode = ActionDef.ACT_DR;
             ActText = ActionDef.ACT_strDR;
-            break; 
-        case "1": 
+            break;
+        case "1":
             actionCode = ActionDef.ACT_TWOP_MA;
             ActText = ActionDef.ACT_strTWOP_MA;
             setScore(2,0);
-            break; 
-        case "2": 
+            break;
+        case "2":
             actionCode = ActionDef.ACT_THREEP_MA;
             ActText = ActionDef.ACT_strTHREEP_MA;
             setScore(3,0);
-            break; 
-        case "3": 
+            break;
+        case "3":
             actionCode = ActionDef.ACT_FTMA;
             ActText = ActionDef.ACT_strFTMA;
             setScore(1,0);
             break;
-        case "5": 
+        case "5":
             actionCode = ActionDef.ACT_TO;
             ActText = ActionDef.ACT_strTO;
             break;
-        case "6": 
+        case "6":
             actionCode = ActionDef.ACT_BS;
             ActText = ActionDef.ACT_strBS;
             break;
-        case "7": 
+        case "7":
             actionCode = ActionDef.ACT_ST;
             ActText = ActionDef.ACT_strST;
             break;
-        case "8": 
+        case "8":
             actionCode = ActionDef.ACT_AS;
             ActText = ActionDef.ACT_strAS;
             break;
@@ -758,35 +758,35 @@ public class RecordBoardPage {
      * */
     private void isMissed(int mLastPos) {
         switch(String.valueOf(mLastPos)){
-        case "0": 
-            actionCode = ActionDef.ACT_OR; 
+        case "0":
+            actionCode = ActionDef.ACT_OR;
             ActText = ActionDef.ACT_strOR;
-            break; 
-        case "1": 
+            break;
+        case "1":
             actionCode = ActionDef.ACT_TWOP_MI;
             ActText = ActionDef.ACT_strTWOP_MI;
-            break; 
-        case "2": 
+            break;
+        case "2":
             actionCode = ActionDef.ACT_THREEP_MI;
             ActText = ActionDef.ACT_strTHREEP_MI;
-            break; 
-        case "3": 
+            break;
+        case "3":
             actionCode = ActionDef.ACT_FTMI;
             ActText = ActionDef.ACT_strFTMI;
             break;
-        case "5": 
+        case "5":
             actionCode = ActionDef.ACT_FOUL;
             ActText = ActionDef.ACT_strFOUL;
             break;
-        case "6": 
+        case "6":
             actionCode = ActionDef.ACT_BS;
             ActText = ActionDef.ACT_strBS;
             break;
-        case "7": 
+        case "7":
             actionCode = ActionDef.ACT_ST;
             ActText = ActionDef.ACT_strST;
             break;
-        case "8": 
+        case "8":
             actionCode = ActionDef.ACT_AS;
             ActText = ActionDef.ACT_strAS;
             break;
@@ -815,7 +815,7 @@ public class RecordBoardPage {
         //oImg.setLayoutParams(new LinearLayout.LayoutParams(WC, WC));
         oImg.setImageResource(img);
 
-        //set default img's param 
+        //set default img's param
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(WC, WC);
         //set appear coordination and size
         params.leftMargin = v.getLeft() + FLayout.getLeft();;
@@ -961,7 +961,7 @@ public class RecordBoardPage {
         tmpViewGroup.removeView(IV);
         return IV;
     }
-    
+
     /**
      * init the gridview for adding new view
      * */
@@ -985,7 +985,7 @@ public class RecordBoardPage {
         }
         Item mPlay = mGridArray.get(4);
         String mNum = mPlay.getTitle();
-        
+
         TextView title = new TextView(mActivity);
         title.setText( mNum + "出手分布圖");
         title.setBackgroundColor(Color.DKGRAY);
@@ -993,12 +993,12 @@ public class RecordBoardPage {
         title.setGravity(Gravity.CENTER);
         title.setTextColor(Color.WHITE);
         title.setTextSize(20);
-        
-        final View rootView = LayoutInflater.from(mActivity).inflate(R.layout.player_summary, null);
+
+        final View rootView = LayoutInflater.from(mActivity).inflate(R.layout.recordboardpage_shot_analysis, null);
         ImageView bktCourt = (ImageView) rootView.findViewById(R.id.bktCourt);
         bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
         bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
-        
+
         final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
         .setView(rootView)
         .setCustomTitle(title)
@@ -1019,7 +1019,7 @@ public class RecordBoardPage {
         defBuilder.show();
         //add the made and missed point
         playAnalysis(v, (ViewGroup)rootView, mNum);
-   
+
     }
     /**
      * show the imageview(ball icon) in xy position
@@ -1033,9 +1033,9 @@ public class RecordBoardPage {
                 if((xx != 0 )||(yy != 0)){
                     if(tObj.playerAct == 2 || tObj.playerAct == 4){
                         //shot was made
-                        ImageView tBallAna = null; 
+                        ImageView tBallAna = null;
                         tBallAna = imageViewFactory(tBallAna, R.layout.ball_animation, R.id.ballanim);
-                        
+
                         //set the location of BallAna
                         RelativeLayout.LayoutParams ps = new RelativeLayout.LayoutParams(WC, WC);
                         ps.leftMargin = xx;
@@ -1050,9 +1050,9 @@ public class RecordBoardPage {
                         miss.leftMargin = xx;
                         miss.topMargin = yy;
                         ((ViewGroup) dialogV).addView(tMiss, miss);
-                        
+
                     }else{
-                        //another action 
+                        //another action
                         Log.i(TAG, "no action");
                     }
                 }

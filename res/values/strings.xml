@@ -16,5 +16,6 @@
     <string name="twoPoint">兩分</string>
     <string name="threePoint">三分</string>
     <string name="bktCourt">籃球場</string>
+    <string name="change">籃</string>
     <color name="gray">#808080</color>
 </resources>

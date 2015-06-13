@@ -5,6 +5,7 @@ import com.anklebreaker.basketball.tw.tab.BasketFragment;
 import com.anklebreaker.basketball.tw.tab.CustomTab;
 import com.anklebreaker.basketball.tw.util.LogOutput;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
+import com.anklebreaker.basketball.tw.util.ViewServer;
 import com.viewpagerindicator.IconPagerAdapter;
 
 import android.app.Activity;
@@ -24,9 +25,9 @@ import android.view.Window;
 import android.webkit.CookieSyncManager;
 
 public class MainActivity extends FragmentActivity {
-	
+
     private static final String TAG = "Scoreboard.MainActivity";
-	
+
     private static final String[] CONTENT = new String[] {"記錄板", "人氣鬥牛場"};//"人氣鬥牛場", "打卡",
     private static final int[] ICONS = new int[] {
         R.drawable.perm_group_calendar,
@@ -39,18 +40,20 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.simple_tabs);
+        ViewServer.get(this).addWindow(this);
+        
         Log.i(TAG, "onCreate");
         LogOutput.run();
-        
+
         // initilize the layout param for multi screen
         new MultiDevInit(this.getApplicationContext());
         // initialize teamobj
         TeamObj.getInstance(this.getApplicationContext());
-        
+
         CookieSyncManager.createInstance(this);
         FragmentPagerAdapter adapter = new BasketBallAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager)findViewById(R.id.pager);
-        
+
         Log.i(TAG, "set pager");
         pager.setAdapter(adapter);
         pager.setCurrentItem(0);
@@ -67,6 +70,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         Log.i(TAG, "onResume");
         super.onResume();
+        ViewServer.get(this).setFocusedWindow(this);
     }
     /**
      * Called when the activity is no longer visible to the user.
@@ -89,15 +93,16 @@ public class MainActivity extends FragmentActivity {
         Log.i(TAG, "onStart");
         super.onStart();
     }
-	
+
     /**
      * Called when the activity is becoming visible to the user.
      * */
     protected void OnDestroy(){
         Log.i(TAG, "onDestroy");
-        super.onStart();
+        super.onDestroy();
+        ViewServer.get(this).removeWindow(this);
     }
-    
+
     /**
      * 管理所有從intent返回的activity
      * CheckInPage裡,經startActivityForResult()啟動的activity結束後的回傳值
@@ -112,17 +117,17 @@ public class MainActivity extends FragmentActivity {
             //CheckInActivity
             case 999:
                 if (resultCode == Activity.RESULT_OK) {
-                	
+
                 }else{
-                	
+
                 }
                 break;
                 //SummaryActivity
             case 998:
                 if(resultCode == Activity.RESULT_OK){
-                	
+
                 }else{
-                	
+
                 }
                 break;
             default:
@@ -181,7 +186,7 @@ public class MainActivity extends FragmentActivity {
             return CONTENT[position % CONTENT.length].toUpperCase();
         }
         //取得每個tab上的icon
-        @Override 
+        @Override
         public int getIconResId(int index) {
             Log.i(TAG, "getIconResId");
             return ICONS[index];

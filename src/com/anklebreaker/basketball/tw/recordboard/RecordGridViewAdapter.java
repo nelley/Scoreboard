@@ -21,7 +21,7 @@ public class RecordGridViewAdapter extends ArrayAdapter<Item>{
     Context context;
     int layoutResourceId;
     ArrayList<Item> data = new ArrayList<Item>();
-    
+
     /**
      * constructor
      * layoutResourceId:layout's id(row_grid.xml)
@@ -33,7 +33,7 @@ public class RecordGridViewAdapter extends ArrayAdapter<Item>{
         this.context = context;
         this.data = data;
     }
-    
+
     /**
      * method for init player's gridview
      * @return inited gridview of player's panel
@@ -42,16 +42,16 @@ public class RecordGridViewAdapter extends ArrayAdapter<Item>{
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         RecordHolder holder = null;
-        
+
         if (row == null) {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new RecordHolder();
             holder.txtTitle = (TextView) row.findViewById(R.id.item_text);
             holder.imageItem = (ImageView) row.findViewById(R.id.item_image);
-            //set layout's size
-            row.getLayoutParams().height = MultiDevInit.pH;
-            row.getLayoutParams().width = MultiDevInit.pW;
+            //set record board's icon size
+            //row.getLayoutParams().height = MultiDevInit.pH;
+            //row.getLayoutParams().width = MultiDevInit.pW;
 
             row.setPadding(0, 0, 0, 0);
             row.setTag(holder);

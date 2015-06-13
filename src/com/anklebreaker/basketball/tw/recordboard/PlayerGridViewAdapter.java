@@ -28,7 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
-	
+
     Context context;
     int layoutResourceId;
     ArrayList<Item> data = new ArrayList<Item>();
@@ -42,6 +42,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
         this.layoutResourceId = layoutResourceId;
         this.data = data;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
@@ -50,7 +51,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
         if (row == null) {
             final LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
-            
+
             holder = new RecordHolder();
             holder.txtTitle = (TextView) row.findViewById(R.id.player_number);
             holder.imageItem = (ImageView) row.findViewById(R.id.player_image);
@@ -59,14 +60,14 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
             //row.getLayoutParams().height =  ViewGroup.LayoutParams.WRAP_CONTENT;
             //row.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
             row.setTag(holder);
-           
+
             if(tmpItem.getTitle() == "新增球員"){
 				holder.starter.setVisibility(View.INVISIBLE);
 				holder.imageItem.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
 						final View dialogView = (View)v.getParent().getParent();
-						
+
 						if(data.size()>20){
 							Toast.makeText(context, MAXIMUM_PLAYER, Toast.LENGTH_SHORT).show();
 						}else{
@@ -78,14 +79,14 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 							title.setGravity(Gravity.CENTER);
 							title.setTextColor(Color.WHITE);
 							title.setTextSize(20);
-							
+
 							final View rootView = LayoutInflater.from(context).inflate(R.layout.newplayer_add, null);
 							final AlertDialog defBuilder = new AlertDialog.Builder(context)
 							.setView(rootView)
 							.setCustomTitle(title)
 							.setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
 							.create();
-							
+
 							defBuilder.setOnShowListener(new DialogInterface.OnShowListener(){
 								@Override
 								public void onShow(DialogInterface dialog) {
@@ -112,20 +113,20 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 													GridView setPlayers = (GridView) dialogView.findViewById(R.id.setplayer);
 													//add new player item at the position before plus
 													data.add(data.size()-1,
-															new Item(BitmapFactory.decodeResource(context.getResources(), 
+															new Item(BitmapFactory.decodeResource(context.getResources(),
 																	R.drawable.basketball_player), inputNum));
-																	
+
 													setPlayers.setAdapter(BasketFragment.getInitialAdapter());
 													defBuilder.dismiss();
 												}
 											}
-											
-											
+
+
 										}
-										
+
 									});
 								}
-								
+
 							});
 							defBuilder.show();
 						}
@@ -143,7 +144,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 						GridView setPlayers = (GridView)touchView.findViewById(R.id.setplayer);
 						//remove touched item
 						data.remove(touchItem.pos);
-						
+
 						setPlayers.setAdapter(BasketFragment.getInitialAdapter());
 						return false;
 					}
@@ -194,18 +195,18 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 			player_image.setImageResource(drawable.dribble);
 			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.dribble));
 			tmpItem.setIsPlayer(true);
-			
+
 		}else{
 			//update the view
 			player_image.setImageResource(drawable.basketball_player);
 			//update the data
 			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.basketball_player));
 			tmpItem.setIsPlayer(false);
-			
+
 			//update the view of starter
 			ImageView start_image = (ImageView)touchView.findViewById(R.id.player_starter);
 			start_image.setImageResource(drawable.unchecked);
-			//update the data 
+			//update the data
 			tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.unchecked));
 			tmpItem.setIsStarter(false);
 		}
@@ -219,12 +220,12 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 			ImageView starter_check = (ImageView)v;
 			if(tmpItem.getIsStarter()){//already selected as the starter
 				starter_check.setImageResource(drawable.unchecked);
-				tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(), 
+				tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
 										R.drawable.unchecked));
 				tmpItem.setIsStarter(false);
-			}else{//not the starter 
+			}else{//not the starter
 				starter_check.setImageResource(drawable.checked);
-				tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(), 
+				tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
 										R.drawable.checked));
 				tmpItem.setIsStarter(true);
 			}
@@ -233,17 +234,17 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 			View parentView = (View)v.getParent();
 			ImageView player_image = (ImageView)parentView.findViewById(R.id.player_image);
 			player_image.setImageResource(drawable.dribble);
-			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), 
+			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(),
 								R.drawable.dribble));
 			tmpItem.setIsPlayer(true);
-			
+
 			//update starter image
 			ImageView starter_check = (ImageView)v;
 			starter_check.setImageResource(drawable.checked);
-			tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(), 
+			tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
 									R.drawable.checked));
 			tmpItem.setIsStarter(true);
-			
+
 		}
 	}
 }

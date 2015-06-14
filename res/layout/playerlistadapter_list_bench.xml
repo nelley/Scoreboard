@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:rowOrderPreserved="true"
+    android:gravity="left">
+    <ImageView
+        android:id="@+id/benchlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="BENCH PLAYER"
+        android:src="@drawable/home">
+    </ImageView>
+    <TextView
+        android:id="@+id/benchtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/benchlist"
+        android:gravity="center"
+        android:text="CLICK TO SHOW BENCHPLAYER"
+        android:textColor="#000000" />
+</RelativeLayout>

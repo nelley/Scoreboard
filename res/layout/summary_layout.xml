@@ -138,7 +138,9 @@
             android:background="@drawable/cell_shape"
             />
     </TableRow>
-    <ListView android:id="@+id/list_item"
+    <ListView
+        android:id="@+id/player_list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="wrap_content" >
+    </ListView>
 </TableLayout>

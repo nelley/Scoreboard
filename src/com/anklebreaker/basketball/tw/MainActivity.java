@@ -49,6 +49,7 @@ public class MainActivity extends FragmentActivity {
         new MultiDevInit(this.getApplicationContext());
         // initialize teamobj
         TeamObj.getInstance(this.getApplicationContext());
+        // initialize playerObj
 
         CookieSyncManager.createInstance(this);
         FragmentPagerAdapter adapter = new BasketBallAdapter(getSupportFragmentManager());

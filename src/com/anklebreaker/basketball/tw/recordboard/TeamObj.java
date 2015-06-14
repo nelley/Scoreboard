@@ -155,7 +155,7 @@ public class TeamObj {
             View rootView = ((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content);
 
             //for starters
-            ListView startList = (ListView)rootView.findViewById(R.id.list_item);
+            ListView startList = (ListView)rootView.findViewById(R.id.player_list);
 
             //notify data changed
             startList.setAdapter(mPlayerListAdapter);

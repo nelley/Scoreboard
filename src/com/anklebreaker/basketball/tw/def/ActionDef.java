@@ -13,6 +13,7 @@ public class ActionDef {
 		add(new Item(null, null, "3"));
 		add(new Item(null, null, "4"));
 		add(new Item(null, null, "5"));
+		add(new Item(null, null, "BENCH_PLAYERS"));
 	}};
 	
 	//player info

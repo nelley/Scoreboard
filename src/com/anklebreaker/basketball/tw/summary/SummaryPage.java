@@ -1,6 +1,10 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
@@ -22,12 +27,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.animation.AnimatorPath;
 import com.anklebreaker.basketball.tw.animation.PathEvaluator;
@@ -52,7 +63,7 @@ public class SummaryPage {
     final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
     final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
 
-    private ImageView mFloat ;
+    private ImageView mFloat = null ;
     private boolean touch_flg = false;
 
     //default definition of img
@@ -90,8 +101,7 @@ public class SummaryPage {
 
     WindowManager wm;
     View floatView = null;
-
-
+    
     /**
      * constructor
      * */
@@ -107,24 +117,34 @@ public class SummaryPage {
         Log.i(TAG, "createSummaryPage S");
 
         final View mixedView = inflater.inflate(R.layout.summary_layout, null);
-        mListView = (ListView) mixedView.findViewById(R.id.list_item);
+        
+        mListView = (ListView) mixedView.findViewById(R.id.player_list);
 
         mListView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                // init overlay's view param object
-                WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                        WindowManager.LayoutParams.WRAP_CONTENT,
-                        WindowManager.LayoutParams.WRAP_CONTENT,
-                        WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                        WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                        PixelFormat.TRANSLUCENT);
+                
+                // if the bench player row is clicked
+                if(position == 5){
+                    //customDialogInit("change", R.layout.summarypage_player_change, R.string.change);
+                    
+                	
+                	
+                	
+                }else{
+                    // init overlay's view param object
+                    WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                            PixelFormat.TRANSLUCENT);
 
-                // create alertDialog to show the 9*9 panel
-                customDialogInit("test", R.layout.summarypage_record_board, mixedView, params);
-
-
+                    // create alertDialog to show the 9*9 panel
+                    customDialogInit("test", R.layout.summarypage_record_board, mixedView, params);
+                }
+                
             }
         });
 
@@ -134,7 +154,6 @@ public class SummaryPage {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                //Toast.makeText(mActivity, "long test", Toast.LENGTH_SHORT).show();
                 // show the player changing panel
                 customDialogInit("change", R.layout.summarypage_player_change, R.string.change);
 
@@ -147,7 +166,7 @@ public class SummaryPage {
 
         list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultStarters);
         mListView.setAdapter(list_adapter);
-
+        
         Log.i(TAG, "createSummaryPage E");
         return mixedView;
     }
@@ -197,6 +216,7 @@ public class SummaryPage {
         });
 
         defBuilder.show();
+        //defBuilder.getWindow().setLayout(400, 600);
     }
 
     /**
@@ -212,7 +232,7 @@ public class SummaryPage {
         title.setTextSize(20);
 
         final View rootView = LayoutInflater.from(mActivity).inflate(layoutId, null);
-        ImageView bktCourt = (ImageView) rootView.findViewById(R.id.bktCourt);
+        //ImageView bktCourt = (ImageView) rootView.findViewById(R.id.bktCourt);
         //bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
         //bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
 
@@ -249,10 +269,11 @@ public class SummaryPage {
                 case MotionEvent.ACTION_DOWN://0
                     lastPos = pos;
                     lastTouchY = event.getY();
+                    
+                    // if rebound, 2p, 3p, free three, player, to_n_foul is clicked
                     if(pos < 6){
                         //initialize the img by touched position
                         imageSetter(pos);
-
                         wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                         // レイアウトファイルから重ね合わせするViewを作成する
                         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -270,16 +291,12 @@ public class SummaryPage {
                     //identified moving direction
                     if(currentY < lastTouchY){
                         //UP
-                        float diff = lastTouchY - currentY;
-                        Boolean isValid = (diff > DISTANCE) ? true : false;
-                        if(isValid){
+                        if(movingCheck(currentY)){
                             mFloat.setImageResource(imageSet[1]);
                         }
                     }else{
                         //DOWN
-                        float diff = currentY - lastTouchY;
-                        Boolean isValid = (diff > DISTANCE) ? true : false;
-                        if(isValid){
+                        if(movingCheck(currentY)){
                             mFloat.setImageResource(imageSet[2]);
                         }
                     }
@@ -300,15 +317,13 @@ public class SummaryPage {
                             TeamObj.addTimeLine(tmpPlayer);
                             CustomToast(name, ActText);
                         }else{
-                            Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "ERROR ACTINO UP", Toast.LENGTH_SHORT).show();
                         }
                     //if touched icon are others
                     }else{
                         //identified moving direction(MOVING UP)
                         if(currentY < lastTouchY){
-                            float diff = lastTouchY - currentY;
-                            Boolean isValid = (diff > DISTANCE) ? true : false;
-                            if(isValid){
+                            if(movingCheck(currentY)){
                                 //check made or miss, get the player's action
                                 isMade(lastPos);
                                 if(actionCode != DEFAULT_ACTION){
@@ -335,9 +350,7 @@ public class SummaryPage {
                             }
                         // MOVING DOWN
                         }else{
-                            float diff = currentY - lastTouchY;
-                            Boolean isValid = (diff > DISTANCE) ? true : false;
-                            if(isValid){
+                            if(movingCheck(currentY)){
                                 // check made or miss, get the player's action
                                 isMissed(lastPos);
                                 if(actionCode != DEFAULT_ACTION){
@@ -378,16 +391,9 @@ public class SummaryPage {
                         }
                     }
                     removeOverLay();
-
-                    //wm.removeViewImmediate(floatView);
-                    //deleView(mRelative, R.id.ballIV);
-                    //reset(mRelative, ChildView, curView, mBall);
                     break;
                 default:
                     removeOverLay();
-                    //wm.removeViewImmediate(floatView);
-                    //deleView(mRelative, R.id.ballIV);
-                    //reset(mRelative, ChildView, curView, mBall);
             }
         }
     }
@@ -398,6 +404,7 @@ public class SummaryPage {
     private void removeOverLay() {
         if(floatView != null){
             wm.removeViewImmediate(floatView);
+            floatView = null;
         }
     }
 
@@ -595,9 +602,27 @@ public class SummaryPage {
     }
 
     /**
-     *
+     * check the view has been added and move distance is far enough
      * */
-
-
-
+    public boolean movingCheck(float cY){
+        // if moveing up
+        if(cY < lastTouchY){
+            float diff = lastTouchY - cY;
+            Boolean isValid = (diff > DISTANCE) ? true : false;
+            if(isValid && floatView != null){
+                return true;
+            }else{
+                return false;
+            }
+        // if moving down
+        }else{
+            float diff = cY - lastTouchY;
+            Boolean isValid = (diff > DISTANCE) ? true : false;
+            if(isValid && floatView != null){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
 }

@@ -29,13 +29,16 @@ public class PlayerListAdapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if(convertView == null) {
-			convertView = this.mInflater.inflate(R.layout.list_item, null);
-		}
 		// set the height of every row
-		rowCellInit(convertView, position);
 
-
+		if(position != 5){
+			convertView = this.mInflater.inflate(R.layout.playerlistadapter_list_player, null);
+			rowCellInit(convertView, position);	
+		}else{
+			
+			convertView = this.mInflater.inflate(R.layout.playerlistadapter_list_bench, null);
+		}
+		
 		return convertView;
 	}
 

@@ -1,10 +1,6 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,7 +14,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
@@ -27,23 +22,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.animation.AnimatorPath;
 import com.anklebreaker.basketball.tw.animation.PathEvaluator;
 import com.anklebreaker.basketball.tw.def.ActionDef;
-import com.anklebreaker.basketball.tw.recordboard.Item;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
@@ -88,7 +76,7 @@ public class SummaryPage {
     Activity mActivity = null;
     private ListView mListView;
     private PlayerListAdapter list_adapter = null;
-    ArrayList<Item> playerList = new ArrayList<Item>();
+    ArrayList<PlayerObj> playerList = new ArrayList<PlayerObj>();
     // new add
     final GridView[] pPanel = new GridView[5];
 
@@ -188,7 +176,7 @@ public class SummaryPage {
         //rb.getLayoutParams().height = MultiDevInit.bktCourtH;
         //rb.getLayoutParams().width = MultiDevInit.bktCourtW;
         rb.setVerticalSpacing(10);
-        rb.setAdapter(TeamObj.RecordGVAdapter[0]);
+        rb.setAdapter(TeamObj.RecordGVAdapter);
 
         rb.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {

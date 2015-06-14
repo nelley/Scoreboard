@@ -80,7 +80,7 @@ public class RecordBoardPage {
     private int actionCode = 999;
     private String name = "player";
     private String ActText = "720度轉身扣籃";
-    ArrayList<Item> mGridArray =new ArrayList<Item>();
+    ArrayList<PlayerObj> mGridArray =new ArrayList<PlayerObj>();
     private String actTime;
     //for animation
     AnimatorPath path = null;
@@ -193,7 +193,7 @@ public class RecordBoardPage {
         benchBtn = (ImageView) v.findViewById(R.id.benchBtn);
         // init bench player's gridview
         final GridView benchGridView = gridViewFactory(new GridView(mActivity), R.layout.bench, R.id.benchList);
-        benchGridView.setAdapter(TeamObj.RecordGVAdapter[5]);
+        //benchGridView.setAdapter(TeamObj.RecordGVAdapter[5]);
 
         benchBtn.setOnClickListener(new OnClickListener(){
             @Override
@@ -211,7 +211,7 @@ public class RecordBoardPage {
                     params.height =  MultiDevInit.GVH;
 
                     mParentView.addView(benchGridView, params);
-                    benchGridView.setOnItemLongClickListener(new PlayerChangeListener(mActivity, TeamObj.RecordGVAdapter[5]));
+                    //benchGridView.setOnItemLongClickListener(new PlayerChangeListener(mActivity, TeamObj.RecordGVAdapter[5]));
                 }else{
                     //have benchList view in current view
                     mParentView.removeView(AddedView);
@@ -331,7 +331,7 @@ public class RecordBoardPage {
             pPanel[i] = (GridView)v.findViewById(TeamObj.gridViewID[i]);
             pPanel[i].getLayoutParams().height = MultiDevInit.GVH;
             pPanel[i].getLayoutParams().width = MultiDevInit.GVW;
-            pPanel[i].setAdapter(TeamObj.RecordGVAdapter[i]);
+            //pPanel[i].setAdapter(TeamObj.RecordGVAdapter[i]);
         }
         //for click
         pPanel[0].setOnTouchListener(new OnTouchListener(){
@@ -495,7 +495,7 @@ public class RecordBoardPage {
         //get the touched gridview's item
         for(int i=0; i<TeamObj.gridViewID.length; i++){
             if(v == v.findViewById(TeamObj.gridViewID[i])){
-                mGridArray = TeamObj.gridArray.get(i);
+                //mGridArray = TeamObj.gridArray.get(i);
             }
         }
         final ViewGroup mRelative = (ViewGroup) v.getParent();
@@ -547,8 +547,8 @@ public class RecordBoardPage {
                     //--------leave the screen--------//
                 case MotionEvent.ACTION_UP://1
                     //get the player's number
-                    Item playerInfo = mGridArray.get(4);
-                    name = (playerInfo.getTitle() == "") ? "沒有人" : playerInfo.getTitle();
+                	PlayerObj playerInfo = mGridArray.get(4);
+                    name = (playerInfo.getPlayerNum() == "") ? "沒有人" : playerInfo.getPlayerNum();
                     currentY = event.getY();
                     //if touched icon is block/steal/assist
                     if(lastPos > 5){
@@ -980,11 +980,11 @@ public class RecordBoardPage {
         //get the touched gridview's item
         for(int i=0; i<TeamObj.gridViewID.length; i++){
             if(v == v.findViewById(TeamObj.gridViewID[i])){
-                mGridArray = TeamObj.gridArray.get(i);
+                //mGridArray = TeamObj.gridArray.get(i);
             }
         }
-        Item mPlay = mGridArray.get(4);
-        String mNum = mPlay.getTitle();
+        PlayerObj mPlay = mGridArray.get(4);
+        String mNum = mPlay.getPlayerNum();
 
         TextView title = new TextView(mActivity);
         title.setText( mNum + "出手分布圖");

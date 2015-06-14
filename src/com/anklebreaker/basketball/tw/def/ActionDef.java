@@ -1,19 +1,19 @@
 package com.anklebreaker.basketball.tw.def;
 
 import java.util.ArrayList;
-
-import com.anklebreaker.basketball.tw.recordboard.Item;
+import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 
 public class ActionDef {
 	
 	@SuppressWarnings("serial")
-	public static final ArrayList<Item> defaultStarters = new ArrayList<Item>(){{
-		add(new Item(null, null, "1"));
-		add(new Item(null, null, "2"));
-		add(new Item(null, null, "3"));
-		add(new Item(null, null, "4"));
-		add(new Item(null, null, "5"));
-		add(new Item(null, null, "BENCH_PLAYERS"));
+	// 
+	public static final ArrayList<PlayerObj> defaultStarters = new ArrayList<PlayerObj>(){{
+		add(new PlayerObj(null, "1", "Michal Jordan"));
+		add(new PlayerObj(null, "2", "Larry Bird"));
+		add(new PlayerObj(null, "3", "Hakeen O"));
+		add(new PlayerObj(null, "4", "Iverson"));
+		add(new PlayerObj(null, "5", "Mullin"));
+		add(new PlayerObj(null, "6", "BENCH_PLAYERS"));
 	}};
 	
 	//player info

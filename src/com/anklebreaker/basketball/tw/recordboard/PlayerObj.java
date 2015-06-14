@@ -1,8 +1,11 @@
 package com.anklebreaker.basketball.tw.recordboard;
 
 import java.util.HashMap;
+
 import com.anklebreaker.basketball.tw.def.ActionDef;
+
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 /**
@@ -10,7 +13,7 @@ import android.util.Log;
  * */
 public class PlayerObj implements Cloneable{
 
-    private static final String TAG = "PlayerObj";
+    private static final String TAG = "RecordBoard.PlayerObj";
     private static final int DIFF = 1;
     
     //HashMap for managing the players
@@ -25,6 +28,15 @@ public class PlayerObj implements Cloneable{
     protected int yPos = 0;
     protected int playerAct = -9;
     
+    // move from Item
+    protected Bitmap image_check;
+    protected Bitmap image;
+    //protected String title;
+    protected Boolean isStarter = false;
+    protected Boolean isPlayer = false;
+    protected Boolean isOnPlay = false;
+    
+    
     public String[] recordsArray = 
         {"number"/*號碼*/,"name"/*球員姓名*/,"0"/*兩分命中*/,"0"/*兩分出手*/,
          "0"/*三分命中*/,"0"/*三分出手*/,"0"/*罰球命中*/,"0"/*罰球出手*/,
@@ -38,6 +50,21 @@ public class PlayerObj implements Cloneable{
         this.playerNum = num;
         this.playerName = name;
     }
+    
+    // from Item start
+    /**
+	 * constructor
+	 * @image_check arrow icon
+	 * @image jordan icon
+	 * @number player's number
+	 * */
+	public PlayerObj(Bitmap image_check, Bitmap image, String playerNo) {
+		this.image_check = image_check;
+		this.image = image;
+		this.playerNum = playerNo;
+	}
+
+    // from Item end
 
     public static PlayerObj getInstance(Context c, int act, String num, String name, String time, int x, int y){
         objInstance = playerMap.get(num);
@@ -55,6 +82,7 @@ public class PlayerObj implements Cloneable{
         Log.i(TAG, objInstance.playerNum + "player act as" + objInstance.playerAct);
         return objInstance;
     }
+    
     /**
      * update record's for showing in summary page
      * PlayerObj: player's Object
@@ -98,4 +126,69 @@ public class PlayerObj implements Cloneable{
     protected PlayerObj clone() throws CloneNotSupportedException {
         return (PlayerObj) super.clone();
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /**
+	 * setter and getter
+	 * */
+	public Bitmap getImage() {
+		return image;
+	}
+	public void setImage(Bitmap image) {
+		this.image = image;
+	}
+	
+	public Boolean getIsStarter() {
+		return isStarter;
+	}
+	public void setIsStarter(Boolean isStarter) {
+		this.isStarter = isStarter;
+	}
+	public Boolean getIsPlayer() {
+		return isPlayer;
+	}
+	public void setIsPlayer(Boolean isPlayer) {
+		this.isPlayer = isPlayer;
+	}
+	public Bitmap getImage_check() {
+		return image_check;
+	}
+	public void setImage_check(Bitmap image_check) {
+		this.image_check = image_check;
+	}
+
+	public Boolean getIsOnPlay() {
+		return isOnPlay;
+	}
+
+	public void setIsOnPlay(Boolean isOnPlay) {
+		this.isOnPlay = isOnPlay;
+	}
+
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
+
+	public String getPlayerNum() {
+		return playerNum;
+	}
+
+	public void setPlayerNum(String playerNum) {
+		this.playerNum = playerNum;
+	}
+
 }

@@ -2,11 +2,13 @@ package com.anklebreaker.basketball.tw.tab;
 
 import java.util.ArrayList;
 import java.util.Map;
+
 import com.anklebreaker.basketball.tw.R;
-import com.anklebreaker.basketball.tw.recordboard.Item;
-import com.anklebreaker.basketball.tw.recordboard.PlayerGridViewAdapter;
+import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
+import com.anklebreaker.basketball.tw.summary.PlayerGridViewAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,7 +29,7 @@ public final class BasketFragment extends Fragment{
 	private String mContent = "???";
 	private static Context mContext = null;
 
-	public static ArrayList<Item> player_settingGrid = new ArrayList<Item>();
+	public static ArrayList<PlayerObj> player_settingGrid = new ArrayList<PlayerObj>();
 	private static PlayerGridViewAdapter InitialAdapter;
 	private static Boolean setMenu_flg = false;
 	public static final String DEFAUT_STRING = "";
@@ -114,14 +116,15 @@ public final class BasketFragment extends Fragment{
             SharedPreferences pref = mContext.getSharedPreferences(TeamObj.PLAYER_FILE_NAME, Context.MODE_PRIVATE);
             Map<String,?> keys = pref.getAll();
             Log.i(TAG, "setMenuVisibility: initialize player's number");
-            if(keys.size() == 0){//first time use this app
+            // first time use this app
+            if(keys.size() == 0){
                 for(int i=0; i<10; i++){
                     if(i<9){
-                        player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                        player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                         BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
                                                         String.valueOf(i)+"號"));
                     }else{//「+」icon
-                        player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                        player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                         BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus),
                                                         "新增球員"));
                     }
@@ -130,11 +133,11 @@ public final class BasketFragment extends Fragment{
                 String player_num = null;
                 for(Map.Entry<String,?> entry : keys.entrySet()){
                     player_num = pref.getString(entry.getKey(), DEFAUT_STRING);
-                    player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                    player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                     BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
                                                     player_num));
                 }
-                player_settingGrid.add(new Item(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                 BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus),
                                                 "新增球員"));
             }
@@ -187,11 +190,11 @@ public final class BasketFragment extends Fragment{
     /**
      * getter and setter
      * */
-    public ArrayList<Item> getPlayer_settingGrid() {
+    public ArrayList<PlayerObj> getPlayer_settingGrid() {
          return player_settingGrid;
     }
 
-    public void setPlayer_settingGrid(ArrayList<Item> pg) {
+    public void setPlayer_settingGrid(ArrayList<PlayerObj> pg) {
         player_settingGrid = pg;
     }
 

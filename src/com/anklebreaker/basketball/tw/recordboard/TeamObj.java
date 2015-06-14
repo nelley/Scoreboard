@@ -1,7 +1,9 @@
 package com.anklebreaker.basketball.tw.recordboard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Stack;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,16 +13,19 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
+import com.anklebreaker.basketball.tw.summary.RecordBoardBtn;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
+import com.anklebreaker.basketball.tw.util.StarterComparator;
 
 /**
  * manage the bench player and starters
  * */
 public class TeamObj {
 
-	private static final String TAG = "Scoreboard.TeamObj";
+	private static final String TAG = "ScoreBoard.TeamObj";
 
     static TeamObj ObjInstance = null;
     static final int CT_PANEL = 9;
@@ -29,12 +34,10 @@ public class TeamObj {
     private Context mContext = null;
     //undo stack
     public static Stack<PlayerObj> undoStack = new Stack<PlayerObj>();
-    //array for bench players
-    public static ArrayList<Item> benchArray = new ArrayList<Item>();
-    //array for 5 players
-    public static ArrayList<ArrayList<Item>> gridArray = new ArrayList<ArrayList<Item>>(CT_PANEL_STARTER);//4
+    //3*3 record board
+    public static ArrayList<RecordBoardBtn> gridArray = new ArrayList<RecordBoardBtn>();
     //adapters:0~4 is GridViewAdapter, 5 is benchGridAdapter
-    public static RecordGridViewAdapter[] RecordGVAdapter = new RecordGridViewAdapter[CT_PANEL_STARTER+1];
+    public static RecordGridViewAdapter RecordGVAdapter = null;
 
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
@@ -84,28 +87,18 @@ public class TeamObj {
             BitmapArray[i] = BitmapFactory.decodeResource(res, icons[i]);
             LBitmapArray[i] = BitmapFactory.decodeResource(res, lightIcons[i]);
         }
-        //set the gridview's icon and text, for 5 players
-        for(int i=0; i< CT_PANEL_STARTER; i++){
-            ArrayList<Item> tmp = new ArrayList<Item>();
-            if(i == 0 || i == 1 || i == 4){//dark color
-                //set the 3*3 square
-                for(int k=0; k< CT_PANEL; k++){
-                    tmp.add(new Item(BitmapArray[k], textArray[k]));
-                }
-            }else{//light color
-                for(int k=0; k< CT_PANEL; k++){
-                    tmp.add(new Item(LBitmapArray[k], textArray[k]));
-                }
-            }
-            gridArray.add(i,tmp);
+        
+        //set the 3*3 gridview's icon and text
+        for(int k=0; k< CT_PANEL; k++){
+        	gridArray.add(new RecordBoardBtn(BitmapArray[k], textArray[k]));
         }
+
         //bench players array setting
-        for(int i = 0; i< CT_PANEL_BENCH; i++){
-            benchArray.add(new Item(BitmapArray[4], "player"));
-        }
-        for(int i=0; i< RecordGVAdapter.length-1; i++){
-            RecordGVAdapter[i] = new RecordGridViewAdapter(mContext, R.layout.row_grid, gridArray.get(i));
-        }
+        //for(int i = 0; i< CT_PANEL_BENCH; i++){
+            //benchArray.add(new RecordBoardBtn(BitmapArray[4], "player"));
+        //}
+        RecordGVAdapter = new RecordGridViewAdapter(mContext, R.layout.row_grid, gridArray);
+        
     }
 
     /**
@@ -113,14 +106,17 @@ public class TeamObj {
      * */
     static public String setByUser(View v, Context mContext){
         String results = null;
-        ArrayList<Item> selectedPlayers = new ArrayList<Item>();
-        ArrayList<Item> selectedStarters = new ArrayList<Item>();
+        ArrayList<PlayerObj> selectedPlayers = new ArrayList<PlayerObj>();
+        ArrayList<PlayerObj> selectedStarters = new ArrayList<PlayerObj>();
+        // loop all players in the setting panel
         for(int i = 0; i< BasketFragment.player_settingGrid.size(); i++){
-            Item mPlayer = BasketFragment.player_settingGrid.get(i);
+            PlayerObj mPlayer = BasketFragment.player_settingGrid.get(i);
             if(mPlayer.getIsPlayer()){
-                if(mPlayer.getIsStarter()){//starters
+                if(mPlayer.getIsStarter()){
+                    //starters
                     selectedStarters.add(mPlayer);
-                }else{//bench players
+                }else{
+                    //bench players
                     selectedPlayers.add(mPlayer);
                 }
             }
@@ -138,18 +134,13 @@ public class TeamObj {
             //-----------------------------
             //update info to bench/starter players
             //-----------------------------
-            for(int i=0; i<selectedPlayers.size(); i++){
-                benchArray.get(i).setImage(null);//selectedPlayers.get(i).getImage()
-                benchArray.get(i).setTitle(selectedPlayers.get(i).getTitle());
-            }
-            for(int i=0; i<5; i++){
-                //update 0~4(starters), then get 0~8(3*3 square) to reset name of player
-                gridArray.get(i).get(4).setImage(null);//selectedStarters.get(i).getImage()
-                gridArray.get(i).get(4).setTitle(selectedStarters.get(i).getTitle());
 
-            }
-
-            mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, selectedStarters);
+            // combine two starterlist and player list
+            ArrayList<PlayerObj> playerList= new ArrayList<PlayerObj>();
+            playerList.addAll(selectedStarters);
+            playerList.addAll(selectedPlayers);
+            Collections.sort(playerList, new StarterComparator());
+            mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, playerList);
 
             //check selected player's number!!!
             View rootView = ((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content);
@@ -169,10 +160,10 @@ public class TeamObj {
             editor.clear();
             int i = 0;
             for(; i<selectedStarters.size(); i++){
-                editor.putString(PLAYER_POS[i], selectedStarters.get(i).getTitle());
+                editor.putString(PLAYER_POS[i], selectedStarters.get(i).getPlayerNum());
             }
             for(int k=0; k<selectedPlayers.size(); k++){
-                editor.putString(PLAYER_POS[i+k], selectedPlayers.get(k).getTitle());
+                editor.putString(PLAYER_POS[i+k], selectedPlayers.get(k).getPlayerNum());
             }
             editor.commit();
             results = "ok";
@@ -190,14 +181,5 @@ public class TeamObj {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-    }
-    /**
-     * getter and setter
-     * */
-    public static ArrayList<Item> getBenchArray() {
-        return benchArray;
-    }
-    public static void setBenchArray(ArrayList<Item> benchArray) {
-    	TeamObj.benchArray = benchArray;
     }
 }

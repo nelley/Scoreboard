@@ -21,14 +21,14 @@ public class PlayerChangeListener implements OnItemLongClickListener{
 			int position, long id) {
 		//get the value from item which been long clicked
 		ClipData.Item item = new ClipData.Item((CharSequence)"player changed");
-		Item playerInfo = (Item)parent.getItemAtPosition(position);
+		PlayerObj playerInfo = (PlayerObj)parent.getItemAtPosition(position);
 		
 		String[] mimeTypes = { ClipDescription.MIMETYPE_TEXT_PLAIN };
 		//第一引数にClipDataのラベル名、第二引数に格納するコンテンツのタイプ、第三引数に格納するデータを指定します。
 		ClipData data = new ClipData("NELLEY", mimeTypes, item);
 		
 		DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-		PlayerView pV = new PlayerView(view, playerInfo.getImage(), playerInfo.getTitle(), mBenchAdapter, position);
+		PlayerView pV = new PlayerView(view, playerInfo.getImage(), playerInfo.getPlayerNum(), mBenchAdapter, position);
 		
 		view.startDrag( data, //data to be dragged
 			shadowBuilder, //drag shadow

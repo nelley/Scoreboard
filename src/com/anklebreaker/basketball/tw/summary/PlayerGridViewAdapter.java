@@ -1,9 +1,10 @@
-package com.anklebreaker.basketball.tw.recordboard;
+package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.R.drawable;
+import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
 
 import android.app.Activity;
@@ -27,16 +28,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
+public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
 
     Context context;
     int layoutResourceId;
-    ArrayList<Item> data = new ArrayList<Item>();
+    ArrayList<PlayerObj> data = new ArrayList<PlayerObj>();
     final private String MAXIMUM_PLAYER = "新增上限為20位球員!!";
     //default icon for player selection
     Bitmap base = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.basketball_player);
 
-    public PlayerGridViewAdapter(Context context, int layoutResourceId, ArrayList<Item> data) {
+    public PlayerGridViewAdapter(Context context, int layoutResourceId, ArrayList<PlayerObj> data) {
         super(context, layoutResourceId, data);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
@@ -47,7 +48,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         RecordHolder holder = null;
-        Item tmpItem = data.get(position);
+        PlayerObj tmpItem = data.get(position);
         if (row == null) {
             final LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
@@ -60,8 +61,9 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
             //row.getLayoutParams().height =  ViewGroup.LayoutParams.WRAP_CONTENT;
             //row.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
             row.setTag(holder);
-
-            if(tmpItem.getTitle() == "新增球員"){
+            
+            // click the plus mark logic
+            if(tmpItem.getPlayerNum() == "新增球員"){
 				holder.starter.setVisibility(View.INVISIBLE);
 				holder.imageItem.setOnClickListener(new OnClickListener(){
 					@Override
@@ -104,7 +106,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 											}else{
 												for(int i=0 ;i<data.size(); i++){
 													//duplicate check
-													if(inputNum.equals(data.get(i).getTitle())){
+													if(inputNum.equals(data.get(i).getPlayerNum())){
 														Toast.makeText(context, "此球員背號已存在!", Toast.LENGTH_SHORT).show();
 														chk_flg = false;
 													}
@@ -112,11 +114,13 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 												if(chk_flg){
 													GridView setPlayers = (GridView) dialogView.findViewById(R.id.setplayer);
 													//add new player item at the position before plus
+													/*
 													data.add(data.size()-1,
-															new Item(BitmapFactory.decodeResource(context.getResources(),
+															new PlayerObj(BitmapFactory.decodeResource(context.getResources(),
 																	R.drawable.basketball_player), inputNum));
 
 													setPlayers.setAdapter(BasketFragment.getInitialAdapter());
+													*/
 													defBuilder.dismiss();
 												}
 											}
@@ -132,7 +136,9 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 						}
 					}
 				});
+            // click the icon logic
 			}else{
+				// delete the existed player's icon
 				holder.imageItem.setOnLongClickListener(new OnLongClickListener(){
 					@Override
 					public boolean onLongClick(View v) {
@@ -149,6 +155,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 						return false;
 					}
 				});
+				// select bench player
 				holder.imageItem.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
@@ -159,6 +166,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 						playerSelect(v, touchView, itemPos);
 					}
 				});
+				// select starters
 				holder.starter.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
@@ -173,8 +181,8 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 		} else {
 			holder = (RecordHolder) row.getTag();
 		}
-		Item item = data.get(position);
-		holder.txtTitle.setText(item.getTitle());
+        PlayerObj item = data.get(position);
+		holder.txtTitle.setText(item.getPlayerNum());
 		holder.imageItem.setImageBitmap(item.getImage());
 		holder.starter.setImageBitmap(item.getImage_check());
 		return row;
@@ -185,66 +193,81 @@ public class PlayerGridViewAdapter extends ArrayAdapter<Item>{
 		ImageView starter;
 		int pos;
 	}
-	/**
-	 * set onclicklistener's action for player
-	 * */
-	public void playerSelect(View v, View touchView, int itemPos){
-		Item tmpItem = data.get(itemPos);
-		ImageView player_image = (ImageView)v;
-		if(!tmpItem.getIsPlayer()){
-			player_image.setImageResource(drawable.dribble);
-			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.dribble));
-			tmpItem.setIsPlayer(true);
+	
+    /**
+     * set onclicklistener's action for player
+     * */
+    public void playerSelect(View v, View touchView, int itemPos){
+        PlayerObj tmpItem = data.get(itemPos);
+        ImageView player_image = (ImageView)v;
+        // if not selected as a player
+        if(!tmpItem.getIsPlayer()){
+            player_image.setImageResource(drawable.dribble);
+            tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.dribble));
+            tmpItem.setIsPlayer(true);
+            //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
+        // if selected as a player
+        }else{
+            //update the view
+            player_image.setImageResource(drawable.basketball_player);
+            //update the data
+            tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.basketball_player));
+            tmpItem.setIsPlayer(false);
 
-		}else{
-			//update the view
-			player_image.setImageResource(drawable.basketball_player);
-			//update the data
-			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.basketball_player));
-			tmpItem.setIsPlayer(false);
+            //update the view of starter
+            ImageView start_image = (ImageView)touchView.findViewById(R.id.player_starter);
+            start_image.setImageResource(drawable.unchecked);
+            //update the data
+            tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.unchecked));
+            tmpItem.setIsStarter(false);
+            tmpItem.setIsOnPlay(false);
+            //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+	
+    /**
+     * set onclicklistener's action for starter
+     */
+    public void starterSelect(View v, View touchView, int itemPos){
+        PlayerObj tmpItem = data.get(itemPos);
+        // if already selected as a player, cancel it as a starter
+        if(tmpItem.getIsPlayer()){
+            ImageView starter_check = (ImageView)v;
+            // already selected as the starter
+            if(tmpItem.getIsStarter()){
+                starter_check.setImageResource(drawable.unchecked);
+                tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
+                                       R.drawable.unchecked));
+                tmpItem.setIsStarter(false);
+                tmpItem.setIsOnPlay(false);
+                //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
+            // not the starter
+            }else{
+                starter_check.setImageResource(drawable.checked);
+                tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
+                                       R.drawable.checked));
+                tmpItem.setIsStarter(true);
+                tmpItem.setIsOnPlay(true);
+                //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
+            }
+        // not selected as a player, set as a starter and player
+        }else{
+            //update player image
+            View parentView = (View)v.getParent();
+            ImageView player_image = (ImageView)parentView.findViewById(R.id.player_image);
+            player_image.setImageResource(drawable.dribble);
+            tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(),
+                             R.drawable.dribble));
+            tmpItem.setIsPlayer(true);
 
-			//update the view of starter
-			ImageView start_image = (ImageView)touchView.findViewById(R.id.player_starter);
-			start_image.setImageResource(drawable.unchecked);
-			//update the data
-			tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.unchecked));
-			tmpItem.setIsStarter(false);
-		}
-	}
-	/**
-	 * set onclicklistener's action for starter
-	 * */
-	public void starterSelect(View v, View touchView, int itemPos){
-		Item tmpItem = data.get(itemPos);
-		if(tmpItem.getIsPlayer()){//already selected as a player, cancel as a start
-			ImageView starter_check = (ImageView)v;
-			if(tmpItem.getIsStarter()){//already selected as the starter
-				starter_check.setImageResource(drawable.unchecked);
-				tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
-										R.drawable.unchecked));
-				tmpItem.setIsStarter(false);
-			}else{//not the starter
-				starter_check.setImageResource(drawable.checked);
-				tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
-										R.drawable.checked));
-				tmpItem.setIsStarter(true);
-			}
-		}else{//not selected as a player, set as a starter and player
-			//update player image
-			View parentView = (View)v.getParent();
-			ImageView player_image = (ImageView)parentView.findViewById(R.id.player_image);
-			player_image.setImageResource(drawable.dribble);
-			tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(),
-								R.drawable.dribble));
-			tmpItem.setIsPlayer(true);
-
-			//update starter image
-			ImageView starter_check = (ImageView)v;
-			starter_check.setImageResource(drawable.checked);
-			tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
-									R.drawable.checked));
-			tmpItem.setIsStarter(true);
-
-		}
-	}
+            //update starter image
+            ImageView starter_check = (ImageView)v;
+            starter_check.setImageResource(drawable.checked);
+            tmpItem.setImage_check(BitmapFactory.decodeResource(getContext().getResources(),
+                                   R.drawable.checked));
+            tmpItem.setIsStarter(true);
+            tmpItem.setIsOnPlay(true);
+            //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
 }

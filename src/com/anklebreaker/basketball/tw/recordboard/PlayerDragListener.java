@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class PlayerDragListener implements OnDragListener{
 	
-	ArrayList<Item> mGridArray =new ArrayList<Item>();
+	ArrayList<PlayerObj> mGridArray =new ArrayList<PlayerObj>();
 	//Activity mActivity = null;
 	Context mContext = null;
 	RecordGridViewAdapter mGridAdapter;
@@ -56,7 +56,7 @@ public class PlayerDragListener implements OnDragListener{
 		    case DragEvent.ACTION_DROP:
 		        // if the view is the bottomlinear, we accept the drag item
 		    	if(v == v1 || v == v2 || v == v3 || v == v4 || v == v5) {
-		    		
+		    		/*
 		    		TeamObj tmpTeamObj = TeamObj.getInstance(mContext);
 		    		if(v== v1){
 		    			mGridArray = TeamObj.gridArray.get(0);
@@ -74,23 +74,23 @@ public class PlayerDragListener implements OnDragListener{
 		    			mGridArray = TeamObj.gridArray.get(4);
 		    			mGridAdapter = TeamObj.RecordGVAdapter[4];
 		    		}
-		    		
+		    		*/
 					GridView currentGV = (GridView)v;
 					//prepare for swaping
-					Item tmp = (Item)currentGV.getItemAtPosition(PLAYER_POSITION);
+					PlayerObj tmp = (PlayerObj)currentGV.getItemAtPosition(PLAYER_POSITION);
 					Bitmap benchImg = tmp.getImage();
-					String benchPlayer = tmp.getTitle();
+					String benchPlayer = tmp.getPlayerNum();
 					
 					//update the value and GridView
 					//get info from dragged view
 					PlayerView pV = (PlayerView)event.getLocalState();
-					Item mItem = new Item(pV.getPlayerImg(), pV.getPlayerNum());
-					mGridArray.set(PLAYER_POSITION, mItem);
+					//PlayerObj mItem = new PlayerObj(pV.getPlayerImg(), pV.getPlayerNum());
+					//mGridArray.set(PLAYER_POSITION, mItem);
 					mGridAdapter.notifyDataSetChanged();
 					//exchange the player info to menu's view
-					Item newMenu = new Item(benchImg, benchPlayer);
+					//PlayerObj newMenu = new PlayerObj(benchImg, benchPlayer);
 					//update the menu's view
-					TeamObj.getBenchArray().set(pV.getmPosition(), newMenu);
+					//TeamObj.getBenchArray().set(pV.getmPosition(), newMenu);
 					pV.getBenchAdapter().notifyDataSetChanged();
 					
 					

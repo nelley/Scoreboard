@@ -1,11 +1,8 @@
 package com.anklebreaker.basketball.tw.recordboard;
 
 import java.util.ArrayList;
-
 import com.anklebreaker.basketball.tw.R;
-import com.anklebreaker.basketball.tw.util.MultiDevInit;
-
-import android.app.Activity;
+import com.anklebreaker.basketball.tw.summary.RecordBoardBtn;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +13,18 @@ import android.widget.TextView;
 /**
  * adapter class for player's panel
  * */
-public class RecordGridViewAdapter extends ArrayAdapter<Item>{
+public class RecordGridViewAdapter extends ArrayAdapter<RecordBoardBtn>{
 
     Context context;
     int layoutResourceId;
-    ArrayList<Item> data = new ArrayList<Item>();
+    ArrayList<RecordBoardBtn> data = new ArrayList<RecordBoardBtn>();
 
     /**
      * constructor
      * layoutResourceId:layout's id(row_grid.xml)
      * data:ArrayList of images
      * */
-    public RecordGridViewAdapter(Context context, int layoutResourceId, ArrayList<Item> data) {
+    public RecordGridViewAdapter(Context context, int layoutResourceId, ArrayList<RecordBoardBtn> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -59,7 +56,7 @@ public class RecordGridViewAdapter extends ArrayAdapter<Item>{
             holder = (RecordHolder) row.getTag();
         }
 
-        Item item = data.get(position);
+        RecordBoardBtn item = data.get(position);
         holder.txtTitle.setText(item.getTitle());
         holder.imageItem.setImageBitmap(item.getImage());
         return row;

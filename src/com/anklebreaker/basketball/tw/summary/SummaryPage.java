@@ -48,6 +48,9 @@ public class SummaryPage {
     final int DEFAULT_X = 0;
     final int DEFAULT_Y = 0;
 
+    // control flag for expand banner
+    static public boolean IS_EXPAND = false;
+
     final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
     final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -89,7 +92,7 @@ public class SummaryPage {
 
     WindowManager wm;
     View floatView = null;
-    
+
     /**
      * constructor
      * */
@@ -98,28 +101,37 @@ public class SummaryPage {
         mContext = c;
     }
 
-	/**
+    /*
      * create the view
      * */
     public View createSummaryPage(LayoutInflater inflater){
         Log.i(TAG, "createSummaryPage S");
 
         final View mixedView = inflater.inflate(R.layout.summary_layout, null);
-        
-        mListView = (ListView) mixedView.findViewById(R.id.player_list);
 
+        mListView = (ListView) mixedView.findViewById(R.id.player_list);
         mListView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                
-                // if the bench player row is clicked
+                // change the listview by watching bench player's data or not
                 if(position == 5){
-                    //customDialogInit("change", R.layout.summarypage_player_change, R.string.change);
-                    
-                	
-                	
-                	
+                    if(IS_EXPAND){
+                        // fold the listview
+                        Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
+                        list_adapter = new PlayerListAdapter(mActivity, TeamObj.selectedStarters);
+                        mListView.setAdapter(list_adapter);
+                        list_adapter.notifyDataSetChanged();
+                        IS_EXPAND = false;
+                    }else{
+                        // expand the listview
+                        Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
+                        list_adapter = new PlayerListAdapter(mActivity, TeamObj.totalPlayerList);
+                        mListView.setAdapter(list_adapter);
+                        list_adapter.notifyDataSetChanged();
+                        IS_EXPAND = true;
+                    }
+
                 }else{
                     // init overlay's view param object
                     WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -132,7 +144,6 @@ public class SummaryPage {
                     // create alertDialog to show the 9*9 panel
                     customDialogInit("test", R.layout.summarypage_record_board, mixedView, params);
                 }
-                
             }
         });
 
@@ -152,9 +163,10 @@ public class SummaryPage {
             }
         });
 
-        list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultStarters);
+        // first time init
+        list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer);
         mListView.setAdapter(list_adapter);
-        
+
         Log.i(TAG, "createSummaryPage E");
         return mixedView;
     }
@@ -257,7 +269,7 @@ public class SummaryPage {
                 case MotionEvent.ACTION_DOWN://0
                     lastPos = pos;
                     lastTouchY = event.getY();
-                    
+
                     // if rebound, 2p, 3p, free three, player, to_n_foul is clicked
                     if(pos < 6){
                         //initialize the img by touched position
@@ -292,7 +304,6 @@ public class SummaryPage {
                     //--------leave the screen--------//
                 case MotionEvent.ACTION_UP://1
                     //get the player's number
-                    //Item playerInfo = mGridArray.get(4);
                     name = "test";//(playerInfo.getTitle() == "") ? "沒有人" : playerInfo.getTitle();
                     currentY = event.getY();
                     //if touched icon is block/steal/assist
@@ -300,9 +311,9 @@ public class SummaryPage {
                         isMade(lastPos);
                         if(actionCode != DEFAULT_ACTION){
                             //actTime = strTime.getText().toString();
-                            PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
-                            tmpPlayer.setSummary(tmpPlayer, 1);
-                            TeamObj.addTimeLine(tmpPlayer);
+                            //PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
+                            //tmpPlayer.setSummary(tmpPlayer, 1);
+                            //TeamObj.addTimeLine(tmpPlayer);
                             CustomToast(name, ActText);
                         }else{
                             Toast.makeText(mActivity, "ERROR ACTINO UP", Toast.LENGTH_SHORT).show();
@@ -317,9 +328,9 @@ public class SummaryPage {
                                 if(actionCode != DEFAULT_ACTION){
                                     //actTime = strTime.getText().toString();
                                     //RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
-                                    tmpPlayer.setSummary(tmpPlayer, 1);
-                                    TeamObj.addTimeLine(tmpPlayer);
+                                    //PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
+                                    //tmpPlayer.setSummary(tmpPlayer, 1);
+                                    //TeamObj.addTimeLine(tmpPlayer);
                                     CustomToast(name, ActText);
                                     //if 2 or 3 point made, show animation
                                     /*
@@ -344,9 +355,9 @@ public class SummaryPage {
                                 if(actionCode != DEFAULT_ACTION){
                                     //actTime = strTime.getText().toString();
                                     //RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
-                                    tmpPlayer.setSummary(tmpPlayer, 1);
-                                    TeamObj.addTimeLine(tmpPlayer);
+                                    //PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
+                                    //tmpPlayer.setSummary(tmpPlayer, 1);
+                                    //TeamObj.addTimeLine(tmpPlayer);
                                     CustomToast(name, ActText);
                                     // if 2 or 3 point missed, show animation
                                     /*

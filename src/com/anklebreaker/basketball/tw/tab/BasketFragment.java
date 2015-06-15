@@ -29,6 +29,7 @@ public final class BasketFragment extends Fragment{
 	private String mContent = "???";
 	private static Context mContext = null;
 
+	// player list(GridView) for init
 	public static ArrayList<PlayerObj> player_settingGrid = new ArrayList<PlayerObj>();
 	private static PlayerGridViewAdapter InitialAdapter;
 	private static Boolean setMenu_flg = false;
@@ -120,26 +121,47 @@ public final class BasketFragment extends Fragment{
             if(keys.size() == 0){
                 for(int i=0; i<10; i++){
                     if(i<9){
-                        player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                        // mContext, image_check, image, playerNo, playerName, isStarter, isBench, isOnplay
+                        player_settingGrid.add(new PlayerObj(mContext,
+                                                        BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                         BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
-                                                        String.valueOf(i)+"號"));
+                                                        String.valueOf(i)+"號",
+                                                        "name",
+                                                        false,
+                                                        false,
+                                                        false));
                     }else{//「+」icon
-                        player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                        player_settingGrid.add(new PlayerObj(mContext,
+                                                        BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                         BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus),
-                                                        "新增球員"));
+                                                        "新增球員",
+                                                        "name",
+                                                        false,
+                                                        false,
+                                                        false));
                     }
                 }
             }else{//get info of players from pref
                 String player_num = null;
                 for(Map.Entry<String,?> entry : keys.entrySet()){
                     player_num = pref.getString(entry.getKey(), DEFAUT_STRING);
-                    player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                    player_settingGrid.add(new PlayerObj(mContext,
+                                                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                     BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
-                                                    player_num));
+                                                    player_num,
+                                                    "name",
+                                                    false,
+                                                    false,
+                                                    false));
                 }
-                player_settingGrid.add(new PlayerObj(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
+                player_settingGrid.add(new PlayerObj(mContext,
+                                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                 BitmapFactory.decodeResource(mContext.getResources(), R.drawable.plus),
-                                                "新增球員"));
+                                                "新增球員",
+                                                "name",
+                                                false,
+                                                false,
+                                                false));
             }
 
             Log.i(TAG, "setMenuVisibility: initialize adaper");

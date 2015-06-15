@@ -42,6 +42,11 @@ public class TeamObj {
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
 
+    // playerObj arraylist
+    public static ArrayList<PlayerObj> selectedBenches = new ArrayList<PlayerObj>();
+    public static ArrayList<PlayerObj> selectedStarters = new ArrayList<PlayerObj>();
+    public static ArrayList<PlayerObj> totalPlayerList= new ArrayList<PlayerObj>();
+
     //pref
     public static final String PLAYER_FILE_NAME = "players";
     public static final String[] PLAYER_POS = new String[21];
@@ -87,18 +92,14 @@ public class TeamObj {
             BitmapArray[i] = BitmapFactory.decodeResource(res, icons[i]);
             LBitmapArray[i] = BitmapFactory.decodeResource(res, lightIcons[i]);
         }
-        
+
         //set the 3*3 gridview's icon and text
         for(int k=0; k< CT_PANEL; k++){
         	gridArray.add(new RecordBoardBtn(BitmapArray[k], textArray[k]));
         }
 
-        //bench players array setting
-        //for(int i = 0; i< CT_PANEL_BENCH; i++){
-            //benchArray.add(new RecordBoardBtn(BitmapArray[4], "player"));
-        //}
         RecordGVAdapter = new RecordGridViewAdapter(mContext, R.layout.row_grid, gridArray);
-        
+
     }
 
     /**
@@ -106,25 +107,23 @@ public class TeamObj {
      * */
     static public String setByUser(View v, Context mContext){
         String results = null;
-        ArrayList<PlayerObj> selectedPlayers = new ArrayList<PlayerObj>();
-        ArrayList<PlayerObj> selectedStarters = new ArrayList<PlayerObj>();
         // loop all players in the setting panel
         for(int i = 0; i< BasketFragment.player_settingGrid.size(); i++){
             PlayerObj mPlayer = BasketFragment.player_settingGrid.get(i);
-            if(mPlayer.getIsPlayer()){
+            if(mPlayer.getIsBench()){
                 if(mPlayer.getIsStarter()){
                     //starters
                     selectedStarters.add(mPlayer);
                 }else{
                     //bench players
-                    selectedPlayers.add(mPlayer);
+                	selectedBenches.add(mPlayer);
                 }
             }
         }
 
-        if((selectedPlayers.size() + selectedStarters.size())< 5){
+        if((selectedBenches.size() + selectedStarters.size())< 5){
             results = "請選擇足夠的球員參加比賽";
-        }else if((selectedPlayers.size() + selectedStarters.size()) > 12){
+        }else if((selectedBenches.size() + selectedStarters.size()) > 12){
             results = "可登錄球員上限為十二人";
         }else if(selectedStarters.size() < 5){
             results = "請選五位球員為先發";
@@ -134,13 +133,17 @@ public class TeamObj {
             //-----------------------------
             //update info to bench/starter players
             //-----------------------------
-
             // combine two starterlist and player list
-            ArrayList<PlayerObj> playerList= new ArrayList<PlayerObj>();
-            playerList.addAll(selectedStarters);
-            playerList.addAll(selectedPlayers);
-            Collections.sort(playerList, new StarterComparator());
-            mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, playerList);
+            totalPlayerList.addAll(selectedStarters);
+            totalPlayerList.addAll(selectedBenches);
+            // add expand banner
+            totalPlayerList.add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
+            selectedStarters.add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
+            // sort by isStarter flag & isBench(Starters + DUMMY_PLAYER + Benches)
+            Collections.sort(totalPlayerList, new StarterComparator());
+            Collections.sort(selectedStarters, new StarterComparator());
+            // set starters into listview(init)
+            mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, selectedStarters);
 
             //check selected player's number!!!
             View rootView = ((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content);
@@ -162,8 +165,8 @@ public class TeamObj {
             for(; i<selectedStarters.size(); i++){
                 editor.putString(PLAYER_POS[i], selectedStarters.get(i).getPlayerNum());
             }
-            for(int k=0; k<selectedPlayers.size(); k++){
-                editor.putString(PLAYER_POS[i+k], selectedPlayers.get(k).getPlayerNum());
+            for(int k=0; k<selectedBenches.size(); k++){
+                editor.putString(PLAYER_POS[i+k], selectedBenches.get(k).getPlayerNum());
             }
             editor.commit();
             results = "ok";

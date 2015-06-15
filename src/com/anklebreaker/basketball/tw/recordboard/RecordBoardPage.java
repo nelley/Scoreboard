@@ -180,8 +180,8 @@ public class RecordBoardPage {
             @Override
             public void onClick(View v) {
                 setScore(0,1);
-                PlayerObj mPlayerObj = PlayerObj.getInstance(mActivity, RIVAL_ACTION, "rival", "rival", "time", DEFAULT_X, DEFAULT_Y);
-                TeamObj.addTimeLine(mPlayerObj);
+                //PlayerObj mPlayerObj = PlayerObj.getInstance(mActivity, RIVAL_ACTION, "rival", "rival", "time", DEFAULT_X, DEFAULT_Y);
+                //TeamObj.addTimeLine(mPlayerObj);
             }
         });
     }
@@ -555,9 +555,11 @@ public class RecordBoardPage {
                         isMade(lastPos);
                         if(actionCode != DEFAULT_ACTION){
                             actTime = strTime.getText().toString();
+                            /*
                             PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_X);
                             tmpPlayer.setSummary(tmpPlayer, 1);
                             TeamObj.addTimeLine(tmpPlayer);
+                            */
                             CustomToast(name, ActText);
                         }else{
                             Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
@@ -574,9 +576,11 @@ public class RecordBoardPage {
                                 if(actionCode != DEFAULT_ACTION){
                                     actTime = strTime.getText().toString();
                                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
+                                    /*
                                     PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, lp.leftMargin, lp.topMargin);
                                     tmpPlayer.setSummary(tmpPlayer, 1);
                                     TeamObj.addTimeLine(tmpPlayer);
+                                    */
                                     CustomToast(name, ActText);
                                     //if 2 or 3 point made, show animation
                                     if(actionCode == 2 || actionCode == 4){
@@ -602,9 +606,11 @@ public class RecordBoardPage {
                                 if(actionCode != DEFAULT_ACTION){
                                     actTime = strTime.getText().toString();
                                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
+                                    /*
                                     PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, lp.leftMargin, lp.topMargin);
                                     tmpPlayer.setSummary(tmpPlayer, 1);
                                     TeamObj.addTimeLine(tmpPlayer);
+                                    */
                                     CustomToast(name, ActText);
                                     // if 2 or 3 point missed, show animation
                                     if(actionCode == 3 || actionCode == 5){

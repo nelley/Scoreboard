@@ -4,18 +4,43 @@ import java.util.ArrayList;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 
 public class ActionDef {
-	
-	@SuppressWarnings("serial")
-	// 
-	public static final ArrayList<PlayerObj> defaultStarters = new ArrayList<PlayerObj>(){{
-		add(new PlayerObj(null, "1", "Michal Jordan"));
-		add(new PlayerObj(null, "2", "Larry Bird"));
-		add(new PlayerObj(null, "3", "Hakeen O"));
-		add(new PlayerObj(null, "4", "Iverson"));
-		add(new PlayerObj(null, "5", "Mullin"));
-		add(new PlayerObj(null, "6", "BENCH_PLAYERS"));
-	}};
-	
+
+    //------------------------
+    //init defaultStarters
+    //------------------------
+    @SuppressWarnings("serial")
+    public static final ArrayList<PlayerObj> defaultStarters = new ArrayList<PlayerObj>(){{
+        add(new PlayerObj("11", "Micheal Jordan", true, false, true));
+        add(new PlayerObj("22", "Larry Bird", true, false, true));
+        add(new PlayerObj("33", "Hardaway", true, false, true));
+        add(new PlayerObj("44", "Morning", true, false, true));
+        add(new PlayerObj("55", "Payton", true, false, true));
+        // dummy player for banner
+        add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
+    }};
+
+    //------------------------
+    //init defaultTotalPlayer
+    //------------------------
+    @SuppressWarnings("serial")
+    public static final ArrayList<PlayerObj> defaultTotalPlayer = new ArrayList<PlayerObj>(){{
+        add(new PlayerObj("11", "Micheal Jordan", true, false, true));
+        add(new PlayerObj("22", "Larry Bird", true, false, true));
+        add(new PlayerObj("33", "Hardaway", true, false, true));
+        add(new PlayerObj("44", "Morning", true, false, true));
+        add(new PlayerObj("55", "Payton", true, false, true));
+        // dummy player for banner
+        add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
+        // bench player
+        add(new PlayerObj("66", "BENCH_UNKNOWN", false, true, false));
+        add(new PlayerObj("77", "BENCH_UNKNOWN", false, true, false));
+        add(new PlayerObj("88", "BENCH_UNKNOWN", false, true, false));
+        add(new PlayerObj("99", "BENCH_UNKNOWN", false, true, false));
+        add(new PlayerObj("10", "BENCH_UNKNOWN", false, true, false));
+        add(new PlayerObj("11", "BENCH_UNKNOWN", false, true, false));
+        add(new PlayerObj("12", "BENCH_UNKNOWN", false, true, false));
+    }};
+
 	//player info
 	public static final int PLAYER_NUMBER = 0;
 	public static final int PLAYER_NAME = 1;
@@ -41,13 +66,13 @@ public class ActionDef {
 	public static final int ACT_TO = 13;
 	//foul
 	public static final int ACT_FOUL = 14;
-	//total score 
+	//total score
 	public static final int TOTAL_SCORE = 15;
 	//efficient
 	public static final int EFF = 16;
 	//actions except 2 points, 3 points and free throw using by UNDO function
 	public static final int UNDO_OTHERS = 17;
-	
+
 	//-------------------------------------
 	//2 point
 	public static final String ACT_strTWOP_MA = "兩分進帳";

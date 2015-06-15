@@ -7,7 +7,6 @@ import com.anklebreaker.basketball.tw.util.LogOutput;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 import com.anklebreaker.basketball.tw.util.ViewServer;
 import com.viewpagerindicator.IconPagerAdapter;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -41,7 +40,7 @@ public class MainActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.simple_tabs);
         ViewServer.get(this).addWindow(this);
-        
+
         Log.i(TAG, "onCreate");
         LogOutput.run();
 

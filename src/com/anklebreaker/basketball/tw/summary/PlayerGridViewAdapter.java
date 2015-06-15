@@ -28,6 +28,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * adapter for select the players(starters & bench) in the activity starts
+ * */
 public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
 
     Context context;
@@ -61,7 +64,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
             //row.getLayoutParams().height =  ViewGroup.LayoutParams.WRAP_CONTENT;
             //row.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
             row.setTag(holder);
-            
+
             // click the plus mark logic
             if(tmpItem.getPlayerNum() == "新增球員"){
 				holder.starter.setVisibility(View.INVISIBLE);
@@ -193,7 +196,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
 		ImageView starter;
 		int pos;
 	}
-	
+
     /**
      * set onclicklistener's action for player
      * */
@@ -201,10 +204,10 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
         PlayerObj tmpItem = data.get(itemPos);
         ImageView player_image = (ImageView)v;
         // if not selected as a player
-        if(!tmpItem.getIsPlayer()){
+        if(!tmpItem.getIsBench()){
             player_image.setImageResource(drawable.dribble);
             tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.dribble));
-            tmpItem.setIsPlayer(true);
+            tmpItem.setIsBench(true);
             //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
         // if selected as a player
         }else{
@@ -212,7 +215,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
             player_image.setImageResource(drawable.basketball_player);
             //update the data
             tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.basketball_player));
-            tmpItem.setIsPlayer(false);
+            tmpItem.setIsBench(false);
 
             //update the view of starter
             ImageView start_image = (ImageView)touchView.findViewById(R.id.player_starter);
@@ -224,14 +227,14 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
             //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
         }
     }
-	
+
     /**
      * set onclicklistener's action for starter
      */
     public void starterSelect(View v, View touchView, int itemPos){
         PlayerObj tmpItem = data.get(itemPos);
         // if already selected as a player, cancel it as a starter
-        if(tmpItem.getIsPlayer()){
+        if(tmpItem.getIsBench()){
             ImageView starter_check = (ImageView)v;
             // already selected as the starter
             if(tmpItem.getIsStarter()){
@@ -258,7 +261,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
             player_image.setImageResource(drawable.dribble);
             tmpItem.setImage(BitmapFactory.decodeResource(getContext().getResources(),
                              R.drawable.dribble));
-            tmpItem.setIsPlayer(true);
+            tmpItem.setIsBench(true);
 
             //update starter image
             ImageView starter_check = (ImageView)v;

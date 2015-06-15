@@ -51,7 +51,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         RecordHolder holder = null;
-        PlayerObj tmpItem = data.get(position);
+
         if (row == null) {
             final LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
@@ -65,137 +65,160 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
             //row.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
             row.setTag(holder);
 
-            // click the plus mark logic
-            if(tmpItem.getPlayerNum() == "新增球員"){
-				holder.starter.setVisibility(View.INVISIBLE);
-				holder.imageItem.setOnClickListener(new OnClickListener(){
-					@Override
-					public void onClick(View v) {
-						final View dialogView = (View)v.getParent().getParent();
-
-						if(data.size()>20){
-							Toast.makeText(context, MAXIMUM_PLAYER, Toast.LENGTH_SHORT).show();
-						}else{
-							//create the dialog for player's number input
-							TextView title = new TextView(context);
-							title.setText("請輸入球員背號");
-							title.setBackgroundColor(Color.DKGRAY);
-							title.setPadding(10, 10, 10, 10);
-							title.setGravity(Gravity.CENTER);
-							title.setTextColor(Color.WHITE);
-							title.setTextSize(20);
-
-							final View rootView = LayoutInflater.from(context).inflate(R.layout.newplayer_add, null);
-							final AlertDialog defBuilder = new AlertDialog.Builder(context)
-							.setView(rootView)
-							.setCustomTitle(title)
-							.setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
-							.create();
-
-							defBuilder.setOnShowListener(new DialogInterface.OnShowListener(){
-								@Override
-								public void onShow(DialogInterface dialog) {
-									Button b = defBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
-									b.setOnClickListener(new View.OnClickListener(){
-										@Override
-										public void onClick(View v) {
-											EditText input = (EditText)rootView.findViewById(R.id.addNewPlayer);
-											CharSequence tmp = input.getText();
-											Boolean chk_flg = true;
-											String inputNum = tmp.toString() + "號";
-											inputNum.replaceAll("\\s","");
-											if(inputNum.equals("號")){
-												Toast.makeText(context, "請輸入球員背號", Toast.LENGTH_SHORT).show();
-											}else{
-												for(int i=0 ;i<data.size(); i++){
-													//duplicate check
-													if(inputNum.equals(data.get(i).getPlayerNum())){
-														Toast.makeText(context, "此球員背號已存在!", Toast.LENGTH_SHORT).show();
-														chk_flg = false;
-													}
-												}
-												if(chk_flg){
-													GridView setPlayers = (GridView) dialogView.findViewById(R.id.setplayer);
-													//add new player item at the position before plus
-													/*
-													data.add(data.size()-1,
-															new PlayerObj(BitmapFactory.decodeResource(context.getResources(),
-																	R.drawable.basketball_player), inputNum));
-
-													setPlayers.setAdapter(BasketFragment.getInitialAdapter());
-													*/
-													defBuilder.dismiss();
-												}
-											}
-
-
-										}
-
-									});
-								}
-
-							});
-							defBuilder.show();
-						}
-					}
-				});
-            // click the icon logic
-			}else{
-				// delete the existed player's icon
-				holder.imageItem.setOnLongClickListener(new OnLongClickListener(){
-					@Override
-					public boolean onLongClick(View v) {
-						//get the position
-						View touchView = (View)v.getParent();
-						RecordHolder touchItem= (RecordHolder)touchView.getTag();
-						//get the whole dialog view
-						touchView = (View)touchView.getParent();
-						GridView setPlayers = (GridView)touchView.findViewById(R.id.setplayer);
-						//remove touched item
-						data.remove(touchItem.pos);
-
-						setPlayers.setAdapter(BasketFragment.getInitialAdapter());
-						return false;
-					}
-				});
-				// select bench player
-				holder.imageItem.setOnClickListener(new OnClickListener(){
-					@Override
-					public void onClick(View v) {
-						View touchView = (View)v.getParent();
-						RecordHolder touchItem= (RecordHolder)touchView.getTag();
-						int itemPos = touchItem.pos;
-						//change when image clicked
-						playerSelect(v, touchView, itemPos);
-					}
-				});
-				// select starters
-				holder.starter.setOnClickListener(new OnClickListener(){
-					@Override
-					public void onClick(View v) {
-						View touchView = (View)v.getParent();
-						RecordHolder touchItem= (RecordHolder)touchView.getTag();
-						int itemPos = touchItem.pos;
-						//change when starter icon clicked
-						starterSelect(v, touchView, itemPos);
-					}
-				});
-			}
-		} else {
-			holder = (RecordHolder) row.getTag();
-		}
+            // change the icon in last item & click actions definition
+            if(position == data.size()-1){
+                addNewPlayer(holder);
+            // actions in the other items are clicked & long clicked
+            }else{
+                // delete the existed player's icon
+                StarterBenchDelete(holder);
+            }
+        } else {
+            holder = (RecordHolder) row.getTag();
+        }
+        // set the values to view
         PlayerObj item = data.get(position);
-		holder.txtTitle.setText(item.getPlayerNum());
-		holder.imageItem.setImageBitmap(item.getImage());
-		holder.starter.setImageBitmap(item.getImage_check());
-		return row;
-	}
-	static class RecordHolder {
-		TextView txtTitle;
-		ImageView imageItem;
-		ImageView starter;
-		int pos;
-	}
+        holder.txtTitle.setText(item.getPlayerNum());
+        holder.imageItem.setImageBitmap(item.getImage());
+        holder.starter.setImageBitmap(item.getImage_check());
+        return row;
+    }
+    
+    /**
+     * set the logic of the other button(select starters or bench players or delete)
+     * */
+    private void StarterBenchDelete(RecordHolder holder) {
+        holder.imageItem.setOnLongClickListener(new OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+                //get the position
+                View touchView = (View)v.getParent();
+                RecordHolder touchItem= (RecordHolder)touchView.getTag();
+                //get the whole dialog view
+                touchView = (View)touchView.getParent();
+                GridView setPlayers = (GridView)touchView.findViewById(R.id.setplayer);
+                //remove touched item
+                data.remove(touchItem.pos);
+
+                setPlayers.setAdapter(BasketFragment.getInitialAdapter());
+                return false;
+            }
+        });
+        // select bench player
+        holder.imageItem.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                View touchView = (View)v.getParent();
+                RecordHolder touchItem= (RecordHolder)touchView.getTag();
+                int itemPos = touchItem.pos;
+                //change when image clicked
+                playerSelect(v, touchView, itemPos);
+            }
+        });
+        // select starters
+        holder.starter.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                View touchView = (View)v.getParent();
+                RecordHolder touchItem= (RecordHolder)touchView.getTag();
+                int itemPos = touchItem.pos;
+                //change when starter icon clicked
+                starterSelect(v, touchView, itemPos);
+            }
+        });
+    }
+
+    /**
+     * set the logic of the + button
+     * */
+    private void addNewPlayer(RecordHolder holder) {
+        holder.starter.setVisibility(View.INVISIBLE);
+        holder.imageItem.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                final View dialogView = (View)v.getParent().getParent();
+
+                if(data.size()>20){
+                    Toast.makeText(context, MAXIMUM_PLAYER, Toast.LENGTH_SHORT).show();
+                }else{
+                    //create the dialog for player's number input
+                    TextView title = new TextView(context);
+                    title.setText("請輸入球員背號");
+                    title.setBackgroundColor(Color.DKGRAY);
+                    title.setPadding(10, 10, 10, 10);
+                    title.setGravity(Gravity.CENTER);
+                    title.setTextColor(Color.WHITE);
+                    title.setTextSize(20);
+
+                    final View rootView = LayoutInflater.from(context).inflate(R.layout.newplayer_add, null);
+                    final AlertDialog defBuilder = new AlertDialog.Builder(context)
+                    .setView(rootView)
+                    .setCustomTitle(title)
+                    .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
+                    .create();
+
+                    defBuilder.setOnShowListener(new DialogInterface.OnShowListener(){
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            Button b = defBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
+                            b.setOnClickListener(new View.OnClickListener(){
+                                @Override
+                                public void onClick(View v) {
+                                    EditText input = (EditText)rootView.findViewById(R.id.addNewPlayer);
+                                    CharSequence tmp = input.getText();
+                                    Boolean chk_flg = true;
+                                    String inputNum = tmp.toString() + "號";
+                                    inputNum.replaceAll("\\s","");
+                                    if(inputNum.equals("號")){
+                                        Toast.makeText(context, "請輸入球員背號", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        for(int i=0 ;i<data.size(); i++){
+                                            //duplicate check
+                                            if(inputNum.equals(data.get(i).getPlayerNum())){
+                                                Toast.makeText(context, "此球員背號已存在!", Toast.LENGTH_SHORT).show();
+                                                chk_flg = false;
+                                            }
+                                        }
+                                        if(chk_flg){
+                                            GridView setPlayers = (GridView) dialogView.findViewById(R.id.setplayer);
+                                            //add new player item at the position before plus
+
+                                            data.add(data.size()-1,
+                                                    new PlayerObj(
+                                                            context,
+                                                            BitmapFactory.decodeResource(context.getResources(), R.drawable.unchecked),
+                                                            BitmapFactory.decodeResource(context.getResources(), R.drawable.basketball_player),
+                                                            inputNum,
+                                                            "noName",
+                                                            false,false,false));
+
+                                            setPlayers.setAdapter(BasketFragment.getInitialAdapter());
+                                            defBuilder.dismiss();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    defBuilder.show();
+                }
+            }
+        });
+    }
+
+	/**
+     * for hold the info of each row
+     * @txtTitle
+     * @imageItem
+     * @starter
+     * @pos using on select/unselect starters and bench player
+     * */
+    static class RecordHolder {
+        TextView txtTitle;
+        ImageView imageItem;
+        ImageView starter;
+        int pos;
+    }
 
     /**
      * set onclicklistener's action for player
@@ -273,4 +296,5 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
             //Toast.makeText(context, "onplay flag:" + tmpItem.getIsOnPlay().toString(), Toast.LENGTH_SHORT).show();
         }
     }
+
 }

@@ -47,6 +47,7 @@ public class SummaryPage {
     final int RIVAL_ACTION = 17;
     final int DEFAULT_X = 0;
     final int DEFAULT_Y = 0;
+    final int EXPAND_BANNER = 5;
 
     // control flag for expand banner
     static public boolean IS_EXPAND = false;
@@ -115,7 +116,7 @@ public class SummaryPage {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 // change the listview by watching bench player's data or not
-                if(position == 5){
+                if(position == EXPAND_BANNER){
                     if(IS_EXPAND){
                         // fold the listview
                         Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
@@ -140,9 +141,11 @@ public class SummaryPage {
                             WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                             WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                             PixelFormat.TRANSLUCENT);
-
+                    
+                    // get alertDialog's title
+                    String mTitle = TeamObj.totalPlayerList.get(position).getPlayerNum();
                     // create alertDialog to show the 9*9 panel
-                    customDialogInit("test", R.layout.summarypage_record_board, mixedView, params);
+                    customDialogInit(mTitle, R.layout.summarypage_record_board, mixedView, params);
                 }
             }
         });
@@ -175,7 +178,7 @@ public class SummaryPage {
      * initialize engine of record board
      * */
     public void customDialogInit(String mTitle, int layoutId, final View mixedV, final WindowManager.LayoutParams xParams){
-    	TextView title = new TextView(mActivity);
+        TextView title = new TextView(mActivity);
         title.setText(mTitle);
         title.setBackgroundColor(Color.DKGRAY);
         title.setPadding(0, 0, 0, 0);
@@ -192,7 +195,8 @@ public class SummaryPage {
 
         rb.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, rb, xParams);//false⇒独自Viewの下にいるViewにTouchEventを渡す。true⇒独自Viewの下にいるViewにTouchEventを渡さない
+                doRecord(mixedV, event, rb, xParams);
+                //false⇒独自Viewの下にいるViewにTouchEventを渡す。true⇒独自Viewの下にいるViewにTouchEventを渡さない
                 return false;
             }
         });

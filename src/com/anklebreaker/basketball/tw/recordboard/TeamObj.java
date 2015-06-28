@@ -95,7 +95,7 @@ public class TeamObj {
 
         //set the 3*3 gridview's icon and text
         for(int k=0; k< CT_PANEL; k++){
-        	gridArray.add(new RecordBoardBtn(BitmapArray[k], textArray[k]));
+            gridArray.add(new RecordBoardBtn(BitmapArray[k], textArray[k]));
         }
 
         RecordGVAdapter = new RecordGridViewAdapter(mContext, R.layout.row_grid, gridArray);
@@ -114,21 +114,37 @@ public class TeamObj {
                 if(mPlayer.getIsStarter()){
                     //starters
                     selectedStarters.add(mPlayer);
+                    // add to PlayerObj's playermap
+                    PlayerObj.getInstance(mContext, 9999, null, null, 
+                                          mPlayer.playerNum, mPlayer.playerName, 
+                                          true, false, true, null, -999, -999);
                 }else{
                     //bench players
-                	selectedBenches.add(mPlayer);
+                    selectedBenches.add(mPlayer);
+                    // add to PlayerObj's playermap
+                    PlayerObj.getInstance(mContext, 9999, null, null, 
+                            mPlayer.playerNum, mPlayer.playerName, 
+                            false, true, false, null, -999, -999);
                 }
             }
         }
 
         if((selectedBenches.size() + selectedStarters.size())< 5){
             results = "請選擇足夠的球員參加比賽";
+            selectedBenches.clear();
+            selectedStarters.clear();
         }else if((selectedBenches.size() + selectedStarters.size()) > 12){
             results = "可登錄球員上限為十二人";
+            selectedBenches.clear();
+            selectedStarters.clear();
         }else if(selectedStarters.size() < 5){
             results = "請選五位球員為先發";
+            selectedBenches.clear();
+            selectedStarters.clear();
         }else if(selectedStarters.size() > 5){
             results = "先發球員不得超過五位";
+            selectedBenches.clear();
+            selectedStarters.clear();
         }else{
             //-----------------------------
             //update info to bench/starter players

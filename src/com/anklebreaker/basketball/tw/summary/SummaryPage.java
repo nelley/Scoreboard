@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
@@ -35,7 +36,6 @@ import com.anklebreaker.basketball.tw.def.ActionDef;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
-
 
 public class SummaryPage {
 
@@ -84,7 +84,8 @@ public class SummaryPage {
     // new add
     final GridView[] pPanel = new GridView[5];
 
-    ImageView bktCourt, benchBtn, summary, rival, undo, mBall, mBallAnim, mBallAna, missIcon, testBtn;
+    ImageView bktCourt, benchBtn, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
+    Button undo;
     private String actTime;
     TextView strTime, strTimeTitle, strScore, strScoreTitle;
     private float midX, midY, disX, disY;
@@ -143,9 +144,15 @@ public class SummaryPage {
                             PixelFormat.TRANSLUCENT);
                     
                     // get alertDialog's title
-                    String mTitle = TeamObj.totalPlayerList.get(position).getPlayerNum();
+                    PlayerObj selectPlayer = TeamObj.totalPlayerList.get(position);
                     // create alertDialog to show the 9*9 panel
-                    customDialogInit(mTitle, R.layout.summarypage_record_board, mixedView, params);
+                    customDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
+                    
+                    // update the player_list's content
+                    
+                    
+                    
+                    // end
                 }
             }
         });
@@ -166,10 +173,13 @@ public class SummaryPage {
             }
         });
 
-        // first time init
+        // init when opening the app
         list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer);
         mListView.setAdapter(list_adapter);
 
+        //init undo button
+        initUndo(mixedView);
+        
         Log.i(TAG, "createSummaryPage E");
         return mixedView;
     }
@@ -177,9 +187,9 @@ public class SummaryPage {
     /**
      * initialize engine of record board
      * */
-    public void customDialogInit(String mTitle, int layoutId, final View mixedV, final WindowManager.LayoutParams xParams){
+    public void customDialogInit(final PlayerObj sPlayer, int layoutId, final View mixedV, final WindowManager.LayoutParams xParams){
         TextView title = new TextView(mActivity);
-        title.setText(mTitle);
+        title.setText(sPlayer.getPlayerNum());
         title.setBackgroundColor(Color.DKGRAY);
         title.setPadding(0, 0, 0, 0);
         title.setGravity(Gravity.CENTER);
@@ -193,10 +203,13 @@ public class SummaryPage {
         rb.setVerticalSpacing(10);
         rb.setAdapter(TeamObj.RecordGVAdapter);
 
+        //-------------------------------
+        //        record engine
+        //-------------------------------
         rb.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, rb, xParams);
-                //false⇒独自Viewの下にいるViewにTouchEventを渡す。true⇒独自Viewの下にいるViewにTouchEventを渡さない
+                // update player's record
+                doRecord(mixedV, event, rb, xParams, sPlayer);
                 return false;
             }
         });
@@ -223,6 +236,105 @@ public class SummaryPage {
         //defBuilder.getWindow().setLayout(400, 600);
     }
 
+    /**
+     * init undo button
+     * */
+    private void initUndo(View v) {
+        undo = (Button) v.findViewById(R.id.undo);
+        undo.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(!TeamObj.undoStack.empty()){
+                    undo();
+                }
+            }
+        });
+    }
+    
+    /**
+     * transform number to act
+     * */
+    private void undo(){
+        PlayerObj mPlayerObj = TeamObj.undoStack.pop();
+        int rightUndo = 0;
+        int leftUndo = 0;
+        if(mPlayerObj.playerAct == RIVAL_ACTION){
+            rightUndo = -1;
+            setScore(leftUndo, rightUndo);
+        }else{
+            switch(mPlayerObj.playerAct){
+            case ActionDef.ACT_TWOP_MA:
+                leftUndo = -2;
+                break;
+            case ActionDef.ACT_THREEP_MA:
+                leftUndo = -3;
+                break;
+            case ActionDef.ACT_FTMA:
+                leftUndo = -1;
+            default:
+                break;
+            }
+            //undo summary
+            mPlayerObj.setSummary(mPlayerObj, -1);
+            //undo score board
+            setScore(leftUndo, rightUndo);
+            CustomToast(mPlayerObj.playerName, actionToText(mPlayerObj.playerAct));
+        }
+    }
+    
+    /**
+     * translate playerAct to text
+     * */
+    private String actionToText(int playerAct) {
+        String text = "";
+        switch(playerAct){
+            case ActionDef.ACT_TWOP_MA:
+                text = "兩分進帳";
+                break;
+            case ActionDef.ACT_TWOP_MI:
+                text = "兩分沒進";
+                break;
+            case ActionDef.ACT_THREEP_MA:
+                text = "三分進帳";
+                break;
+            case ActionDef.ACT_THREEP_MI:
+                text = "三分沒進";
+                break;
+            case ActionDef.ACT_FTMA:
+                text = "穩罰中一";
+                break;
+            case ActionDef.ACT_FTMI:
+                text = "罰球不進";
+                break;
+            case ActionDef.ACT_DR:
+                text = "怒拉一防守籃板";
+                break;
+            case ActionDef.ACT_OR:
+                text = "怒拉一進攻籃板";
+                break;
+            case ActionDef.ACT_AS:
+                text = "妙傳助攻";
+                break;
+            case ActionDef.ACT_BS:
+                text = "送出火鍋一次";
+                break;
+            case ActionDef.ACT_ST:
+                text = "抄截加一";
+                break;
+            case ActionDef.ACT_TO:
+                text = "失誤一次";
+                break;
+            case ActionDef.ACT_FOUL:
+                text = "犯規一次";
+                break;
+            default:
+                text = "DEFAULT";
+                break;
+        }
+        text = text + "取消";
+        return text;
+    }
+    
     /**
      * init customized dialog
      * */
@@ -262,7 +374,10 @@ public class SummaryPage {
         defBuilder.show();
 	}
 
-    public void doRecord(View v, MotionEvent event, GridView player, WindowManager.LayoutParams params){
+    /**
+     * record engine
+     * */
+    public void doRecord(View v, MotionEvent event, GridView player, WindowManager.LayoutParams params, PlayerObj msPlayer){
         //identified which image in gridview was touched
         int pos = player.pointToPosition((int) event.getX(), (int) event.getY());
 
@@ -308,16 +423,18 @@ public class SummaryPage {
                     //--------leave the screen--------//
                 case MotionEvent.ACTION_UP://1
                     //get the player's number
-                    name = "test";//(playerInfo.getTitle() == "") ? "沒有人" : playerInfo.getTitle();
                     currentY = event.getY();
                     //if touched icon is block/steal/assist
                     if(lastPos > 5){
                         isMade(lastPos);
                         if(actionCode != DEFAULT_ACTION){
                             //actTime = strTime.getText().toString();
-                            //PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
-                            //tmpPlayer.setSummary(tmpPlayer, 1);
-                            //TeamObj.addTimeLine(tmpPlayer);
+                            PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null,null, 
+                                                                        msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
+                                                                        true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                            tmpPlayer.setSummary(tmpPlayer, 1);
+                            updateSingleRow(tmpPlayer);
+                            TeamObj.addTimeLine(tmpPlayer);
                             CustomToast(name, ActText);
                         }else{
                             Toast.makeText(mActivity, "ERROR ACTINO UP", Toast.LENGTH_SHORT).show();
@@ -331,10 +448,12 @@ public class SummaryPage {
                                 isMade(lastPos);
                                 if(actionCode != DEFAULT_ACTION){
                                     //actTime = strTime.getText().toString();
-                                    //RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                    //PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
-                                    //tmpPlayer.setSummary(tmpPlayer, 1);
-                                    //TeamObj.addTimeLine(tmpPlayer);
+                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
+                                                                                msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
+                                                                                true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                                    tmpPlayer.setSummary(tmpPlayer, 1);
+                                    updateSingleRow(tmpPlayer);
+                                    TeamObj.addTimeLine(tmpPlayer);
                                     CustomToast(name, ActText);
                                     //if 2 or 3 point made, show animation
                                     /*
@@ -358,10 +477,12 @@ public class SummaryPage {
                                 isMissed(lastPos);
                                 if(actionCode != DEFAULT_ACTION){
                                     //actTime = strTime.getText().toString();
-                                    //RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                    //PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_Y);
-                                    //tmpPlayer.setSummary(tmpPlayer, 1);
-                                    //TeamObj.addTimeLine(tmpPlayer);
+                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
+                                                                                msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
+                                                                                true, false, true, actTime, DEFAULT_X, DEFAULT_Y);
+                                    tmpPlayer.setSummary(tmpPlayer, 1);
+                                    updateSingleRow(tmpPlayer);
+                                    TeamObj.addTimeLine(tmpPlayer);
                                     CustomToast(name, ActText);
                                     // if 2 or 3 point missed, show animation
                                     /*
@@ -402,6 +523,42 @@ public class SummaryPage {
     }
 
     /**
+     * refresh single row in player's listview
+     * */
+    private void updateSingleRow(PlayerObj tPlayer) {
+        // get touched player's number
+        String touchedNumString = tPlayer.getPlayerNum();
+        // check the visible range of the listview
+        int start = mListView.getFirstVisiblePosition();
+        // loop the onplay players(except banner)
+        for(int i=start, j=mListView.getLastVisiblePosition(); i<=j-1; i++){
+            // the touched player's row
+            View vi = mListView.getChildAt(i-start);
+            // get the player's number in listview
+            String numString = (String) ((TextView)vi.findViewById(R.id.number)).getText();
+            if(numString.indexOf(touchedNumString) != -1){
+                // update all record for that player
+                ((TextView)vi.findViewById(R.id.twomade)).setText(tPlayer.recordsArray[2]);
+                ((TextView)vi.findViewById(R.id.twotried)).setText(tPlayer.recordsArray[3]);
+                ((TextView)vi.findViewById(R.id.threemade)).setText(tPlayer.recordsArray[4]);
+                ((TextView)vi.findViewById(R.id.threetried)).setText(tPlayer.recordsArray[5]);
+                ((TextView)vi.findViewById(R.id.ftmade)).setText(tPlayer.recordsArray[6]);
+                ((TextView)vi.findViewById(R.id.fttried)).setText(tPlayer.recordsArray[7]);
+                ((TextView)vi.findViewById(R.id.defrebound)).setText(tPlayer.recordsArray[8]);
+                ((TextView)vi.findViewById(R.id.offrebound)).setText(tPlayer.recordsArray[9]);
+                ((TextView)vi.findViewById(R.id.assist)).setText(tPlayer.recordsArray[10]);
+                ((TextView)vi.findViewById(R.id.block)).setText(tPlayer.recordsArray[11]);
+                ((TextView)vi.findViewById(R.id.steal)).setText(tPlayer.recordsArray[12]);
+                ((TextView)vi.findViewById(R.id.turnover)).setText(tPlayer.recordsArray[13]);
+                ((TextView)vi.findViewById(R.id.foul)).setText(tPlayer.recordsArray[14]);
+                ((TextView)vi.findViewById(R.id.point)).setText(tPlayer.recordsArray[15]);
+                // update the view
+                mListView.getAdapter().getView(i, vi, mListView);	
+            }
+        }
+    }
+
+	/**
      *
      * */
     private void removeOverLay() {

@@ -21,12 +21,12 @@ public class PlayerObj implements Cloneable{
     public static PlayerObj objInstance = null;
 
     public Context mContext = null;
-    protected String playerNum =null;
-    protected String playerName = null;
-    protected String actTime =null;
+    public String playerNum =null;
+    public String playerName = null;
+    public String actTime =null;
     protected int xPos = 0;
     protected int yPos = 0;
-    protected int playerAct = -9;
+    public int playerAct = -9;
 
 
     protected Bitmap image_check;
@@ -72,7 +72,22 @@ public class PlayerObj implements Cloneable{
         this.isBench = isB;
         this.isOnPlay = isO;
     }
-
+    
+    /**
+     * create player's object by singleton
+     * @c
+     * @act
+     * @image_check
+     * @image
+     * @num player number
+     * @name player's name
+     * @isS Starter or not
+     * @isB Bench or not
+     * @isO onplay or not
+     * @time timestamp for action
+     * @x x position for player's action
+     * @y y position for player's action
+     * */
     public static PlayerObj getInstance(Context c, int act, Bitmap image_check, Bitmap image, String num, String name, boolean isS, boolean isB, boolean isO, String time, int x, int y){
         objInstance = playerMap.get(num);
 
@@ -121,6 +136,9 @@ public class PlayerObj implements Cloneable{
         }
         return true;
     }
+    
+    
+    
     public static void reset(PlayerObj i){
         i.playerName = null;
         i.playerNum = null;

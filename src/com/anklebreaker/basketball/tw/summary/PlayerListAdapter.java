@@ -1,9 +1,11 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -50,6 +52,7 @@ public class PlayerListAdapter extends BaseAdapter{
      * */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.i(TAG, "getView Start");
         // check row's attribute
         PlayerHolder holder = null;
         int type = getItemViewType(position);
@@ -148,23 +151,11 @@ public class PlayerListAdapter extends BaseAdapter{
      * */
     static class PlayerHolder {
         // for players
-        TextView number;
-        TextView name;
-        TextView twomade;
-        TextView twotried;
-        TextView threemade;
-        TextView threetried;
-        TextView ftmade;
-        TextView fttried;
-        TextView defrebound;
-        TextView offrebound;
-        TextView assist;
-        TextView block;
-        TextView steal;
-        TextView turnover;
-        TextView foul;
-        TextView point;
-
+        TextView number,name,
+                 twomade,twotried,threemade,threetried,ftmade, fttried,
+                 defrebound,offrebound,assist,block,steal,turnover,foul,
+                 point;
+        
         // for expand
         TextView dummytext;
         ImageView dummyimage;

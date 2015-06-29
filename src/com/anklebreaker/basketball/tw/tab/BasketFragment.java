@@ -126,7 +126,7 @@ public final class BasketFragment extends Fragment{
                                                         BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unchecked),
                                                         BitmapFactory.decodeResource(mContext.getResources(), R.drawable.basketball_player),
                                                         String.valueOf(i)+"號",
-                                                        "name",
+                                                        /*default name*/String.valueOf(i)+"號",
                                                         false,
                                                         false,
                                                         false));

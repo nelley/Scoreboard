@@ -110,7 +110,7 @@ public class SummaryPage {
         Log.i(TAG, "createSummaryPage S");
 
         final View mixedView = inflater.inflate(R.layout.summary_layout, null);
-
+        strScore = (TextView) mixedView.findViewById(R.id.score);
         mListView = (ListView) mixedView.findViewById(R.id.player_list);
         mListView.setOnItemClickListener(new OnItemClickListener(){
             @Override
@@ -580,17 +580,17 @@ public class SummaryPage {
         case "1":
             actionCode = ActionDef.ACT_TWOP_MA;
             ActText = ActionDef.ACT_strTWOP_MA;
-            //setScore(2,0);
+            setScore(2,0);
             break;
         case "2":
             actionCode = ActionDef.ACT_THREEP_MA;
             ActText = ActionDef.ACT_strTHREEP_MA;
-            //setScore(3,0);
+            setScore(3,0);
             break;
         case "3":
             actionCode = ActionDef.ACT_FTMA;
             ActText = ActionDef.ACT_strFTMA;
-            //setScore(1,0);
+            setScore(1,0);
             break;
         case "5":
             actionCode = ActionDef.ACT_TO;

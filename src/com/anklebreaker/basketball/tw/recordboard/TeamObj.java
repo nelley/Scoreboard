@@ -112,14 +112,14 @@ public class TeamObj {
             PlayerObj mPlayer = BasketFragment.player_settingGrid.get(i);
             if(mPlayer.getIsBench()){
                 if(mPlayer.getIsStarter()){
-                    //starters
+                    // starters
                     selectedStarters.add(mPlayer);
                     // add to PlayerObj's playermap
                     PlayerObj.getInstance(mContext, 9999, null, null, 
                                           mPlayer.playerNum, mPlayer.playerName, 
                                           true, false, true, null, -999, -999);
                 }else{
-                    //bench players
+                    // bench players
                     selectedBenches.add(mPlayer);
                     // add to PlayerObj's playermap
                     PlayerObj.getInstance(mContext, 9999, null, null, 

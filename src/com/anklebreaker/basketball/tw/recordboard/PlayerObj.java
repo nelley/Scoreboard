@@ -1,5 +1,6 @@
 package com.anklebreaker.basketball.tw.recordboard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.anklebreaker.basketball.tw.def.ActionDef;
@@ -17,7 +18,7 @@ public class PlayerObj implements Cloneable{
     private static final int DIFF = 1;
 
     //HashMap for managing the players
-    public static HashMap<String, PlayerObj> playerMap = new HashMap<String, PlayerObj>();
+    public static ArrayList<PlayerObj> playerMap = new ArrayList<PlayerObj>();
     public static PlayerObj objInstance = null;
 
     public Context mContext = null;
@@ -89,11 +90,18 @@ public class PlayerObj implements Cloneable{
      * @y y position for player's action
      * */
     public static PlayerObj getInstance(Context c, int act, Bitmap image_check, Bitmap image, String num, String name, boolean isS, boolean isB, boolean isO, String time, int x, int y){
-        objInstance = playerMap.get(num);
+        objInstance = null;
+        // check exist elements
+        for (PlayerObj existPlayer : playerMap) {
+            if(existPlayer.playerNum == num){
+                objInstance = existPlayer;
+                break;
+            }
+        }
 
         if(objInstance == null){
             objInstance = new PlayerObj(c, image_check, image, num, name, isS, isB, isO);
-            playerMap.put(num, objInstance);
+            playerMap.add(objInstance);
             Log.i(TAG, objInstance.playerNum + "player created");
         }
 

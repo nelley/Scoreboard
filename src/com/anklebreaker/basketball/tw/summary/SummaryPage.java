@@ -120,18 +120,18 @@ public class SummaryPage {
                 if(position == EXPAND_BANNER){
                     if(IS_EXPAND){
                         // fold the listview
-                        Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
-                        list_adapter = new PlayerListAdapter(mActivity, TeamObj.selectedStarters);
+                        Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
+                        IS_EXPAND = false;
+                        list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
                         mListView.setAdapter(list_adapter);
                         list_adapter.notifyDataSetChanged();
-                        IS_EXPAND = false;
                     }else{
                         // expand the listview
-                        Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
-                        list_adapter = new PlayerListAdapter(mActivity, TeamObj.totalPlayerList);
+                        Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
+                        IS_EXPAND = true;
+                        list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
                         mListView.setAdapter(list_adapter);
                         list_adapter.notifyDataSetChanged();
-                        IS_EXPAND = true;
                     }
 
                 }else{
@@ -144,7 +144,7 @@ public class SummaryPage {
                             PixelFormat.TRANSLUCENT);
                     
                     // get alertDialog's title
-                    PlayerObj selectPlayer = TeamObj.totalPlayerList.get(position);
+                    PlayerObj selectPlayer = PlayerObj.playerMap.get(position);//TeamObj.totalPlayerList.get(position);
                     // create alertDialog to show the 9*9 panel
                     customDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
                     
@@ -174,7 +174,7 @@ public class SummaryPage {
         });
 
         // init when opening the app
-        list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer);
+        list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
         mListView.setAdapter(list_adapter);
 
         //init undo button

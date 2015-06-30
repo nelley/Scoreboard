@@ -19,9 +19,7 @@ import android.widget.TextView;
 /**
  * adapter for showing players in the main listview
  * */
-
 public class PlayerListAdapter extends BaseAdapter{
-
 
     private static final String TAG = "ScoreBoard.PlayerListAdapter";
 
@@ -30,7 +28,8 @@ public class PlayerListAdapter extends BaseAdapter{
     private static ArrayList<PlayerObj> playerData;
 
     private LayoutInflater mInflater;
-
+    private boolean isExpand;
+    
     private static final int TYPE_STARTER = 0;
     private static final int TYPE_BENCH = 1;
     private static final int TYPE_EXPAND = 2;
@@ -40,10 +39,11 @@ public class PlayerListAdapter extends BaseAdapter{
      * @a activity
      * @player players(all players OR bench players)
      * */
-    public PlayerListAdapter(Activity a, ArrayList<PlayerObj> player) {
+    public PlayerListAdapter(Activity a, ArrayList<PlayerObj> player, boolean f) {
         super();
         activity = a;
         playerData = player;
+        isExpand = f;
         this.mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -161,13 +161,20 @@ public class PlayerListAdapter extends BaseAdapter{
         ImageView dummyimage;
     }
 
-	/**
-	 * control the size in the listview
-	 * */
-	@Override
+    /**
+     * control the size in the listview
+     * */
+   @Override
     public int getCount() {
         // contain the expand banner for user click
-        return playerData.size();
+        if(isExpand){
+            // starters only
+            return 6;
+        }else{
+            // all players
+            return playerData.size();
+        }
+        
     }
 
     @Override
@@ -211,6 +218,9 @@ public class PlayerListAdapter extends BaseAdapter{
         return super.isEnabled(position);
     }
 
+    /**
+     * set the cell's width & height
+     * */
     public void layoutSetting(PlayerHolder mHolder){
         // update the layout width
         mHolder.number.getLayoutParams().width = MultiDevInit.cellW;

@@ -119,9 +119,6 @@ public class RecordBoardPage {
         //init undo button
         initUndo(mixedView);
 
-        //summary icon
-        initSummary(mixedView);
-
         //set drag and drop listener
         initDragnDrop(mixedView);
 
@@ -141,22 +138,7 @@ public class RecordBoardPage {
         v.findViewById(R.id.benchBtn).setOnDragListener(new PlayerDragListener(mActivity));
 
     }
-    /**
-     * init summary btn
-     * */
-    private void initSummary(View v) {
-        summary = (ImageView) v.findViewById(R.id.summary);
-        summary.setOnClickListener(new OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mActivity, SummaryActivity.class);
-                // requestCode : startActivityForResult の第二引数で指定した値が渡される
-                int requestCode = 998;
-                //intent.putExtra("absPosition", String.valueOf(position));
-                mActivity.startActivityForResult(intent, requestCode);
-            }
-        });
-    }
+
     /**
      * init undo button
      * */

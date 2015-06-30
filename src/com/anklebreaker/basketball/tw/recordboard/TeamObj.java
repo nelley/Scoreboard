@@ -3,7 +3,6 @@ package com.anklebreaker.basketball.tw.recordboard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.RecordBoardBtn;
@@ -41,11 +39,6 @@ public class TeamObj {
 
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
-
-    // playerObj arraylist
-    public static ArrayList<PlayerObj> selectedBenches = new ArrayList<PlayerObj>();
-    public static ArrayList<PlayerObj> selectedStarters = new ArrayList<PlayerObj>();
-    public static ArrayList<PlayerObj> totalPlayerList= new ArrayList<PlayerObj>();
 
     //pref
     public static final String PLAYER_FILE_NAME = "players";
@@ -106,60 +99,49 @@ public class TeamObj {
      * set starter and bench player dialog's method
      * */
     static public String setByUser(View v, Context mContext){
+        int startCnt = 0;
+        int benchCnt = 0;
         String results = null;
         // loop all players in the setting panel
         for(int i = 0; i< BasketFragment.player_settingGrid.size(); i++){
             PlayerObj mPlayer = BasketFragment.player_settingGrid.get(i);
             if(mPlayer.getIsBench()){
                 if(mPlayer.getIsStarter()){
-                    // starters
-                    selectedStarters.add(mPlayer);
-                    // add to PlayerObj's playermap
+                    // add to PlayerObj's playermap(starters)
                     PlayerObj.getInstance(mContext, 9999, null, null, 
                                           mPlayer.playerNum, mPlayer.playerName, 
                                           true, false, true, null, -999, -999);
+                    startCnt = startCnt + 1;
+                    
                 }else{
-                    // bench players
-                    selectedBenches.add(mPlayer);
-                    // add to PlayerObj's playermap
+                    // add to PlayerObj's playermap(bench players)
                     PlayerObj.getInstance(mContext, 9999, null, null, 
                             mPlayer.playerNum, mPlayer.playerName, 
                             false, true, false, null, -999, -999);
+                    benchCnt = benchCnt + 1;
                 }
             }
         }
-
-        if((selectedBenches.size() + selectedStarters.size())< 5){
-            results = "請選擇足夠的球員參加比賽";
-            selectedBenches.clear();
-            selectedStarters.clear();
-        }else if((selectedBenches.size() + selectedStarters.size()) > 12){
+        
+        if((startCnt + benchCnt) > 12){
             results = "可登錄球員上限為十二人";
-            selectedBenches.clear();
-            selectedStarters.clear();
-        }else if(selectedStarters.size() < 5){
+            PlayerObj.playerMap.clear();
+        }else if(startCnt < 5){
             results = "請選五位球員為先發";
-            selectedBenches.clear();
-            selectedStarters.clear();
-        }else if(selectedStarters.size() > 5){
+            PlayerObj.playerMap.clear();
+        }else if(startCnt > 5){
             results = "先發球員不得超過五位";
-            selectedBenches.clear();
-            selectedStarters.clear();
+            PlayerObj.playerMap.clear();
         }else{
             //-----------------------------
             //update info to bench/starter players
             //-----------------------------
-            // combine two starterlist and player list
-            totalPlayerList.addAll(selectedStarters);
-            totalPlayerList.addAll(selectedBenches);
             // add expand banner
-            totalPlayerList.add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
-            selectedStarters.add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
+            PlayerObj.playerMap.add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
             // sort by isStarter flag & isBench(Starters + DUMMY_PLAYER + Benches)
-            Collections.sort(totalPlayerList, new StarterComparator());
-            Collections.sort(selectedStarters, new StarterComparator());
+            Collections.sort(PlayerObj.playerMap, new StarterComparator());
             // set starters into listview(init)
-            mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, selectedStarters);
+            mPlayerListAdapter = new PlayerListAdapter((Activity) mContext, PlayerObj.playerMap, false);
 
             //check selected player's number!!!
             View rootView = ((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content);
@@ -174,6 +156,7 @@ public class TeamObj {
             //-----------------------------
             //store info of players to local storage with no duplicate number
             //-----------------------------
+            /*
             SharedPreferences pref = mContext.getSharedPreferences(PLAYER_FILE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             editor.clear();
@@ -185,6 +168,7 @@ public class TeamObj {
                 editor.putString(PLAYER_POS[i+k], selectedBenches.get(k).getPlayerNum());
             }
             editor.commit();
+            */
             results = "ok";
         }
         return results;

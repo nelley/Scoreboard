@@ -12,11 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +38,7 @@ public class PlayerListAdapter extends BaseAdapter{
     private static final int TYPE_STARTER = 0;
     private static final int TYPE_BENCH = 1;
     private static final int TYPE_EXPAND = 2;
-    
+    private final int BENCH_PLAYER_ROW = 5;
     private final int BASE_ID = 1000;
 
     /**
@@ -55,7 +56,7 @@ public class PlayerListAdapter extends BaseAdapter{
 
     /**
      * generate the view
-     * @convertView each row in listview
+     * @convertView tablelayout
      * @parent listview
      * */
     @Override
@@ -114,9 +115,9 @@ public class PlayerListAdapter extends BaseAdapter{
             case TYPE_EXPAND:
                 convertView = this.mInflater.inflate(R.layout.playerlistadapter_list_dummy, parent, false);
                 holder.dummytext = (TextView) convertView.findViewById(R.id.dummytext);
-                holder.bcoach = (ImageView) convertView.findViewById(R.id.coach);
-                holder.bmanager = (ImageView) convertView.findViewById(R.id.manager);
-                holder.bgatorade = (ImageView) convertView.findViewById(R.id.gatorade);
+                holder.bcoach = (TextView) convertView.findViewById(R.id.coach);
+                holder.bmanager = (TextView) convertView.findViewById(R.id.manager);
+                holder.bgatorade = (TextView) convertView.findViewById(R.id.gatorade);
                 
                 break;
             }
@@ -182,45 +183,50 @@ public class PlayerListAdapter extends BaseAdapter{
                     holder.bmanager.setVisibility(View.GONE);
                     holder.bgatorade.setVisibility(View.GONE);
                 }else{
-                    int totalplayers = playerData.size();
                     // show the bench players when folding
                     int lastId = holder.bmanager.getId();
+                    // control the bench player's location dynamically
+                    int cnt = 0;
                     /*include dummy row*/
-                    for(int i=0; i<totalplayers-6; i++){
-                        final ImageView iv = new ImageView(activity);
-                        iv.setId( BASE_ID + i);
-                        RelativeLayout.LayoutParams lay = 
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
-                                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        if(i==0){
-                            // first bench player located in benchstart's right side
-                            lay.addRule(RelativeLayout.RIGHT_OF, R.id.manager);	
-                        }else{
-                            // others located in the new added player's right side 
-                            lay.addRule(RelativeLayout.RIGHT_OF, lastId);
-                        }
-                        lay.addRule(RelativeLayout.CENTER_VERTICAL);
-                        iv.setLayoutParams(lay);
-                        // change icon's image here
-                        iv.setImageDrawable(activity.getResources().getDrawable(R.drawable.home));
-                        // set ondragndrop listener for changing players
-                        iv.setOnClickListener(new OnClickListener(){
-                            @Override
-                            public void onClick(View v) {
-	                            // TODO Auto-generated method stub
-                                Toast.makeText(activity, String.valueOf(iv.getId()), Toast.LENGTH_SHORT).show();
-                                // 
+                    for(int i=0; i<playerData.size(); i++){
+                        PlayerObj p = playerData.get(i);
+                        // if the bench player
+                        if(p.getIsBench()){
+                            final TextView iv = new TextView(activity);
+                            iv.setId( BASE_ID + i);
+                            RelativeLayout.LayoutParams lay = 
+                                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
+                                                                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            if(cnt == 0){
+                                // first bench player located in benchstart's right side
+                                lay.addRule(RelativeLayout.RIGHT_OF, R.id.manager);	
+                            }else{
+                                // others located in the new added player's right side 
+                                lay.addRule(RelativeLayout.RIGHT_OF, lastId);
                             }
-                        });
-                        ((ViewGroup) convertView).addView(iv);
-                        // update the lastId
-                        lastId = iv.getId();
+                            lay.addRule(RelativeLayout.CENTER_VERTICAL);
+                            iv.setLayoutParams(lay);
+                            // change icon's image here
+                            iv.setBackgroundResource(R.drawable.home);
+                            iv.setText(p.getPlayerNum());
+                            
+                            // preprocess of the drag & drop in bench players
+                            iv.setOnLongClickListener(new DragNDropTouchListener(activity));
+                            // definition of each process in drag & drop 
+                            iv.setOnDragListener(new PlayerDragListener(activity));
+                            
+                            ((ViewGroup) convertView).addView(iv);
+                            // update the lastId
+                            lastId = iv.getId();
+                            cnt++;
+                        }
                     }
+                    
                     // in order to set the player in the rightmost, get the item's params object
                     RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) holder.bgatorade.getLayoutParams();
                     params.addRule(RelativeLayout.RIGHT_OF, lastId);
                     
-                   // set coach's desicion
+                    // set coach's desicion
                     holder.bcoach.setOnClickListener(new OnClickListener(){
                         @Override
                         public void onClick(View v) {
@@ -247,6 +253,12 @@ public class PlayerListAdapter extends BaseAdapter{
                 // update the layout
                 break;
         }
+        
+        if(position != BENCH_PLAYER_ROW){
+            // register drag n drop listener to each player's number
+            convertView.findViewById(R.id.playerrow).findViewById(R.id.number).setOnDragListener(new PlayerDragListener(activity));
+            convertView.findViewById(R.id.playerrow).findViewById(R.id.number).setOnLongClickListener(new DragNDropTouchListener(activity));
+        }
         return convertView;
     }
 
@@ -261,8 +273,7 @@ public class PlayerListAdapter extends BaseAdapter{
                  point;
         
         // for expand
-        TextView dummytext;
-        ImageView bcoach,bmanager, bgatorade;
+        TextView dummytext, bcoach,bmanager, bgatorade;;
     }
 
     /**
@@ -316,7 +327,7 @@ public class PlayerListAdapter extends BaseAdapter{
     public boolean isEnabled(int position) {
         //Log.i(TAG, "position enabled:" + position);
         // bench players can not click
-        if(position >5){
+        if(position > 5){
             return false;
         }
         return super.isEnabled(position);

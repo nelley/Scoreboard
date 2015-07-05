@@ -3,6 +3,7 @@ package com.anklebreaker.basketball.tw.recordboard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,8 +11,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.RecordBoardBtn;

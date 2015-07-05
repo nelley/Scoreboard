@@ -1,5 +1,5 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/summarytable"
+    android:id="@+id/playerrowhead"
     android:stretchColumns="*"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

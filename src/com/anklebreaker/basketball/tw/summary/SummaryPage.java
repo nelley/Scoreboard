@@ -1,6 +1,7 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
+
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.animation.AnimatorPath;
 import com.anklebreaker.basketball.tw.animation.PathEvaluator;
@@ -111,6 +113,7 @@ public class SummaryPage {
         final View mixedView = inflater.inflate(R.layout.summary_layout, null);
         strScore = (TextView) mixedView.findViewById(R.id.score);
         mListView = (ListView) mixedView.findViewById(R.id.player_list);
+        
         mListView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -121,14 +124,14 @@ public class SummaryPage {
                         // fold the listview
                         Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
                         IS_EXPAND = false;
-                        list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+                        PlayerListAdapter list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
                         mListView.setAdapter(list_adapter);
                         list_adapter.notifyDataSetChanged();
                     }else{
                         // expand the listview
                         Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
                         IS_EXPAND = true;
-                        list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+                        PlayerListAdapter list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
                         mListView.setAdapter(list_adapter);
                         list_adapter.notifyDataSetChanged();
                     }
@@ -158,6 +161,7 @@ public class SummaryPage {
 
 
         // long press for change player
+        /*
         mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -171,11 +175,11 @@ public class SummaryPage {
                 return true;
             }
         });
+        */
 
         // init when opening the app
         list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
         mListView.setAdapter(list_adapter);
-
         //init undo button
         initUndo(mixedView);
         
@@ -534,7 +538,7 @@ public class SummaryPage {
         // check the visible range of the listview
         int start = mListView.getFirstVisiblePosition();
         // loop the onplay players(except banner)
-        for(int i=start, j=mListView.getLastVisiblePosition(); i<=j-1; i++){
+        for(int i=start, j=mListView.getLastVisiblePosition(); i<j-1; i++){
             // the touched player's row
             View vi = mListView.getChildAt(i-start);
             // get the player's number in listview
@@ -558,6 +562,7 @@ public class SummaryPage {
                 // update the view
                 mListView.getAdapter().getView(i, vi, mListView);	
             }
+            
         }
     }
 

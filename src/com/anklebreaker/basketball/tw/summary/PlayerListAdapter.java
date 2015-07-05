@@ -11,10 +11,14 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * adapter for showing players in the main listview
@@ -33,6 +37,8 @@ public class PlayerListAdapter extends BaseAdapter{
     private static final int TYPE_STARTER = 0;
     private static final int TYPE_BENCH = 1;
     private static final int TYPE_EXPAND = 2;
+    
+    private final int BASE_ID = 1000;
 
     /**
      * init the data
@@ -49,6 +55,8 @@ public class PlayerListAdapter extends BaseAdapter{
 
     /**
      * generate the view
+     * @convertView each row in listview
+     * @parent listview
      * */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -106,7 +114,10 @@ public class PlayerListAdapter extends BaseAdapter{
             case TYPE_EXPAND:
                 convertView = this.mInflater.inflate(R.layout.playerlistadapter_list_dummy, parent, false);
                 holder.dummytext = (TextView) convertView.findViewById(R.id.dummytext);
-                holder.dummyimage = (ImageView) convertView.findViewById(R.id.dummyimage);
+                holder.bcoach = (ImageView) convertView.findViewById(R.id.coach);
+                holder.bmanager = (ImageView) convertView.findViewById(R.id.manager);
+                holder.bgatorade = (ImageView) convertView.findViewById(R.id.gatorade);
+                
                 break;
             }
             convertView.setTag(holder);
@@ -123,7 +134,20 @@ public class PlayerListAdapter extends BaseAdapter{
                 // update the data
                 holder.number.setText(playerData.get(position).getPlayerNum());
                 holder.name.setText(playerData.get(position).getPlayerName());
-
+                holder.twomade.setText(playerData.get(position).recordsArray[2]);
+                holder.twotried.setText(playerData.get(position).recordsArray[3]);
+                holder.threemade.setText(playerData.get(position).recordsArray[4]);
+                holder.threetried.setText(playerData.get(position).recordsArray[5]);
+                holder.ftmade.setText(playerData.get(position).recordsArray[6]);
+                holder.fttried.setText(playerData.get(position).recordsArray[7]);
+                holder.defrebound.setText(playerData.get(position).recordsArray[8]);
+                holder.offrebound.setText(playerData.get(position).recordsArray[9]);
+                holder.assist.setText(playerData.get(position).recordsArray[10]);
+                holder.block.setText(playerData.get(position).recordsArray[11]);
+                holder.steal.setText(playerData.get(position).recordsArray[12]);
+                holder.turnover.setText(playerData.get(position).recordsArray[13]);
+                holder.foul.setText(playerData.get(position).recordsArray[14]);
+                holder.point.setText(playerData.get(position).recordsArray[15]);
                 // update the layout
                 layoutSetting(holder);
 
@@ -132,14 +156,94 @@ public class PlayerListAdapter extends BaseAdapter{
                 // update the data
                 holder.number.setText(playerData.get(position).getPlayerNum());
                 holder.name.setText(playerData.get(position).getPlayerName());
-
+                holder.twomade.setText(playerData.get(position).recordsArray[2]);
+                holder.twotried.setText(playerData.get(position).recordsArray[3]);
+                holder.threemade.setText(playerData.get(position).recordsArray[4]);
+                holder.threetried.setText(playerData.get(position).recordsArray[5]);
+                holder.ftmade.setText(playerData.get(position).recordsArray[6]);
+                holder.fttried.setText(playerData.get(position).recordsArray[7]);
+                holder.defrebound.setText(playerData.get(position).recordsArray[8]);
+                holder.offrebound.setText(playerData.get(position).recordsArray[9]);
+                holder.assist.setText(playerData.get(position).recordsArray[10]);
+                holder.block.setText(playerData.get(position).recordsArray[11]);
+                holder.steal.setText(playerData.get(position).recordsArray[12]);
+                holder.turnover.setText(playerData.get(position).recordsArray[13]);
+                holder.foul.setText(playerData.get(position).recordsArray[14]);
+                holder.point.setText(playerData.get(position).recordsArray[15]);
                 // update the layout
                 layoutSetting(holder);
 
                 break;
             case TYPE_EXPAND:
                 // update the data
-
+                if(!isExpand){
+                    // hide the bench players when expanding 
+                    holder.bcoach.setVisibility(View.GONE);
+                    holder.bmanager.setVisibility(View.GONE);
+                    holder.bgatorade.setVisibility(View.GONE);
+                }else{
+                    int totalplayers = playerData.size();
+                    // show the bench players when folding
+                    int lastId = holder.bmanager.getId();
+                    /*include dummy row*/
+                    for(int i=0; i<totalplayers-6; i++){
+                        final ImageView iv = new ImageView(activity);
+                        iv.setId( BASE_ID + i);
+                        RelativeLayout.LayoutParams lay = 
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
+                                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        if(i==0){
+                            // first bench player located in benchstart's right side
+                            lay.addRule(RelativeLayout.RIGHT_OF, R.id.manager);	
+                        }else{
+                            // others located in the new added player's right side 
+                            lay.addRule(RelativeLayout.RIGHT_OF, lastId);
+                        }
+                        lay.addRule(RelativeLayout.CENTER_VERTICAL);
+                        iv.setLayoutParams(lay);
+                        // change icon's image here
+                        iv.setImageDrawable(activity.getResources().getDrawable(R.drawable.home));
+                        // set ondragndrop listener for changing players
+                        iv.setOnClickListener(new OnClickListener(){
+                            @Override
+                            public void onClick(View v) {
+	                            // TODO Auto-generated method stub
+                                Toast.makeText(activity, String.valueOf(iv.getId()), Toast.LENGTH_SHORT).show();
+                                // 
+                            }
+                        });
+                        ((ViewGroup) convertView).addView(iv);
+                        // update the lastId
+                        lastId = iv.getId();
+                    }
+                    // in order to set the player in the rightmost, get the item's params object
+                    RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) holder.bgatorade.getLayoutParams();
+                    params.addRule(RelativeLayout.RIGHT_OF, lastId);
+                    
+                   // set coach's desicion
+                    holder.bcoach.setOnClickListener(new OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(activity, "coach!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    // set manager's function
+                    holder.bmanager.setOnClickListener(new OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(activity, "manager!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    // set Gatorade's function
+                    holder.bgatorade.setOnClickListener(new OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(activity, "gatorade!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    
+                }
+                
                 // update the layout
                 break;
         }
@@ -158,7 +262,7 @@ public class PlayerListAdapter extends BaseAdapter{
         
         // for expand
         TextView dummytext;
-        ImageView dummyimage;
+        ImageView bcoach,bmanager, bgatorade;
     }
 
     /**

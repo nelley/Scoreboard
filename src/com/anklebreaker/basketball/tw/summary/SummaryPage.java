@@ -73,7 +73,6 @@ public class SummaryPage {
     int lastPos = -1;
 
     private int actionCode = 999;
-    private String name = "player";
     private String ActText = "720度轉身扣籃";
 
     Context mContext = null;
@@ -245,7 +244,7 @@ public class SummaryPage {
             @Override
             public void onClick(View v) {
                 if(!TeamObj.undoStack.empty()){
-                    undo();
+                    undo(v);
                 }
             }
         });
@@ -254,9 +253,11 @@ public class SummaryPage {
     /**
      * transform number to act
      * */
-    private void undo(){
+    private void undo(View mainView){
         PlayerObj mPlayerObj = TeamObj.undoStack.pop();
+        // rival
         int rightUndo = 0;
+        // our team
         int leftUndo = 0;
         if(mPlayerObj.playerAct == RIVAL_ACTION){
             rightUndo = -1;
@@ -274,10 +275,12 @@ public class SummaryPage {
             default:
                 break;
             }
-            //undo summary
+            //undo score board(summary board)
             mPlayerObj.setSummary(mPlayerObj, -1);
             //undo score board
             setScore(leftUndo, rightUndo);
+            // update UI view
+            updateSingleRow(mPlayerObj);
             CustomToast(mPlayerObj.playerName, actionToText(mPlayerObj.playerAct));
         }
     }
@@ -435,7 +438,7 @@ public class SummaryPage {
                             tmpPlayer.setSummary(tmpPlayer, 1);
                             updateSingleRow(tmpPlayer);
                             TeamObj.addTimeLine(tmpPlayer);
-                            CustomToast(name, ActText);
+                            CustomToast(tmpPlayer.playerName, ActText);
                         }else{
                             Toast.makeText(mActivity, "ERROR ACTINO UP", Toast.LENGTH_SHORT).show();
                         }
@@ -454,7 +457,7 @@ public class SummaryPage {
                                     tmpPlayer.setSummary(tmpPlayer, 1);
                                     updateSingleRow(tmpPlayer);
                                     TeamObj.addTimeLine(tmpPlayer);
-                                    CustomToast(name, ActText);
+                                    CustomToast(tmpPlayer.playerName, ActText);
                                     //if 2 or 3 point made, show animation
                                     /*
                                     if(actionCode == 2 || actionCode == 4){
@@ -483,7 +486,7 @@ public class SummaryPage {
                                     tmpPlayer.setSummary(tmpPlayer, 1);
                                     updateSingleRow(tmpPlayer);
                                     TeamObj.addTimeLine(tmpPlayer);
-                                    CustomToast(name, ActText);
+                                    CustomToast(tmpPlayer.playerName, ActText);
                                     // if 2 or 3 point missed, show animation
                                     /*
                                     if(actionCode == 3 || actionCode == 5){

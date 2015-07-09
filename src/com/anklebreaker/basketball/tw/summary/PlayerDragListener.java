@@ -1,20 +1,19 @@
 package com.anklebreaker.basketball.tw.summary;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
-import com.anklebreaker.basketball.tw.recordboard.RecordGridViewAdapter;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayerDragListener implements OnDragListener{
@@ -35,8 +34,6 @@ public class PlayerDragListener implements OnDragListener{
         switch (event.getAction()) {
         //signal for the start of a drag and drop operation.
             case DragEvent.ACTION_DRAG_STARTED:
-                // do nothing
-                //if false, go to drag_ended
                 break;
                 
                 //the drag point has entered the bounding box of the View
@@ -55,29 +52,67 @@ public class PlayerDragListener implements OnDragListener{
                 
             //drag shadow has been released,the drag point is within the bounding box of the View
             case DragEvent.ACTION_DROP:
-                // if the view is the bottomlinear, we accept the drag item
+                // retrieve the data from dragged item
                 String num = (String) event.getClipData().getItemAt(0).getText();
-                //GridView currentGV = (GridView)v;
-                //prepare for swaping
-                //PlayerObj tmp = (PlayerObj)currentGV.getItemAtPosition(PLAYER_POSITION);
-                //Bitmap benchImg = tmp.getImage();
-                //String benchPlayer = tmp.getPlayerNum();
+                // retireve the dragged view
+                TextView draggedV = (TextView)event.getLocalState();
+                // retrieve the dragged player
+                int drag = 0;
+                for(; drag< PlayerObj.playerMap.size(); drag++){
+                    String pNum = PlayerObj.playerMap.get(drag).getPlayerNum();
+                    if(pNum.equals(num)){
+                        break;
+                    }
+                }
                 
-                //update the value and GridView
-                //get info from dragged view
-                //PlayerView pV = (PlayerView)event.getLocalState();
+                // retrieve the data from dropped location
+                TextView destinationV = (TextView)v;
+                String droppedNum = (String) destinationV.getText();
+                int drop = 0;
+                for(; drop< PlayerObj.playerMap.size(); drop++){
+                    String pNum = PlayerObj.playerMap.get(drop).getPlayerNum();
+                    if(pNum.equals(droppedNum)){
+                        break;
+                    }
+                }
+
+                if(PlayerObj.playerMap.get(drop).getIsOnPlay() != 
+                        PlayerObj.playerMap.get(drag).getIsOnPlay()){
+
+                    // change the status
+                    PlayerObj.playerReplace(drop);
+                    PlayerObj.playerReplace(drag);
+                    
+                    // change the number in layout
+                    destinationV.setText(PlayerObj.playerMap.get(drag).getPlayerNum());
+                    draggedV.setText(PlayerObj.playerMap.get(drop).getPlayerNum());
+                    
+                    // swap the position
+                    Collections.swap(PlayerObj.playerMap, drag, drop);
+                    
+                    // update the layout
+                    View rootView = (View) destinationV.getRootView();
+                    ListView mListView = (ListView) rootView.findViewById(R.id.player_list);
+                    mListView.setAdapter(SummaryPage.select_list_adapter);
+                    SummaryPage.select_list_adapter.notifyDataSetChanged();
+                    
+                    Toast.makeText(mContext, "change player " + num + " to " + droppedNum, Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(mContext, "same group", Toast.LENGTH_SHORT).show();
+                }
+                
+                
+                
+                
+                //PlayerObj.playerMap.get(index)
+                //prepare for swaping
+
                 //PlayerObj mItem = new PlayerObj(pV.getPlayerImg(), pV.getPlayerNum());
                 //mGridArray.set(PLAYER_POSITION, mItem);
                 //mGridAdapter.notifyDataSetChanged();
                 //exchange the player info to menu's view
                 //PlayerObj newMenu = new PlayerObj(benchImg, benchPlayer);
                 //update the menu's view
-                //TeamObj.getBenchArray().set(pV.getmPosition(), newMenu);
-                //pV.getBenchAdapter().notifyDataSetChanged();
-                
-                Toast.makeText(mContext, num, Toast.LENGTH_SHORT).show();
-            
-                
                 
                 break;
             //the drag and drop operation has concluded.

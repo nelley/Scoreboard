@@ -1,23 +1,18 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -211,7 +206,7 @@ public class PlayerListAdapter extends BaseAdapter{
                             iv.setText(p.getPlayerNum());
                             
                             // preprocess of the drag & drop in bench players
-                            iv.setOnLongClickListener(new DragNDropTouchListener(activity));
+                            iv.setOnLongClickListener(new DragNDropTouchListener(activity, iv));
                             // definition of each process in drag & drop 
                             iv.setOnDragListener(new PlayerDragListener(activity));
                             
@@ -256,8 +251,9 @@ public class PlayerListAdapter extends BaseAdapter{
         
         if(position != BENCH_PLAYER_ROW){
             // register drag n drop listener to each player's number
-            convertView.findViewById(R.id.playerrow).findViewById(R.id.number).setOnDragListener(new PlayerDragListener(activity));
-            convertView.findViewById(R.id.playerrow).findViewById(R.id.number).setOnLongClickListener(new DragNDropTouchListener(activity));
+            TextView tmpNum = (TextView) convertView.findViewById(R.id.playerrow).findViewById(R.id.number);
+            tmpNum.setOnDragListener(new PlayerDragListener(activity));
+            tmpNum.setOnLongClickListener(new DragNDropTouchListener(activity, tmpNum));
         }
         return convertView;
     }
@@ -309,7 +305,7 @@ public class PlayerListAdapter extends BaseAdapter{
 
 	@Override
     public int getItemViewType(int position) {
-        if(playerData.get(position).getIsStarter()){
+        if(playerData.get(position).getIsStarter() || playerData.get(position).getIsOnPlay()){
             return TYPE_STARTER;
         }
 

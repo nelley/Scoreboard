@@ -10,10 +10,11 @@ import android.widget.TextView;
 
 public class DragNDropTouchListener implements OnLongClickListener {
     Activity mActivity = null;
-    //RecordGridViewAdapter mBenchAdapter = null;
+    TextView vNumber = null;
     
-    public DragNDropTouchListener(Activity m){
+    public DragNDropTouchListener(Activity m, TextView n){
         this.mActivity = m;
+        this.vNumber = n;
     }
     
     @Override
@@ -28,7 +29,7 @@ public class DragNDropTouchListener implements OnLongClickListener {
         
         v.startDrag( data, //data to be dragged
             shadowBuilder, //drag shadow
-            null/*pv*/, //local data about the drag and drop operation
+            vNumber,       //local data about the drag and drop operation
             0//no needed flags
             );
         return true;

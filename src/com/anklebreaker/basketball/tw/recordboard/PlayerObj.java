@@ -145,8 +145,27 @@ public class PlayerObj implements Cloneable{
         return true;
     }
     
+    /**
+     * change the isOnplay, isBench value 
+     * */
+    public static void playerReplace(int position){
+        // reverse the values
+        if(PlayerObj.playerMap.get(position).isBench){
+            PlayerObj.playerMap.get(position).isBench = false;
+        }else{
+            PlayerObj.playerMap.get(position).isBench = true;
+        }
+        if(PlayerObj.playerMap.get(position).isOnPlay){
+            PlayerObj.playerMap.get(position).isOnPlay = false;
+        }else{
+            PlayerObj.playerMap.get(position).isOnPlay = true;
+        }
+    }
     
     
+    /**
+     * reset the playerobj
+     * */
     public static void reset(PlayerObj i){
         i.playerName = null;
         i.playerNum = null;
@@ -155,6 +174,10 @@ public class PlayerObj implements Cloneable{
         i.xPos = 0;
         i.yPos = 0;
     }
+    
+    /**
+     * clone for adding to the timeline
+     * */
     @Override
     protected PlayerObj clone() throws CloneNotSupportedException {
         return (PlayerObj) super.clone();

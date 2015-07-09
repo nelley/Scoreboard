@@ -79,9 +79,12 @@ public class SummaryPage {
 
     Context mContext = null;
     Activity mActivity = null;
+    
+    public static PlayerListAdapter select_list_adapter = null;
     private ListView mListView;
-    private PlayerListAdapter list_adapter = null;
+    private PlayerListAdapter def_list_adapter = null;
     ArrayList<PlayerObj> playerList = new ArrayList<PlayerObj>();
+    
     // new add
     final GridView[] pPanel = new GridView[5];
 
@@ -124,16 +127,16 @@ public class SummaryPage {
                         // fold the listview
                         Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
                         IS_EXPAND = false;
-                        PlayerListAdapter list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-                        mListView.setAdapter(list_adapter);
-                        list_adapter.notifyDataSetChanged();
+                        select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+                        mListView.setAdapter(select_list_adapter);
+                        select_list_adapter.notifyDataSetChanged();
                     }else{
                         // expand the listview
                         Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
                         IS_EXPAND = true;
-                        PlayerListAdapter list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-                        mListView.setAdapter(list_adapter);
-                        list_adapter.notifyDataSetChanged();
+                        select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+                        mListView.setAdapter(select_list_adapter);
+                        select_list_adapter.notifyDataSetChanged();
                     }
 
                 }else{
@@ -178,8 +181,8 @@ public class SummaryPage {
         */
 
         // init when opening the app
-        list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
-        mListView.setAdapter(list_adapter);
+        def_list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
+        mListView.setAdapter(def_list_adapter);
         //init undo button
         initUndo(mixedView);
         

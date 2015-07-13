@@ -62,8 +62,8 @@ public class TeamObj {
                           "","","",
                           "","",""};
     //view
-    public static int[] gridViewID = {R.id.gridPlayer1,R.id.gridPlayer2,
-                                      R.id.gridPlayer3,R.id.gridPlayer4, R.id.gridPlayer5};
+    //public static int[] gridViewID = {R.id.gridPlayer1,R.id.gridPlayer2,
+    //                                  R.id.gridPlayer3,R.id.gridPlayer4, R.id.gridPlayer5};
     /**
      * constructor
      * */

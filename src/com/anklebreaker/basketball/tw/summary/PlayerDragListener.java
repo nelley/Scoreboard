@@ -101,19 +101,6 @@ public class PlayerDragListener implements OnDragListener{
                     Toast.makeText(mContext, "same group", Toast.LENGTH_SHORT).show();
                 }
                 
-                
-                
-                
-                //PlayerObj.playerMap.get(index)
-                //prepare for swaping
-
-                //PlayerObj mItem = new PlayerObj(pV.getPlayerImg(), pV.getPlayerNum());
-                //mGridArray.set(PLAYER_POSITION, mItem);
-                //mGridAdapter.notifyDataSetChanged();
-                //exchange the player info to menu's view
-                //PlayerObj newMenu = new PlayerObj(benchImg, benchPlayer);
-                //update the menu's view
-                
                 break;
             //the drag and drop operation has concluded.
             case DragEvent.ACTION_DRAG_ENDED:

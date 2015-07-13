@@ -10,6 +10,7 @@ import com.anklebreaker.basketball.tw.summary.PlayerGridViewAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -45,6 +46,7 @@ public final class BasketFragment extends Fragment{
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
+        //Toast.makeText(mContext, "fragment oncreate", Toast.LENGTH_SHORT).show();
 		Log.i(TAG, "oncreate");
 		super.onCreate(savedInstanceState);
 		if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_CONTENT)) {
@@ -56,6 +58,7 @@ public final class BasketFragment extends Fragment{
      * 這裡選擇在哪個頁面生成哪些資訊
      * */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Toast.makeText(mContext, "fragment onCreateView", Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onCreateView");
         LinearLayout layout = null;
         if(mContent.equals("記錄板")){
@@ -91,13 +94,14 @@ public final class BasketFragment extends Fragment{
 
 	@Override
     public void onDestroyView() {
+        //Toast.makeText(mContext, "fragment onDestroyView", Toast.LENGTH_SHORT).show();
         super.onDestroyView();
         Log.i(TAG, "onDestroyView");
 
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.i(TAG, "onSaveInstanceState");
+        //Log.i(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CONTENT, mContent);
     }
@@ -185,6 +189,7 @@ public final class BasketFragment extends Fragment{
             .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
             .create();
 
+            defBuilder.setCanceledOnTouchOutside(false);
             defBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
@@ -204,11 +209,28 @@ public final class BasketFragment extends Fragment{
                     });
                 }
             });
+            defBuilder.setOnKeyListener(new Dialog.OnKeyListener(){
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode,
+                        KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        Toast.makeText(mContext, "請設定上場球員", Toast.LENGTH_SHORT).show();
+                        // keep dialog
+                        return true;
+                    }
+                    
+                    // dimiss dialog
+	                return false;
+                }
+            	
+            });
             defBuilder.show();
             //defBuilder.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         Log.i(TAG, "setMenuVisibility E");
     }
+    
+    
     /**
      * getter and setter
      * */

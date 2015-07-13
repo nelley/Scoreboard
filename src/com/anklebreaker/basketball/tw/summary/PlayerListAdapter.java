@@ -351,6 +351,6 @@ public class PlayerListAdapter extends BaseAdapter{
         mHolder.foul.getLayoutParams().width = MultiDevInit.cellW;
         mHolder.point.getLayoutParams().width = MultiDevInit.cellW;
         // update the layout height
-        mHolder.number.getLayoutParams().height = MultiDevInit.IndicatorH;
+        mHolder.number.getLayoutParams().height = MultiDevInit.recordRowH;
     }
 }

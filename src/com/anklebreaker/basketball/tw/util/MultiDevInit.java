@@ -24,18 +24,14 @@ public class MultiDevInit {
     
     public static int xPIXEL = 0;
     public static int yPIXEL = 0;
-    //main activity's indicator
+    // main activity's indicator
     public static int IndicatorH = 0;
+    // record cell
     public static int cellW = 0;
-    //player's gridview
-    public static int GVH = 0;
-    public static int GVW = 0;
-    //bktCourt
-    public static int bktCourtH = 0;
-    public static int bktCourtW = 0;
-    //score & time
-    public static int STH = 0;
-    public static int STW = 0;
+    // record row
+    public static int recordRowH = 0;
+    // header
+    public static int headerH = 0;
     //panel in gridview
     public static int pH = 0;
     public static int pW = 0;
@@ -62,7 +58,7 @@ public class MultiDevInit {
      * Constructor
      * */
     public MultiDevInit(Context mContext){
-    	Log.i(TAG, "MultiDevInit S");
+        Log.i(TAG, "MultiDevInit S");
         //get the layout information(screen size) in dp
         xDPI = (int)Utilities.getScreenDpiX(mContext);
         yDPI = (int)Utilities.getScreenDpiY(mContext);
@@ -71,10 +67,11 @@ public class MultiDevInit {
         xPIXEL = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, xDPI , mContext.getResources().getDisplayMetrics());
         yPIXEL = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, yDPI , mContext.getResources().getDisplayMetrics());
         
-        //IndicatorH = yPIXEL/15;
         IndicatorH = yPIXEL/10;
+        // for record table's row
+        recordRowH = yPIXEL/11;
         
-        //
+        // for 16 record columns
         cellW = xPIXEL/16;
         
         int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -82,27 +79,15 @@ public class MultiDevInit {
             STATUS_BAR_H = mContext.getResources().getDimensionPixelSize(resourceId);
         } 
         
-        bktCourtH = (yPIXEL - IndicatorH - STATUS_BAR_H)/4;
-        bktCourtW = xPIXEL * 2/3;
-        
-        STH = (yPIXEL - IndicatorH)/8;
-        STW = xPIXEL * 1/6;
-        
-        GVH = bktCourtH;
-        GVW = xPIXEL/2;
-        
-        pH = (GVH)/3;//-100
-        pW = (GVW)/3;
+        headerH = (yPIXEL - IndicatorH - STATUS_BAR_H)/7;
         
         mLeftMargin = 0;//xPIXEL*(2/3);
         mTopMargin = 0;//GVH/4;
         
-        titleH = bktCourtH/6;
-        titleW = xPIXEL - bktCourtW;
-        
         playerSecH = pH;
         playerSecW = xPIXEL/2;
         
+        // set the text font size
         if(xPIXEL <= LDPIX && yPIXEL <= LDPIY){
             titleSize = 10;
             contextSize = 18;

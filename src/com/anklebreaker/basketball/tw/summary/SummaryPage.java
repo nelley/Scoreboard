@@ -17,17 +17,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +40,7 @@ import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.animation.AnimatorPath;
 import com.anklebreaker.basketball.tw.animation.PathEvaluator;
 import com.anklebreaker.basketball.tw.def.ActionDef;
+import com.anklebreaker.basketball.tw.recordboard.GameTimer;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
@@ -91,7 +97,8 @@ public class SummaryPage {
     ImageView bktCourt, benchBtn, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
     Button undo;
     private String actTime;
-    TextView strTime, strTimeTitle, strScore, strScoreTitle;
+    private TextView strTime, strTimeTitle, strScore, strScoreTitle;
+    final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
     private float midX, midY, disX, disY;
     //for animation
     AnimatorPath path = null;
@@ -115,8 +122,93 @@ public class SummaryPage {
 
         final View mixedView = inflater.inflate(R.layout.summary_layout, null);
         strScore = (TextView) mixedView.findViewById(R.id.score);
+        strTime = (TextView)mixedView.findViewById(R.id.time);
         mListView = (ListView) mixedView.findViewById(R.id.player_list);
         
+        // set the timer
+        GameTimer.getInstance(mActivity, strTime, 180000, 100);
+        strTime.setOnLongClickListener(new OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+                TextView title = new TextView(mActivity);
+                title.setText("請輸入比賽時間");
+                title.setBackgroundColor(Color.DKGRAY);
+                title.setPadding(10, 10, 10, 10);
+                title.setGravity(Gravity.CENTER);
+                title.setTextColor(Color.WHITE);
+                title.setTextSize(20);
+
+                final View rootView = LayoutInflater.from(mActivity).inflate(R.layout.time_setting, null);
+                final NumberPicker qp = (NumberPicker) rootView.findViewById(R.id.quarter);
+                qp.setMaxValue(5);
+                qp.setMinValue(0);
+                qp.setDisplayedValues(qString);
+                final NumberPicker npM = (NumberPicker) rootView.findViewById(R.id.npMinute);
+                npM.setMinValue(0);
+                npM.setMaxValue(48);
+                npM.setValue(10);
+                final NumberPicker npS = (NumberPicker) rootView.findViewById(R.id.npSecond);
+                npS.setMinValue(0);
+                npS.setMaxValue(59);
+                npS.setValue(00);
+
+                final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
+                .setView(rootView)
+                .setCustomTitle(title)
+                .setPositiveButton(android.R.string.ok, null) //Set to null. then override the onclick
+                .create();
+                defBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        Button b = defBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(!(npM.getValue() == 0 && npS.getValue() == 0)){
+                                    String quarter = qString[qp.getValue()];//quarter
+                                    int min = npM.getValue();
+                                    int sec = npS.getValue();
+                                    //set text
+                                    String tmp = min + ":" + sec;
+                                    strTime.setText(tmp +":0");
+                                    //set timer
+                                    GameTimer.gtInstance.update(min*60*1000 + sec*1000, 100);
+                                    GameTimer.gtInstance.create();
+                                    defBuilder.dismiss();
+                                }else{
+                                    Toast.makeText(mActivity, "ok", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        });
+                    }
+                });
+                defBuilder.show();
+
+                return false;
+            }
+        });
+        
+        // start the timer
+        strTime.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String mTimer = strTime.getText().toString();
+                if(mTimer.equals("00:00:0")){
+                    CustomToast("請長按以設定比賽時間");
+                }else{
+
+                    if(GameTimer.gtInstance.isRunning()){
+                        GameTimer.gtInstance.pause();
+                    }else{
+                        GameTimer.gtInstance.resume();
+                    }
+                }
+
+            }
+        });
+        
+        // sest the listview
         mListView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -162,29 +254,30 @@ public class SummaryPage {
             }
         });
 
-
-        // long press for change player
-        /*
-        mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                // show the player changing panel
-                customDialogInit("change", R.layout.summarypage_player_change, R.string.change);
-
-
-
-                // if return false, it fires the OnItemClickListener
-                return true;
-            }
-        });
-        */
-
         // init when opening the app
         def_list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
         mListView.setAdapter(def_list_adapter);
         //init undo button
         initUndo(mixedView);
+        
+        // set the header.xml layout param
+        LinearLayout headerLayout = (LinearLayout) mixedView.findViewById(R.id.header);
+        headerLayout.setLayoutParams(
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, MultiDevInit.headerH));
+        
+        // set setting and undo icon
+        Button undoBut = (Button)mixedView.findViewById(R.id.undo);
+        Button settingBut = (Button)mixedView.findViewById(R.id.setting);
+        
+        // set to square shape
+        LayoutParams undoP = (LayoutParams) undoBut.getLayoutParams();
+        undoP.setMargins(10, 10, 10, 10);
+        undoP.width = MultiDevInit.recordRowH;
+
+        LayoutParams settingP = (LayoutParams) settingBut.getLayoutParams();
+        settingP.setMargins(10, 10, 10, 10);
+        settingP.width = MultiDevInit.recordRowH;
         
         Log.i(TAG, "createSummaryPage E");
         return mixedView;
@@ -246,11 +339,14 @@ public class SummaryPage {
      * init undo button
      * */
     private void initUndo(View v) {
+        final Animation animRotate = AnimationUtils.loadAnimation(mActivity, R.anim.anim_rotate);
         undo = (Button) v.findViewById(R.id.undo);
         undo.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
                 if(!TeamObj.undoStack.empty()){
+                    // animation
+                    v.startAnimation(animRotate);
                     undo(v);
                 }
             }
@@ -541,29 +637,33 @@ public class SummaryPage {
         // check the visible range of the listview
         int start = mListView.getFirstVisiblePosition();
         // loop the onplay players(except banner)
-        for(int i=start, j=mListView.getLastVisiblePosition(); i<j-1; i++){
+        for(int i=start, j=mListView.getLastVisiblePosition(); i <= j; i++){
             // the touched player's row
             View vi = mListView.getChildAt(i-start);
-            // get the player's number in listview
-            String numString = (String) ((TextView)vi.findViewById(R.id.number)).getText();
-            if(numString.indexOf(touchedNumString) != -1){
-                // update all record for that player
-                ((TextView)vi.findViewById(R.id.twomade)).setText(tPlayer.recordsArray[2]);
-                ((TextView)vi.findViewById(R.id.twotried)).setText(tPlayer.recordsArray[3]);
-                ((TextView)vi.findViewById(R.id.threemade)).setText(tPlayer.recordsArray[4]);
-                ((TextView)vi.findViewById(R.id.threetried)).setText(tPlayer.recordsArray[5]);
-                ((TextView)vi.findViewById(R.id.ftmade)).setText(tPlayer.recordsArray[6]);
-                ((TextView)vi.findViewById(R.id.fttried)).setText(tPlayer.recordsArray[7]);
-                ((TextView)vi.findViewById(R.id.defrebound)).setText(tPlayer.recordsArray[8]);
-                ((TextView)vi.findViewById(R.id.offrebound)).setText(tPlayer.recordsArray[9]);
-                ((TextView)vi.findViewById(R.id.assist)).setText(tPlayer.recordsArray[10]);
-                ((TextView)vi.findViewById(R.id.block)).setText(tPlayer.recordsArray[11]);
-                ((TextView)vi.findViewById(R.id.steal)).setText(tPlayer.recordsArray[12]);
-                ((TextView)vi.findViewById(R.id.turnover)).setText(tPlayer.recordsArray[13]);
-                ((TextView)vi.findViewById(R.id.foul)).setText(tPlayer.recordsArray[14]);
-                ((TextView)vi.findViewById(R.id.point)).setText(tPlayer.recordsArray[15]);
-                // update the view
-                mListView.getAdapter().getView(i, vi, mListView);	
+            TextView tmpView = (TextView)vi.findViewById(R.id.number);
+            // verify the row( bench row or not)
+            if(tmpView != null){
+                String numString = (String) tmpView.getText();
+                // get the player's number in listview
+                if(numString.indexOf(touchedNumString) != -1){
+                    // update all record for that player
+                    ((TextView)vi.findViewById(R.id.twomade)).setText(tPlayer.recordsArray[2]);
+                    ((TextView)vi.findViewById(R.id.twotried)).setText(tPlayer.recordsArray[3]);
+                    ((TextView)vi.findViewById(R.id.threemade)).setText(tPlayer.recordsArray[4]);
+                    ((TextView)vi.findViewById(R.id.threetried)).setText(tPlayer.recordsArray[5]);
+                    ((TextView)vi.findViewById(R.id.ftmade)).setText(tPlayer.recordsArray[6]);
+                    ((TextView)vi.findViewById(R.id.fttried)).setText(tPlayer.recordsArray[7]);
+                    ((TextView)vi.findViewById(R.id.defrebound)).setText(tPlayer.recordsArray[8]);
+                    ((TextView)vi.findViewById(R.id.offrebound)).setText(tPlayer.recordsArray[9]);
+                    ((TextView)vi.findViewById(R.id.assist)).setText(tPlayer.recordsArray[10]);
+                    ((TextView)vi.findViewById(R.id.block)).setText(tPlayer.recordsArray[11]);
+                    ((TextView)vi.findViewById(R.id.steal)).setText(tPlayer.recordsArray[12]);
+                    ((TextView)vi.findViewById(R.id.turnover)).setText(tPlayer.recordsArray[13]);
+                    ((TextView)vi.findViewById(R.id.foul)).setText(tPlayer.recordsArray[14]);
+                    ((TextView)vi.findViewById(R.id.point)).setText(tPlayer.recordsArray[15]);
+                    // update the view
+                    mListView.getAdapter().getView(i, vi, mListView);	
+                }
             }
             
         }
@@ -679,7 +779,8 @@ public class SummaryPage {
      * */
     private void CustomToast(String str, String value) {
         final Toast toast = Toast.makeText(mActivity, str + value, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0, MultiDevInit.bktCourtH);
+        // set the position
+        toast.setGravity(Gravity.TOP, 0, 80);
         toast.show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -757,7 +858,20 @@ public class SummaryPage {
 
     }
 
-
+    /**
+     * toast show in 0.5 second method
+     * */
+    private void CustomToast(String str) {
+        final Toast toast = Toast.makeText(mActivity, str, Toast.LENGTH_SHORT);
+        // set the position
+        toast.setGravity(Gravity.TOP, 0, 80);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {toast.cancel();}
+        }, 500);
+    }
     /**
      * set the score to update the score board
      * */

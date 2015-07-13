@@ -19,37 +19,37 @@
         <TextView
             android:text="球員"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             android:layout_span="2"
             />
         <TextView
             android:text="二分球"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             android:layout_span="2"
             />
         <TextView
             android:text="三分球"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             android:layout_span="2"
             />
         <TextView
             android:text="罰球"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             android:layout_span="2"
             />
         <TextView
             android:text="籃板球"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             android:layout_span="2"
             />
         <TextView
             android:text="其他"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             android:layout_span="6"
             />
     </TableRow>
@@ -60,82 +60,82 @@
         <TextView
             android:text="背號"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="名稱"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="命中"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="出手"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="命中"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="出手"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="命中"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="出手"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="防守"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="進攻"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="助攻"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="火鍋"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="抄截"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="失誤"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="犯規"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
         <TextView
             android:text="得分"
             android:gravity="center"
-            android:background="@drawable/cell_shape"
+            android:background="@drawable/title_shape"
             />
     </TableRow>
     <ListView

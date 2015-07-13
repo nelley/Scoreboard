@@ -7,6 +7,7 @@ import com.anklebreaker.basketball.tw.util.LogOutput;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 import com.anklebreaker.basketball.tw.util.ViewServer;
 import com.viewpagerindicator.IconPagerAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.webkit.CookieSyncManager;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -36,6 +38,7 @@ public class MainActivity extends FragmentActivity {
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.simple_tabs);
@@ -69,26 +72,33 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         Log.i(TAG, "onResume");
         super.onResume();
+        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
         ViewServer.get(this).setFocusedWindow(this);
     }
+    
     /**
      * Called when the activity is no longer visible to the user.
      * */
     protected void onStop() {
+        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onStop");
         super.onStop();
     }
+    
     /**
      * Called after your activity has been stopped, prior to it being started again.
      * */
     protected void onRestart(){
+        Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onRestart");
         super.onRestart();
     }
+    
     /**
      * Called when the activity is becoming visible to the user.
      * */
     protected void OnStart(){
+        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onStart");
         super.onStart();
     }
@@ -97,6 +107,7 @@ public class MainActivity extends FragmentActivity {
      * Called when the activity is becoming visible to the user.
      * */
     protected void OnDestroy(){
+        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDestroy");
         super.onDestroy();
         ViewServer.get(this).removeWindow(this);
@@ -137,25 +148,28 @@ public class MainActivity extends FragmentActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK){
-            // アラートダイアログ
+            // rewrite by using DialogFragments???
             showDialog(0);
             return true;
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
     }
+    
+    /**
+     * close app dailog
+     * */
     @Override
     public Dialog onCreateDialog(int id) {
         switch (id) {
         case 0:
-            //ダイアログの作成(AlertDialog.Builder)
             return new AlertDialog.Builder(MainActivity.this)
             .setMessage("要關閉球經救星嗎?")
             .setCancelable(false)
-            // 「終了する」が押された時の処理
             .setPositiveButton("結束", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    // アクティビティ消去
+                    // close the app
                     MainActivity.this.finish();
+                    System.exit(0);
                 }
             })
             // 「終了しない」が押された時の処理
@@ -168,6 +182,9 @@ public class MainActivity extends FragmentActivity {
         return null;
     }
 
+    /**
+     * FragmentPagerAdapter
+     * */
     class BasketBallAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
         public BasketBallAdapter(FragmentManager fm) {
             super(fm);

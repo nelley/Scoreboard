@@ -100,33 +100,33 @@ public class RecordBoardPage {
      * */
     public View createRecordBoardPage(LayoutInflater inflater){
         Log.i(TAG, "createRecordBoardPage S");
-        final View mixedView = inflater.inflate(R.layout.gridlayout, null);
+        //final View mixedView = inflater.inflate(R.layout.gridlayout, null);
         oImg = new ImageView(mActivity);
         TeamObj.getInstance(mActivity);
 
         //init bktcourt, meanBtn, scoreboard's layout size
-        initLayoutParams(mixedView);
+        //initLayoutParams(mixedView);
 
         //init panel for 5 players
-        initPanel(mixedView);
+        //initPanel(mixedView);
 
         //init scoreboard & timer
-        initScoreBoard(mixedView);
+        //initScoreBoard(mixedView);
 
         //init benchlist
-        initBenchList(mixedView);
+        //initBenchList(mixedView);
 
         //init rival's score
-        initRival(mixedView);
+        //initRival(mixedView);
 
         //init undo button
-        initUndo(mixedView);
+        //initUndo(mixedView);
 
         //set drag and drop listener
-        initDragnDrop(mixedView);
+        //initDragnDrop(mixedView);
 
         Log.i(TAG, "createRecordBoardPage E");
-        return mixedView;
+        return null;//mixedView;
     }
     /**
      * init drag and drop listener
@@ -135,10 +135,10 @@ public class RecordBoardPage {
         for(int i=0; i<pPanel.length; i++){
             pPanel[i].setOnDragListener(new PlayerDragListener(mActivity));
         }
-        v.findViewById(R.id.gridLayoutTop).setOnDragListener(new PlayerDragListener(mActivity));
-        v.findViewById(R.id.timescore).setOnDragListener(new PlayerDragListener(mActivity));
-        v.findViewById(R.id.toplinear).setOnDragListener(new PlayerDragListener(mActivity));
-        v.findViewById(R.id.benchBtn).setOnDragListener(new PlayerDragListener(mActivity));
+        //v.findViewById(R.id.gridLayoutTop).setOnDragListener(new PlayerDragListener(mActivity));
+        //v.findViewById(R.id.timescore).setOnDragListener(new PlayerDragListener(mActivity));
+        //v.findViewById(R.id.toplinear).setOnDragListener(new PlayerDragListener(mActivity));
+        //v.findViewById(R.id.benchBtn).setOnDragListener(new PlayerDragListener(mActivity));
 
     }
 
@@ -160,7 +160,7 @@ public class RecordBoardPage {
      * init rival score button's view
      * */
     private void initRival(View v) {
-        rival = (ImageView) v.findViewById(R.id.rival);
+        //rival = (ImageView) v.findViewById(R.id.rival);
         rival.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -175,7 +175,7 @@ public class RecordBoardPage {
      * */
     private void initBenchList(View v) {
         // init bench's view
-        benchBtn = (ImageView) v.findViewById(R.id.benchBtn);
+        //benchBtn = (ImageView) v.findViewById(R.id.benchBtn);
         // init bench player's gridview
         final GridView benchGridView = gridViewFactory(new GridView(mActivity), R.layout.bench, R.id.benchList);
         //benchGridView.setAdapter(TeamObj.RecordGVAdapter[5]);
@@ -193,7 +193,7 @@ public class RecordBoardPage {
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(WC, WC);
                     params.leftMargin = MultiDevInit.mLeftMargin;
                     params.topMargin = MultiDevInit.mTopMargin;
-                    params.height =  MultiDevInit.GVH;
+                    //params.height =  MultiDevInit.GVH;
 
                     mParentView.addView(benchGridView, params);
                     //benchGridView.setOnItemLongClickListener(new PlayerChangeListener(mActivity, TeamObj.RecordGVAdapter[5]));
@@ -311,6 +311,7 @@ public class RecordBoardPage {
 	/**
      * init player's panel
      * */
+	/*
     private void initPanel(View v) {
         for(int i=0; i<pPanel.length; i++){
             pPanel[i] = (GridView)v.findViewById(TeamObj.gridViewID[i]);
@@ -396,7 +397,7 @@ public class RecordBoardPage {
             }
         });
     }
-
+*/
 	/**
      * init layout params for score board
      * */
@@ -404,29 +405,29 @@ public class RecordBoardPage {
         //init layout params
         RelativeLayout scoreBoardRL = (RelativeLayout)v.findViewById(R.id.timescoreLayer);
         LayoutParams SBRLparams = scoreBoardRL.getLayoutParams();
-        SBRLparams.height = MultiDevInit.bktCourtH;
-        SBRLparams.width = MultiDevInit.xPIXEL - MultiDevInit.bktCourtW;
+        //SBRLparams.height = MultiDevInit.bktCourtH;
+        //SBRLparams.width = MultiDevInit.xPIXEL - MultiDevInit.bktCourtW;
 
         timeTitleParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, MultiDevInit.titleH);
 
-        timeParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, ((MultiDevInit.bktCourtH/2) - MultiDevInit.titleH));
+        //timeParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, ((MultiDevInit.bktCourtH/2) - MultiDevInit.titleH));
         timeParams.addRule(RelativeLayout.BELOW, R.id.timeTitle);//set relative position
 
         scoreTitleParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, MultiDevInit.titleH);
         scoreTitleParams.addRule(RelativeLayout.BELOW, R.id.time);//set relative position
 
-        scoreParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, ((MultiDevInit.bktCourtH/2) - MultiDevInit.titleH));
+        //scoreParams = new RelativeLayout.LayoutParams(MultiDevInit.titleW, ((MultiDevInit.bktCourtH/2) - MultiDevInit.titleH));
         scoreParams.addRule(RelativeLayout.BELOW, R.id.scoreTitle);//set relative position
 
         //init mainBtn
-        LinearLayout layout = (LinearLayout) v.findViewById(R.id.toplinear);
-        LayoutParams params = layout.getLayoutParams();
-        params.height = MultiDevInit.GVH;
-        params.width = MultiDevInit.GVW;
+        //LinearLayout layout = (LinearLayout) v.findViewById(R.id.toplinear);
+        //LayoutParams params = layout.getLayoutParams();
+        //params.height = MultiDevInit.GVH;
+        //params.width = MultiDevInit.GVW;
         // playcourt's image
         bktCourt = (ImageView) v.findViewById(R.id.bktCourt);
-        bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
-        bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
+        //bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
+        //bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
 
         mBall = imageViewFactory(mBall, R.layout.ball, R.id.ballIV);
 
@@ -455,7 +456,7 @@ public class RecordBoardPage {
              * */
             private void animFactory(float tx, float ty) {
                 //diff xy
-                disX = ((MultiDevInit.bktCourtW/2) - tx);
+                //disX = ((MultiDevInit.bktCourtW/2) - tx);
                 disY = (MultiDevInit.STATUS_BAR_H - ty);
                 //cal for middle diff
                 midX = (float) (disX * 0.5);
@@ -474,165 +475,7 @@ public class RecordBoardPage {
     /**
      *
      * */
-    public void doRecord(View v, MotionEvent event, GridView player){
-        //identified which image in gridview was touched
-        int pos = player.pointToPosition((int) event.getX(), (int) event.getY());
-        //get the touched gridview's item
-        for(int i=0; i<TeamObj.gridViewID.length; i++){
-            if(v == v.findViewById(TeamObj.gridViewID[i])){
-                //mGridArray = TeamObj.gridArray.get(i);
-            }
-        }
-        final ViewGroup mRelative = (ViewGroup) v.getParent();
-        int curView = -9;
-        View ChildView = null;
-        //no response to player item + ACTION_DOWN/ACTION_MOVE
-        if(!((event.getAction() == 0 || event.getAction() == 2) && pos == 4)){
-            switch (event.getAction()){
-                //--------touch the screen--------//
-                case MotionEvent.ACTION_DOWN://0
-                    lastPos = pos;
-                    lastTouchY = event.getY();
-                    if(pos < 6){
-                        //initialize the img by touched position
-                        imageSetter(pos);
-                        //check whether the img was already been added
-                        curView = mRelative.indexOfChild(oImg);
-                        if(curView != -1){
-                            ChildView = mRelative.getChildAt(curView);
-                            mRelative.removeView(ChildView);
-                        }
-                        //show the default img when touching icon
-                        FrameLayout GVItem = (FrameLayout)((ViewGroup) v).getChildAt(pos);
-                        if(GVItem != null){
-                            mRelative.addView(oImg, ImgIntializer(pos, imageSet[0], GVItem, v));
-                        }
-                    }
-                    break;
-                //--------finger moved--------//
-                case MotionEvent.ACTION_MOVE://2
-                    currentY = event.getY();
-                    //identified moving direction
-                    if(currentY < lastTouchY){
-                        //UP
-                        float diff = lastTouchY - currentY;
-                        Boolean isValid = (diff > DISTANCE) ? true : false;
-                        if(isValid){
-                            oImg.setImageResource(imageSet[1]);
-                        }
-                    }else{
-                        //DOWN
-                        float diff = currentY - lastTouchY;
-                        Boolean isValid = (diff > DISTANCE) ? true : false;
-                        if(isValid){
-                            oImg.setImageResource(imageSet[2]);
-                        }
-                    }
-                    break;
-                    //--------leave the screen--------//
-                case MotionEvent.ACTION_UP://1
-                    //get the player's number
-                	PlayerObj playerInfo = mGridArray.get(4);
-                    name = (playerInfo.getPlayerNum() == "") ? "沒有人" : playerInfo.getPlayerNum();
-                    currentY = event.getY();
-                    //if touched icon is block/steal/assist
-                    if(lastPos > 5){
-                        isMade(lastPos);
-                        if(actionCode != DEFAULT_ACTION){
-                            actTime = strTime.getText().toString();
-                            /*
-                            PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, DEFAULT_X, DEFAULT_X);
-                            tmpPlayer.setSummary(tmpPlayer, 1);
-                            TeamObj.addTimeLine(tmpPlayer);
-                            */
-                            CustomToast(name, ActText);
-                        }else{
-                            Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
-                        }
-                    //if touched icon are others
-                    }else{
-                        //identified moving direction(MOVING UP)
-                        if(currentY < lastTouchY){
-                            float diff = lastTouchY - currentY;
-                            Boolean isValid = (diff > DISTANCE) ? true : false;
-                            if(isValid){
-                                //check made or miss, get the player's action
-                                isMade(lastPos);
-                                if(actionCode != DEFAULT_ACTION){
-                                    actTime = strTime.getText().toString();
-                                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                    /*
-                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, lp.leftMargin, lp.topMargin);
-                                    tmpPlayer.setSummary(tmpPlayer, 1);
-                                    TeamObj.addTimeLine(tmpPlayer);
-                                    */
-                                    CustomToast(name, ActText);
-                                    //if 2 or 3 point made, show animation
-                                    if(actionCode == 2 || actionCode == 4){
-                                        // perform anim only in bktcourt be touched
-                                        if(touch_flg){
-                                            // add imageview for anim
-                                            mBallAnim  = imageViewFactory(mBallAnim, R.layout.ball_animation, R.id.ballanim);
-                                            animStart(v, mBall, mBallAnim, "mBallAnimLoc", lp.leftMargin, lp.topMargin);
-                                        }
-                                    }
-
-                                }else{
-                                    Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        // MOVING DOWN
-                        }else{
-                            float diff = currentY - lastTouchY;
-                            Boolean isValid = (diff > DISTANCE) ? true : false;
-                            if(isValid){
-                                // check made or miss, get the player's action
-                                isMissed(lastPos);
-                                if(actionCode != DEFAULT_ACTION){
-                                    actTime = strTime.getText().toString();
-                                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                    /*
-                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mActivity, actionCode, name, name, actTime, lp.leftMargin, lp.topMargin);
-                                    tmpPlayer.setSummary(tmpPlayer, 1);
-                                    TeamObj.addTimeLine(tmpPlayer);
-                                    */
-                                    CustomToast(name, ActText);
-                                    // if 2 or 3 point missed, show animation
-                                    if(actionCode == 3 || actionCode == 5){
-                                        // perform anim only in bktcourt be touched
-                                        if(touch_flg){
-                                            deleView(mRelative, R.id.ballIV);
-                                            //add x icon
-                                            missIcon = imageViewFactory(missIcon, R.layout.miss_icon, R.id.missIcon);
-                                            //set the location of ballAnim
-                                            RelativeLayout.LayoutParams missParam = new RelativeLayout.LayoutParams(WC, WC);
-                                            missParam.leftMargin = lp.leftMargin;
-                                            missParam.topMargin = lp.topMargin;
-                                            mRelative.addView(missIcon, missParam);
-                                            //after 0.5 sec, remove it
-                                            Handler removeH = new Handler();
-                                            removeH.postDelayed(new Runnable(){
-                                                public void run(){
-                                                    mRelative.removeView(missIcon);
-                                                }
-                                            }, 500);
-                                        }
-                                    }
-                                }else{
-                                    Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-                    deleView(mRelative, R.id.ballIV);
-                    reset(mRelative, ChildView, curView, mBall);
-                    break;
-                default:
-                    deleView(mRelative, R.id.ballIV);
-                    reset(mRelative, ChildView, curView, mBall);
-            }
-        }
-    }
+    
     /**
      * reset flag & params when finger ACTION_UP
      * */
@@ -834,7 +677,7 @@ public class RecordBoardPage {
      * */
     private void CustomToast(String str, String value) {
         final Toast toast = Toast.makeText(mActivity, str + value, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0, MultiDevInit.bktCourtH);
+        //toast.setGravity(Gravity.TOP, 0, MultiDevInit.bktCourtH);
         toast.show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -847,7 +690,7 @@ public class RecordBoardPage {
      * */
     private void CustomToast(String str) {
         final Toast toast = Toast.makeText(mActivity, str, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0, MultiDevInit.bktCourtH);
+        //toast.setGravity(Gravity.TOP, 0, MultiDevInit.bktCourtH);
         toast.show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -967,6 +810,7 @@ public class RecordBoardPage {
     /**
      * show the player summary dailog
      * */
+    /*
     public void playerSummary(View v){
         //get the touched gridview's item
         for(int i=0; i<TeamObj.gridViewID.length; i++){
@@ -1012,6 +856,7 @@ public class RecordBoardPage {
         playAnalysis(v, (ViewGroup)rootView, mNum);
 
     }
+    */
     /**
      * show the imageview(ball icon) in xy position
      * */

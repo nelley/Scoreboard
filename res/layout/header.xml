@@ -9,6 +9,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingLeft="10dp"
             android:textSize="18sp"
             android:text="Time">
         </TextView >
@@ -26,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingLeft="10dp"
             android:textSize="18sp"
             android:layout_toRightOf="@+id/time"
             android:text="Score">
@@ -45,38 +47,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:gravity="bottom|center"
-            android:background="@drawable/home"
-            android:padding="2dp"
-            android:text="undo"
-            android:textSize="12sp" />
-        <Button
-            android:id="@+id/change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/undo"
-            android:gravity="bottom|center"
-            android:background="@drawable/home"
-            android:padding="2dp"
-            android:text="change"
-            android:textSize="12sp"/>
-        <Button
-            android:id="@+id/change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/undo"
-            android:gravity="bottom|center"
-            android:background="@drawable/home"
-            android:padding="2dp"
-            android:text="change"
-            android:textSize="12sp"/>
+            android:background="@drawable/undo"/>
         <Button
             android:id="@+id/setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/change"
+            android:layout_toLeftOf="@+id/undo"
             android:gravity="bottom|center"
-            android:background="@drawable/home"
-            android:padding="2dp"
-            android:text="setting"
-            android:textSize="12sp"/>
+            android:background="@drawable/settings"/>
 </RelativeLayout>

@@ -10,7 +10,7 @@ public class ActionDef {
     //------------------------
     @SuppressWarnings("serial")
     public static final ArrayList<PlayerObj> defaultStarters = new ArrayList<PlayerObj>(){{
-        add(new PlayerObj("11", "Micheal Jordan", true, false, true));
+        add(new PlayerObj("23", "Micheal Jordan", true, false, true));
         add(new PlayerObj("22", "Larry Bird", true, false, true));
         add(new PlayerObj("33", "Hardaway", true, false, true));
         add(new PlayerObj("44", "Morning", true, false, true));
@@ -24,7 +24,7 @@ public class ActionDef {
     //------------------------
     @SuppressWarnings("serial")
     public static final ArrayList<PlayerObj> defaultTotalPlayer = new ArrayList<PlayerObj>(){{
-        add(new PlayerObj("11", "Micheal Jordan", true, false, true));
+        add(new PlayerObj("23", "Micheal Jordan", true, false, true));
         add(new PlayerObj("22", "Larry Bird", true, false, true));
         add(new PlayerObj("33", "Hardaway", true, false, true));
         add(new PlayerObj("44", "Morning", true, false, true));

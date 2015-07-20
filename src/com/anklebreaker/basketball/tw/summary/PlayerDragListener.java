@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.util.Utilities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,26 +35,28 @@ public class PlayerDragListener implements OnDragListener{
         switch (event.getAction()) {
         //signal for the start of a drag and drop operation.
             case DragEvent.ACTION_DRAG_STARTED:
+                Utilities.CustomToast(((Activity)mContext), "請拖曳到板凳區或背號上以進行更換");
                 break;
                 
                 //the drag point has entered the bounding box of the View
             case DragEvent.ACTION_DRAG_ENTERED:
-                //Toast.makeText(mContext, "ENTERED", Toast.LENGTH_LONG).show();
                 // have to handle different layout object(textview to tablerow)
-                v.setBackgroundColor(Color.YELLOW);    //change the shape of the view
+                //v.setBackgroundColor(Color.YELLOW);    //change the shape of the view
 
                 break;
                 
                 //the user has moved the drag shadow outside the bounding box of the View
             case DragEvent.ACTION_DRAG_EXITED:
-                //Toast.makeText(mContext, "EXITED", Toast.LENGTH_LONG).show();
-                v.setBackgroundColor(Color.BLUE);    //change the shape of the view back to normal
+                //v.setBackgroundColor(Color.BLUE);    //change the shape of the view back to normal
                 break;
                 
             //drag shadow has been released,the drag point is within the bounding box of the View
             case DragEvent.ACTION_DROP:
                 // retrieve the data from dragged item
                 String num = (String) event.getClipData().getItemAt(0).getText();
+                if(num.length() == 1){
+                    num = num + "號";
+                }
                 // retireve the dragged view
                 TextView draggedV = (TextView)event.getLocalState();
                 // retrieve the dragged player
@@ -68,6 +71,9 @@ public class PlayerDragListener implements OnDragListener{
                 // retrieve the data from dropped location
                 TextView destinationV = (TextView)v;
                 String droppedNum = (String) destinationV.getText();
+                if(droppedNum.length() == 1){
+                    droppedNum = droppedNum  + "號";
+                }
                 int drop = 0;
                 for(; drop< PlayerObj.playerMap.size(); drop++){
                     String pNum = PlayerObj.playerMap.get(drop).getPlayerNum();

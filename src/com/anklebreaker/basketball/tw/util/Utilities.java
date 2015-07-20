@@ -1,33 +1,16 @@
 package com.anklebreaker.basketball.tw.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import android.content.Context;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.telephony.TelephonyManager;
+import android.content.Context;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 public class Utilities {
 	
@@ -57,6 +40,7 @@ public class Utilities {
 		int scale = (int)(metrics.density);
 		return (metrics.widthPixels/scale);
 	}
+	
 	static public double getScreenDpiY(Context mcontext){
 		DisplayMetrics metrics = mcontext.getResources().getDisplayMetrics();
 		int scale = (int)(metrics.density);
@@ -75,6 +59,35 @@ public class Utilities {
 	
 		return str;
 	}
-
+	
+    /**
+     * toast show in 0.5 second method
+     * */
+    public static void CustomToast(Activity mActivity, String str, String value) {
+        final Toast toast = Toast.makeText(mActivity, str + value, Toast.LENGTH_SHORT);
+        // set the position
+        toast.setGravity(Gravity.TOP, 0, 80);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {toast.cancel();}
+        }, 500);
+    }
+    
+    /**
+     * toast show in 0.5 second method
+     * */
+    public static void CustomToast(Activity mActivity, String str) {
+        final Toast toast = Toast.makeText(mActivity, str, Toast.LENGTH_SHORT);
+        // set the position
+        toast.setGravity(Gravity.TOP, 0, 80);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {toast.cancel();}
+        }, 500);
+    }
 
 }

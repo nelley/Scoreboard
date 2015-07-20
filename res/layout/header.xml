@@ -39,7 +39,26 @@
             android:layout_gravity="center"
             android:textSize="36sp"
             android:layout_toRightOf="@+id/scoreTitle"
-            android:text="00:00">
+            android:text="0:0">
+        </TextView >
+        <TextView 
+            android:id="@+id/foulTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:textSize="18sp"
+            android:layout_toRightOf="@+id/score"
+            android:text="Foul">
+        </TextView >
+        <TextView 
+            android:id="@+id/foul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="36sp"
+            android:layout_toRightOf="@+id/foulTitle"
+            android:text="0">
         </TextView >
         <Button
             android:id="@+id/undo"

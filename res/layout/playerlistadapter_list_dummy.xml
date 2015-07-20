@@ -3,39 +3,13 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:rowOrderPreserved="true"
+    android:background="@color/dummy_color"
     android:gravity="left">
-    <TextView
-        android:id="@+id/coach"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="coach"
-        android:background="@drawable/icon">
-    </TextView>
-    <TextView
-        android:id="@+id/manager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/coach"
-        android:padding="5dp"
-        android:text="manager"
-        android:background="@drawable/home">
-    </TextView>
-    <TextView
-        android:id="@+id/gatorade"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/manager"
-        android:padding="5dp"
-        android:text="gatorade"
-        android:background="@drawable/icon">
-    </TextView>
     <TextView
         android:id="@+id/dummytext"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_toRightOf="@+id/gatorade"
-        android:gravity="center"
-        android:text="CLICK TO SHOW BENCH PLAYER"
+        android:gravity="center|top"
+        android:singleLine="false"
         android:textColor="#000000" />
 </RelativeLayout>

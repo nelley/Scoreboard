@@ -1,20 +1,23 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
+
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
 
 /**
  * adapter for showing players in the main listview
@@ -110,9 +113,10 @@ public class PlayerListAdapter extends BaseAdapter{
             case TYPE_EXPAND:
                 convertView = this.mInflater.inflate(R.layout.playerlistadapter_list_dummy, parent, false);
                 holder.dummytext = (TextView) convertView.findViewById(R.id.dummytext);
-                holder.bcoach = (TextView) convertView.findViewById(R.id.coach);
-                holder.bmanager = (TextView) convertView.findViewById(R.id.manager);
-                holder.bgatorade = (TextView) convertView.findViewById(R.id.gatorade);
+                //holder.dots = (TextView) convertView.findViewById(R.id.dots);
+                //holder.bcoach = (TextView) convertView.findViewById(R.id.coach);
+                //holder.bmanager = (TextView) convertView.findViewById(R.id.manager);
+                //holder.bgatorade = (TextView) convertView.findViewById(R.id.gatorade);
                 
                 break;
             }
@@ -123,7 +127,7 @@ public class PlayerListAdapter extends BaseAdapter{
         }
 
         //---------------------------------------------------
-        //------------- set the data to listview-------------
+        //------------- set the data & layout params to listview-------------
         //---------------------------------------------------
         switch (type) {
             case TYPE_STARTER:
@@ -173,13 +177,18 @@ public class PlayerListAdapter extends BaseAdapter{
             case TYPE_EXPAND:
                 // update the data
                 if(!isExpand){
-                    // hide the bench players when expanding 
-                    holder.bcoach.setVisibility(View.GONE);
-                    holder.bmanager.setVisibility(View.GONE);
-                    holder.bgatorade.setVisibility(View.GONE);
+                    // change the 
+                    holder.dummytext.setText("點擊切換成板凳區以更換球員");
+                    RelativeLayout.LayoutParams dummyLay = (LayoutParams) holder.dummytext.getLayoutParams();
+                    dummyLay.setMargins(10, 10, 10, 10);
+                    dummyLay.height = MultiDevInit.headerH;
+
                 }else{
+                    holder.dummytext.setText("點擊查看球員表現");
+                    RelativeLayout.LayoutParams dummyLay = (LayoutParams) holder.dummytext.getLayoutParams();
+                    dummyLay.setMargins(10, 10, 10, 10);
                     // show the bench players when folding
-                    int lastId = holder.bmanager.getId();
+                    int lastId = 0;// = holder.bmanager.getId();
                     // control the bench player's location dynamically
                     int cnt = 0;
                     /*include dummy row*/
@@ -190,20 +199,24 @@ public class PlayerListAdapter extends BaseAdapter{
                             final TextView iv = new TextView(activity);
                             iv.setId( BASE_ID + i);
                             RelativeLayout.LayoutParams lay = 
-                                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
-                                                                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                    new RelativeLayout.LayoutParams(MultiDevInit.headerH, 
+                                            MultiDevInit.headerH);
                             if(cnt == 0){
                                 // first bench player located in benchstart's right side
-                                lay.addRule(RelativeLayout.RIGHT_OF, R.id.manager);	
+                                //lay.addRule(RelativeLayout.RIGHT_OF, R.id.manager);	
                             }else{
                                 // others located in the new added player's right side 
                                 lay.addRule(RelativeLayout.RIGHT_OF, lastId);
                             }
+                            lay.setMargins(20, 10, 0, 10);
                             lay.addRule(RelativeLayout.CENTER_VERTICAL);
                             iv.setLayoutParams(lay);
                             // change icon's image here
-                            iv.setBackgroundResource(R.drawable.home);
-                            iv.setText(p.getPlayerNum());
+                            iv.setBackgroundResource(R.drawable.benchplayer);
+                            iv.setText(Character.toString(p.getPlayerNum().charAt(0)));
+                            iv.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+                            iv.setTextColor(Color.WHITE);
+
                             
                             // preprocess of the drag & drop in bench players
                             iv.setOnLongClickListener(new DragNDropTouchListener(activity, iv));
@@ -218,10 +231,11 @@ public class PlayerListAdapter extends BaseAdapter{
                     }
                     
                     // in order to set the player in the rightmost, get the item's params object
-                    RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) holder.bgatorade.getLayoutParams();
-                    params.addRule(RelativeLayout.RIGHT_OF, lastId);
+                    //RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) holder.bgatorade.getLayoutParams();
+                    //params.addRule(RelativeLayout.RIGHT_OF, lastId);
                     
                     // set coach's desicion
+                    /*
                     holder.bcoach.setOnClickListener(new OnClickListener(){
                         @Override
                         public void onClick(View v) {
@@ -241,11 +255,9 @@ public class PlayerListAdapter extends BaseAdapter{
                         public void onClick(View v) {
                             Toast.makeText(activity, "gatorade!", Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    });*/
                     
                 }
-                
-                // update the layout
                 break;
         }
         
@@ -269,7 +281,7 @@ public class PlayerListAdapter extends BaseAdapter{
                  point;
         
         // for expand
-        TextView dummytext, bcoach,bmanager, bgatorade;;
+        TextView dummytext, dots;//, bcoach,bmanager, bgatorade;
     }
 
     /**

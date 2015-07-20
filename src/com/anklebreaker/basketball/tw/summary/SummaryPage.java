@@ -44,6 +44,7 @@ import com.anklebreaker.basketball.tw.recordboard.GameTimer;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
+import com.anklebreaker.basketball.tw.util.Utilities;
 
 public class SummaryPage {
 
@@ -94,10 +95,10 @@ public class SummaryPage {
     // new add
     final GridView[] pPanel = new GridView[5];
 
-    ImageView bktCourt, benchBtn, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
+    ImageView bktCourt, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
     Button undo;
     private String actTime;
-    private TextView strTime, strTimeTitle, strScore, strScoreTitle;
+    private TextView strTime, strScore, strFoul;
     final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
     private float midX, midY, disX, disY;
     //for animation
@@ -123,6 +124,7 @@ public class SummaryPage {
         final View mixedView = inflater.inflate(R.layout.summary_layout, null);
         strScore = (TextView) mixedView.findViewById(R.id.score);
         strTime = (TextView)mixedView.findViewById(R.id.time);
+        strFoul = (TextView)mixedView.findViewById(R.id.foul);
         mListView = (ListView) mixedView.findViewById(R.id.player_list);
         
         // set the timer
@@ -217,14 +219,14 @@ public class SummaryPage {
                 if(position == EXPAND_BANNER){
                     if(IS_EXPAND){
                         // fold the listview
-                        Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mActivity, "expand!!", Toast.LENGTH_SHORT).show();
                         IS_EXPAND = false;
                         select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
                         mListView.setAdapter(select_list_adapter);
                         select_list_adapter.notifyDataSetChanged();
                     }else{
                         // expand the listview
-                        Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mActivity, "fold!!", Toast.LENGTH_SHORT).show();
                         IS_EXPAND = true;
                         select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
                         mListView.setAdapter(select_list_adapter);
@@ -348,6 +350,9 @@ public class SummaryPage {
                     // animation
                     v.startAnimation(animRotate);
                     undo(v);
+                }else{
+                    // toast
+                    
                 }
             }
         });
@@ -375,6 +380,9 @@ public class SummaryPage {
                 break;
             case ActionDef.ACT_FTMA:
                 leftUndo = -1;
+            case ActionDef.ACT_FOUL:
+                // decrement foul counter in header.xml
+                updateFoul(mPlayerObj, -1);
             default:
                 break;
             }
@@ -384,7 +392,7 @@ public class SummaryPage {
             setScore(leftUndo, rightUndo);
             // update UI view
             updateSingleRow(mPlayerObj);
-            CustomToast(mPlayerObj.playerName, actionToText(mPlayerObj.playerAct));
+            Utilities.CustomToast(mActivity, mPlayerObj.playerName, actionToText(mPlayerObj.playerAct));
         }
     }
     
@@ -495,9 +503,9 @@ public class SummaryPage {
                     lastPos = pos;
                     lastTouchY = event.getY();
 
-                    // if rebound, 2p, 3p, free three, player, to_n_foul is clicked
+                    // if rebound, 2p, 3p, free three, player, TO_n_foul is clicked
                     if(pos < 6){
-                        //initialize the img by touched position
+                        //init the img by touched position
                         imageSetter(pos);
                         wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                         // レイアウトファイルから重ね合わせするViewを作成する
@@ -510,113 +518,104 @@ public class SummaryPage {
                         wm.addView(floatView, params);
                     }
                     break;
+                    
                 //--------finger moved--------//
                 case MotionEvent.ACTION_MOVE://2
                     currentY = event.getY();
-                    //identified moving direction
+                    // identified moving direction
                     if(currentY < lastTouchY){
-                        //UP
+                        // UP
                         if(movingCheck(currentY)){
                             mFloat.setImageResource(imageSet[1]);
                         }
                     }else{
-                        //DOWN
+                        // DOWN
                         if(movingCheck(currentY)){
                             mFloat.setImageResource(imageSet[2]);
                         }
                     }
                     break;
-                    //--------leave the screen--------//
+                    
+                //--------leave the screen--------//
                 case MotionEvent.ACTION_UP://1
-                    //get the player's number
+                    // get the player's number
                     currentY = event.getY();
-                    //if touched icon is block/steal/assist
+                    actTime = strTime.getText().toString();
+                    // if touched icon is block/steal/assist
                     if(lastPos > 5){
+                        // update score & actionCode
                         isMade(lastPos);
-                        if(actionCode != DEFAULT_ACTION){
-                            //actTime = strTime.getText().toString();
-                            PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null,null, 
-                                                                        msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
-                                                                        true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
-                            tmpPlayer.setSummary(tmpPlayer, 1);
-                            updateSingleRow(tmpPlayer);
-                            TeamObj.addTimeLine(tmpPlayer);
-                            CustomToast(tmpPlayer.playerName, ActText);
-                        }else{
-                            Toast.makeText(mActivity, "ERROR ACTINO UP", Toast.LENGTH_SHORT).show();
-                        }
-                    //if touched icon are others
+                        PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null,null, 
+                                                                    msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
+                                                                    true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                        tmpPlayer.setSummary(tmpPlayer, 1);
+                        updateSingleRow(tmpPlayer);
+                        TeamObj.addTimeLine(tmpPlayer);
+                        Utilities.CustomToast(mActivity, tmpPlayer.playerName, ActText);
+
+                    // if touched icon are others
                     }else{
-                        //identified moving direction(MOVING UP)
+                        // identified moving direction(MOVING UP)
                         if(currentY < lastTouchY){
                             if(movingCheck(currentY)){
-                                //check made or miss, get the player's action
+                                // update score & actionCode
                                 isMade(lastPos);
-                                if(actionCode != DEFAULT_ACTION){
-                                    //actTime = strTime.getText().toString();
-                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
-                                                                                msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
-                                                                                true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
-                                    tmpPlayer.setSummary(tmpPlayer, 1);
-                                    updateSingleRow(tmpPlayer);
-                                    TeamObj.addTimeLine(tmpPlayer);
-                                    CustomToast(tmpPlayer.playerName, ActText);
-                                    //if 2 or 3 point made, show animation
-                                    /*
-                                    if(actionCode == 2 || actionCode == 4){
-                                        // perform anim only in bktcourt be touched
-                                        if(touch_flg){
-                                            // add imageview for anim
-                                            mBallAnim  = imageViewFactory(mBallAnim, R.layout.ball_animation, R.id.ballanim);
-                                            animStart(v, mBall, mBallAnim, "mBallAnimLoc", lp.leftMargin, lp.topMargin);
-                                        }
-                                    }*/
+                                PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
+                                                                            msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
+                                                                            true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                                tmpPlayer.setSummary(tmpPlayer, 1);
+                                updateSingleRow(tmpPlayer);
+                                TeamObj.addTimeLine(tmpPlayer);
+                                Utilities. CustomToast(mActivity, tmpPlayer.playerName, ActText);
+                                //if 2 or 3 point made, show animation
+                                /*
+                                if(actionCode == 2 || actionCode == 4){
+                                    // perform anim only in bktcourt be touched
+                                    if(touch_flg){
+                                        // add imageview for anim
+                                        mBallAnim  = imageViewFactory(mBallAnim, R.layout.ball_animation, R.id.ballanim);
+                                        animStart(v, mBall, mBallAnim, "mBallAnimLoc", lp.leftMargin, lp.topMargin);
+                                    }
+                                }*/
 
-                                }else{
-                                    Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
-                                }
                             }
                         // MOVING DOWN
                         }else{
                             if(movingCheck(currentY)){
-                                // check made or miss, get the player's action
+                                // update scroe & actionCode
                                 isMissed(lastPos);
-                                if(actionCode != DEFAULT_ACTION){
-                                    //actTime = strTime.getText().toString();
-                                    PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
-                                                                                msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
-                                                                                true, false, true, actTime, DEFAULT_X, DEFAULT_Y);
-                                    tmpPlayer.setSummary(tmpPlayer, 1);
-                                    updateSingleRow(tmpPlayer);
-                                    TeamObj.addTimeLine(tmpPlayer);
-                                    CustomToast(tmpPlayer.playerName, ActText);
-                                    // if 2 or 3 point missed, show animation
-                                    /*
-                                    if(actionCode == 3 || actionCode == 5){
-                                        // perform anim only in bktcourt be touched
-                                        if(touch_flg){
-                                            deleView(mRelative, R.id.ballIV);
-                                            //add x icon
-                                            missIcon = imageViewFactory(missIcon, R.layout.miss_icon, R.id.missIcon);
-                                            //set the location of ballAnim
-                                            RelativeLayout.LayoutParams missParam = new RelativeLayout.LayoutParams(WC, WC);
-                                            missParam.leftMargin = lp.leftMargin;
-                                            missParam.topMargin = lp.topMargin;
-                                            mRelative.addView(missIcon, missParam);
-                                            //after 0.5 sec, remove it
-                                            Handler removeH = new Handler();
-                                            removeH.postDelayed(new Runnable(){
-                                                public void run(){
-                                                    mRelative.removeView(missIcon);
-                                                }
-                                            }, 500);
-                                        }
-
+                                PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
+                                                                            msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
+                                                                            true, false, true, actTime, DEFAULT_X, DEFAULT_Y);
+                                tmpPlayer.setSummary(tmpPlayer, 1);
+                                updateSingleRow(tmpPlayer);
+                                updateFoul(tmpPlayer, 1);
+                                TeamObj.addTimeLine(tmpPlayer);
+                                Utilities.CustomToast(mActivity, tmpPlayer.playerName, ActText);
+                                // if 2 or 3 point missed, show animation
+                                /*
+                                if(actionCode == 3 || actionCode == 5){
+                                    // perform anim only in bktcourt be touched
+                                    if(touch_flg){
+                                        deleView(mRelative, R.id.ballIV);
+                                        //add x icon
+                                        missIcon = imageViewFactory(missIcon, R.layout.miss_icon, R.id.missIcon);
+                                        //set the location of ballAnim
+                                        RelativeLayout.LayoutParams missParam = new RelativeLayout.LayoutParams(WC, WC);
+                                        missParam.leftMargin = lp.leftMargin;
+                                        missParam.topMargin = lp.topMargin;
+                                        mRelative.addView(missIcon, missParam);
+                                        //after 0.5 sec, remove it
+                                        Handler removeH = new Handler();
+                                        removeH.postDelayed(new Runnable(){
+                                            public void run(){
+                                                mRelative.removeView(missIcon);
+                                            }
+                                        }, 500);
                                     }
-                                    */
-                                }else{
-                                    Toast.makeText(mActivity, "player touched", Toast.LENGTH_SHORT).show();
+
                                 }
+                                */
                             }
                         }
                     }
@@ -628,6 +627,17 @@ public class SummaryPage {
         }
     }
 
+    /**
+     * refresh foul textview in header.xml
+     * */
+    private void updateFoul(PlayerObj tPlayer, int cnt){
+        if(tPlayer.playerAct == ActionDef.ACT_FOUL){
+            int tmpFoul = Integer.valueOf(strFoul.getText().toString());
+            tmpFoul = tmpFoul + cnt;
+            strFoul.setText(String.valueOf(tmpFoul));
+        }
+    }
+    
     /**
      * refresh single row in player's listview
      * */
@@ -772,21 +782,6 @@ public class SummaryPage {
         if(isExist != -1){
             v.removeView(touchedView);
         }
-    }
-
-    /**
-     * toast show in 0.5 second method
-     * */
-    private void CustomToast(String str, String value) {
-        final Toast toast = Toast.makeText(mActivity, str + value, Toast.LENGTH_SHORT);
-        // set the position
-        toast.setGravity(Gravity.TOP, 0, 80);
-        toast.show();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {toast.cancel();}
-        }, 500);
     }
 
     /**

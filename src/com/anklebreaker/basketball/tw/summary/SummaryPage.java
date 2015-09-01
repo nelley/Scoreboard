@@ -96,7 +96,7 @@ public class SummaryPage {
     final GridView[] pPanel = new GridView[5];
 
     ImageView bktCourt, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
-    Button undo;
+    Button undo, settingBnt;
     private String actTime;
     private TextView strTime, strScore, strFoul;
     final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
@@ -259,8 +259,11 @@ public class SummaryPage {
         // init when opening the app
         def_list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
         mListView.setAdapter(def_list_adapter);
-        //init undo button
+        // init undo button
         initUndo(mixedView);
+        
+        // init setting button
+        initSettingBtn(mixedView);
         
         // set the header.xml layout param
         LinearLayout headerLayout = (LinearLayout) mixedView.findViewById(R.id.header);
@@ -269,17 +272,12 @@ public class SummaryPage {
                         LinearLayout.LayoutParams.MATCH_PARENT, MultiDevInit.headerH));
         
         // set setting and undo icon
-        Button undoBut = (Button)mixedView.findViewById(R.id.undo);
-        Button settingBut = (Button)mixedView.findViewById(R.id.setting);
+        //Button undoBut = (Button)mixedView.findViewById(R.id.undo);
+        //Button settingBut = (Button)mixedView.findViewById(R.id.setting);
         
-        // set to square shape
-        LayoutParams undoP = (LayoutParams) undoBut.getLayoutParams();
-        undoP.setMargins(10, 10, 10, 10);
-        undoP.width = MultiDevInit.recordRowH;
-
-        LayoutParams settingP = (LayoutParams) settingBut.getLayoutParams();
-        settingP.setMargins(10, 10, 10, 10);
-        settingP.width = MultiDevInit.recordRowH;
+        
+        
+        
         
         Log.i(TAG, "createSummaryPage E");
         return mixedView;
@@ -343,6 +341,11 @@ public class SummaryPage {
     private void initUndo(View v) {
         final Animation animRotate = AnimationUtils.loadAnimation(mActivity, R.anim.anim_rotate);
         undo = (Button) v.findViewById(R.id.undo);
+        // set to square shape
+        LayoutParams undoP = (LayoutParams) undo.getLayoutParams();
+        undoP.setMargins(10, 10, 10, 10);
+        undoP.width = MultiDevInit.recordRowH;
+
         undo.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -354,6 +357,26 @@ public class SummaryPage {
                     // toast
                     
                 }
+            }
+        });
+    }
+    
+    /**
+     * init setting button
+     * */
+    private void initSettingBtn(View v){
+        final Animation settingAnimRotate = AnimationUtils.loadAnimation(mActivity, R.anim.anim_rotate);
+        settingBnt = (Button)v.findViewById(R.id.setting);
+        // set to square shape
+        LayoutParams settingP = (LayoutParams) settingBnt.getLayoutParams();
+        settingP.setMargins(10, 10, 10, 10);
+        settingP.width = MultiDevInit.recordRowH;
+        
+        settingBnt.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(settingAnimRotate);
+                
             }
         });
     }

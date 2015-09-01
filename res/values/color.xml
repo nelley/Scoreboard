@@ -3,4 +3,5 @@
    <color name="opaque_red">#f00</color>
    <color name="translucent_red">#80ff0000</color>
    <color name="dummy_color">#E0E0E0</color>
+   <color name="gray">#808080</color>
 </resources>

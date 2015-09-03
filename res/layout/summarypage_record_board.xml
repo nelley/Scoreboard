@@ -2,18 +2,83 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:rowOrderPreserved="true"
     android:gravity="center">
+    <LinearLayout
+        android:id="@+id/btnsleft"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <ImageView
-            android:contentDescription="@string/bktCourt"
-            android:id="@+id/bktCourt"
-            android:background="#ff00ff00"
-            android:layout_width="fill_parent"
+            android:id="@+id/two"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerInside"
-            android:gravity="center"
-            android:src="@drawable/court">
-        </ImageView>
+            android:src="@drawable/two"/>
+        <ImageView
+            android:id="@+id/free"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/free"/>
+        <ImageView
+            android:id="@+id/block"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/block"/>
+        <ImageView
+            android:id="@+id/fail"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fail"/>
+    </LinearLayout>
+    <ImageView
+        android:contentDescription="@string/bktCourt"
+        android:id="@+id/bktCourt"
+        android:layout_toRightOf="@id/btnsleft"
+        android:background="#ff00ff00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:src="@drawable/court">
+    </ImageView>
+    <LinearLayout
+        android:id="@+id/btnsright"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_toRightOf="@id/bktCourt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/three"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/three"/>
+        <ImageView
+            android:id="@+id/rebound"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/r"/>
+        <ImageView
+            android:id="@+id/assist"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/a"/>
+        <ImageView
+            android:id="@+id/steal"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/steal"/>
+    </LinearLayout>
+    
+    
+    <!--  
         <GridView
            android:id="@+id/setplayer"
            android:layout_width="wrap_content"
@@ -24,4 +89,6 @@
            android:listSelector="@android:color/transparent"
            android:gravity="center">
         </GridView>
+        -->
+        
 </RelativeLayout>

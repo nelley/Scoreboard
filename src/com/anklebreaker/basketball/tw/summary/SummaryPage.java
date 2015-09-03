@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -77,10 +78,14 @@ public class SummaryPage {
     Integer[] to_n_foul = {R.drawable.fail_press, R.drawable.fail_up,R.drawable.fail_down};
 
     //using in onTouchListener
+    private float lastTouchX;
     private float lastTouchY;
+    private float currentX;
     private float currentY;
+    private int xInterval;
+    private int yInterval;
     int lastPos = -1;
-
+    
     private int actionCode = 999;
     private String ActText = "720度轉身扣籃";
 
@@ -210,7 +215,7 @@ public class SummaryPage {
             }
         });
         
-        // sest the listview
+        // set the listview
         mListView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -243,7 +248,7 @@ public class SummaryPage {
                             PixelFormat.TRANSLUCENT);
                     
                     // get alertDialog's title
-                    PlayerObj selectPlayer = PlayerObj.playerMap.get(position);//TeamObj.totalPlayerList.get(position);
+                    PlayerObj selectPlayer = PlayerObj.playerMap.get(position);
                     // create alertDialog to show the 9*9 panel
                     customDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
                     
@@ -286,7 +291,9 @@ public class SummaryPage {
     /**
      * initialize engine of record board
      * */
-    public void customDialogInit(final PlayerObj sPlayer, int layoutId, final View mixedV, final WindowManager.LayoutParams xParams){
+    public void customDialogInit(final PlayerObj sPlayer, int layoutId, final View mixedV, 
+            final WindowManager.LayoutParams xParams){
+
         TextView title = new TextView(mActivity);
         title.setText(sPlayer.getPlayerNum());
         title.setBackgroundColor(Color.DKGRAY);
@@ -296,43 +303,154 @@ public class SummaryPage {
         title.setTextSize(20);
 
         final View rootView = LayoutInflater.from(mActivity).inflate(layoutId, null);
-        final GridView rb = (GridView) rootView.findViewById(R.id.setplayer);
-        //rb.getLayoutParams().height = MultiDevInit.bktCourtH;
-        //rb.getLayoutParams().width = MultiDevInit.bktCourtW;
-        rb.setVerticalSpacing(10);
-        rb.setAdapter(TeamObj.RecordGVAdapter);
-
-        //-------------------------------
-        //        record engine
-        //-------------------------------
-        rb.setOnTouchListener(new OnTouchListener(){
-            public boolean onTouch(View v, MotionEvent event) {
-                // update player's record
-                doRecord(mixedV, event, rb, xParams, sPlayer);
-                return false;
+        ImageView twoBtn = (ImageView)rootView.findViewById(R.id.two);
+        ImageView freeBtn = (ImageView)rootView.findViewById(R.id.free);
+        ImageView blockBtn = (ImageView)rootView.findViewById(R.id.block);
+        ImageView failBtn = (ImageView)rootView.findViewById(R.id.fail);
+        
+        ImageView threeBtn = (ImageView)rootView.findViewById(R.id.three);
+        ImageView reboundBtn = (ImageView)rootView.findViewById(R.id.rebound);
+        ImageView assistBtn = (ImageView)rootView.findViewById(R.id.assist);
+        ImageView stealBtn = (ImageView)rootView.findViewById(R.id.steal);
+        
+        bktCourt = (ImageView) rootView.findViewById(R.id.bktCourt);
+        //bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
+        //bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
+        
+        // get the bktCourt's position relative to its parent 
+        bktCourt.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                xInterval = bktCourt.getLeft();
+                yInterval = bktCourt.getTop();
             }
         });
+        
+        
+        mBall = imageViewFactory(mBall, R.layout.ball, R.id.ballIV);
+        
+        
+        bktCourt.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                final ViewGroup mRelativeBkt = (ViewGroup) v.getParent();
+                ImageView AddedView = (ImageView) mRelativeBkt.findViewById(R.id.ballIV);
+                int isExist = mRelativeBkt.indexOfChild(AddedView);
+                if(isExist != -1){
+                    mRelativeBkt.removeView(AddedView);
+                }
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(WC, WC);
+                
+                
+                // event.getX is get the x position from bktCourt
+                params.leftMargin = (int) event.getX() + xInterval;
+                params.topMargin = (int) event.getY() + yInterval;
+                
+                mRelativeBkt.addView(mBall, params);
+                mRelativeBkt.bringToFront();
+                //view added flg
+                touch_flg = true;
+                
+                animFactory((event.getX()-8), (event.getY()-8));
+                return false;
+            }
+            /**
+             * set the destination and middle path of the animation
+             * */
+            private void animFactory(float tx, float ty) {
+                //diff xy
+                disX = ((100) - tx);
+                disY = (MultiDevInit.STATUS_BAR_H - ty);
+                //cal for middle diff
+                midX = (float) (disX * 0.5);
+                midY = (float) (disY * 1.2);
+                
+                if(midX > 0){//left side
+                    midX = midX - 100;
+                    midY = midY - 100;
+                }else{//right side
+                    midX = midX + 100;
+                    midY = midY + 100;
+                }
+            }
+        });
+        
+        // set the touch event
+        twoBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 1, xParams, sPlayer);
+                return true;
+            }
+        });
+        freeBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 3, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
+        blockBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 6, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
+        failBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 5, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
+        
+        threeBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 2, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
+        reboundBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 0, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
+        assistBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 8, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
+        stealBtn.setOnTouchListener(new OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                doRecord(mixedV, event, 7, xParams, sPlayer);
+                return true;
+            }
+        	
+        });
 
-        final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
+        final AlertDialog recDialogBuilder = new AlertDialog.Builder(mActivity)
         .setView(rootView)
         .setCustomTitle(title)
         .create();
-
-        defBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
+        
+        recDialogBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                Button b = defBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button b = recDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        defBuilder.dismiss();
+                        recDialogBuilder.dismiss();
                     }
                 });
             }
         });
 
-        defBuilder.show();
-        //defBuilder.getWindow().setLayout(400, 600);
+        recDialogBuilder.show();
+        //defBuilder.getWindow().setLayout(800, 600);
     }
 
     /**
@@ -514,22 +632,22 @@ public class SummaryPage {
     /**
      * record engine
      * */
-    public void doRecord(View v, MotionEvent event, GridView player, WindowManager.LayoutParams params, PlayerObj msPlayer){
-        //identified which image in gridview was touched
-        int pos = player.pointToPosition((int) event.getX(), (int) event.getY());
+    public void doRecord(View v, MotionEvent event, int touched, 
+            WindowManager.LayoutParams params, PlayerObj msPlayer){
 
         //no response to player item + ACTION_DOWN/ACTION_MOVE
-        if(!((event.getAction() == 0 || event.getAction() == 2) && pos == 4)){
+        if(!((event.getAction() == 0 || event.getAction() == 2) && touched == 4)){
             switch (event.getAction()){
                 //--------touch the screen--------//
                 case MotionEvent.ACTION_DOWN://0
-                    lastPos = pos;
+                    lastPos = touched;
+                    lastTouchX = event.getX();
                     lastTouchY = event.getY();
 
                     // if rebound, 2p, 3p, free three, player, TO_n_foul is clicked
-                    if(pos < 6){
+                    if(touched < 6){
                         //init the img by touched position
-                        imageSetter(pos);
+                        imageSetter(touched);
                         wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                         // レイアウトファイルから重ね合わせするViewを作成する
                         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -544,8 +662,23 @@ public class SummaryPage {
                     
                 //--------finger moved--------//
                 case MotionEvent.ACTION_MOVE://2
+                    currentX = event.getX();
                     currentY = event.getY();
-                    // identified moving direction
+                    // identified moving direction(RIGHT or LEFT)
+                    /*
+                    if(currentX < lastTouchX){
+                        // UP
+                        if(movingCheck_RF(currentX)){
+                            mFloat.setImageResource(imageSet[1]);
+                        }
+                    }else{
+                        // DOWN
+                        if(movingCheck_RF(currentX)){
+                            mFloat.setImageResource(imageSet[2]);
+                        }
+                    }
+                    */
+                    // identified moving direction(UP or DOWN)
                     if(currentY < lastTouchY){
                         // UP
                         if(movingCheck(currentY)){
@@ -583,6 +716,7 @@ public class SummaryPage {
                             if(movingCheck(currentY)){
                                 // update score & actionCode
                                 isMade(lastPos);
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
                                 PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
                                                                             true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
@@ -591,7 +725,7 @@ public class SummaryPage {
                                 TeamObj.addTimeLine(tmpPlayer);
                                 Utilities. CustomToast(mActivity, tmpPlayer.playerName, ActText);
                                 //if 2 or 3 point made, show animation
-                                /*
+                                
                                 if(actionCode == 2 || actionCode == 4){
                                     // perform anim only in bktcourt be touched
                                     if(touch_flg){
@@ -599,7 +733,7 @@ public class SummaryPage {
                                         mBallAnim  = imageViewFactory(mBallAnim, R.layout.ball_animation, R.id.ballanim);
                                         animStart(v, mBall, mBallAnim, "mBallAnimLoc", lp.leftMargin, lp.topMargin);
                                     }
-                                }*/
+                                }
 
                             }
                         // MOVING DOWN
@@ -920,6 +1054,31 @@ public class SummaryPage {
         // if moving down
         }else{
             float diff = cY - lastTouchY;
+            Boolean isValid = (diff > DISTANCE) ? true : false;
+            if(isValid && floatView != null){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+    
+    /**
+     * check the view has been added and move distance is far enough
+     * */
+    public boolean movingCheck_RF(float cX){
+        // if moveing up
+        if(cX < lastTouchX){
+            float diff = lastTouchX - cX;
+            Boolean isValid = (diff > DISTANCE) ? true : false;
+            if(isValid && floatView != null){
+                return true;
+            }else{
+                return false;
+            }
+        // if moving down
+        }else{
+            float diff = cX - lastTouchX;
             Boolean isValid = (diff > DISTANCE) ? true : false;
             if(isValid && floatView != null){
                 return true;

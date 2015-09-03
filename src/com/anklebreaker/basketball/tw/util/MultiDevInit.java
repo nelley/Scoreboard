@@ -54,6 +54,10 @@ public class MultiDevInit {
     //dot radius
     public static float mRadius = 0;
     
+    //bktCourt
+    public static int bktCourtH = 0;
+    public static int bktCourtW = 0;
+    
     /**
      * Constructor
      * */

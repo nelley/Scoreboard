@@ -30,13 +30,15 @@ public class TeamObj {
     static final int CT_PANEL = 9;
     static final int CT_PANEL_STARTER = 5;
     static final int CT_PANEL_BENCH = 7;
+    
+    static final String DUMMY_PLAYER = "DUMMY_PLAYER";
+    static final String NUM_DUMMY_PLAYER = "999";
+    
     private Context mContext = null;
     //undo stack
-    public static Stack<PlayerObj> undoStack = new Stack<PlayerObj>();
+    public static Stack<Player> undoStack = new Stack<Player>();
     //3*3 record board
     public static ArrayList<RecordBoardBtn> gridArray = new ArrayList<RecordBoardBtn>();
-    //adapters:0~4 is GridViewAdapter, 5 is benchGridAdapter
-    public static RecordGridViewAdapter RecordGVAdapter = null;
 
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
@@ -91,9 +93,6 @@ public class TeamObj {
         for(int k=0; k< CT_PANEL; k++){
             gridArray.add(new RecordBoardBtn(BitmapArray[k], textArray[k]));
         }
-
-        RecordGVAdapter = new RecordGridViewAdapter(mContext, R.layout.row_grid, gridArray);
-
     }
 
     /**
@@ -134,11 +133,11 @@ public class TeamObj {
             results = "先發球員不得超過五位";
             PlayerObj.playerMap.clear();
         }else{
-            //-----------------------------
+            //-----------------------------X
             //update info to bench/starter players
             //-----------------------------
             // add expand banner
-            PlayerObj.playerMap.add(new PlayerObj("999", "DUMMY_PLAYER", false, false, false));
+            PlayerObj.playerMap.add(new PlayerObj(NUM_DUMMY_PLAYER, DUMMY_PLAYER, false, false, false));
             // sort by isStarter flag & isBench(Starters + DUMMY_PLAYER + Benches)
             Collections.sort(PlayerObj.playerMap, new StarterComparator());
             // set starters into listview(init)
@@ -175,9 +174,9 @@ public class TeamObj {
         return results;
     }
     /**
-     *
+     * 
      * */
-    static public void addTimeLine(PlayerObj tmpObj) {
+    static public void addTimeLine(Player tmpObj) {
         //update undolist by clone obj
         try {
             undoStack.push(tmpObj.clone());

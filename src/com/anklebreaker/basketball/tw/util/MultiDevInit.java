@@ -78,6 +78,9 @@ public class MultiDevInit {
         // for 16 record columns
         cellW = xPIXEL/16;
         
+        bktCourtH = yPIXEL/3;
+        bktCourtW = xPIXEL/3;
+        
         int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             STATUS_BAR_H = mContext.getResources().getDimensionPixelSize(resourceId);

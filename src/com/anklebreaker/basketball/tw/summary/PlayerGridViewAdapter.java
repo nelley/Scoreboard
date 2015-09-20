@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.R.drawable;
+import com.anklebreaker.basketball.tw.recordboard.Player;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
 

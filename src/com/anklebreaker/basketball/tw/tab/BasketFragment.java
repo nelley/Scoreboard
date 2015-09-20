@@ -2,13 +2,11 @@ package com.anklebreaker.basketball.tw.tab;
 
 import java.util.ArrayList;
 import java.util.Map;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.PlayerGridViewAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;

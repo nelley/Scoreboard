@@ -58,20 +58,27 @@
             android:layout_gravity="center"
             android:textSize="36sp"
             android:layout_toRightOf="@+id/foulTitle"
-            android:text="0">
+            android:text="0:0">
         </TextView >
+        <Button
+            android:id="@+id/competitor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/undo"
+            android:gravity="bottom|center"
+            android:background="@drawable/undo"/>
         <Button
             android:id="@+id/undo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/setting"
             android:gravity="bottom|center"
             android:background="@drawable/undo"/>
         <Button
             android:id="@+id/setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/undo"
+            android:layout_alignParentRight="true"
             android:gravity="bottom|center"
             android:background="@drawable/settings"/>
 </RelativeLayout>

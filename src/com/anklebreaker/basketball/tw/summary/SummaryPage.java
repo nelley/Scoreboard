@@ -1,13 +1,16 @@
 package com.anklebreaker.basketball.tw.summary;
 
-import java.util.ArrayList;
-import android.app.Activity;
+import java.util.HashMap;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,13 +23,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.def.ActionDef;
 import com.anklebreaker.basketball.tw.engine.RecordEngine;
@@ -34,6 +40,7 @@ import com.anklebreaker.basketball.tw.recordboard.CompetitorObj;
 import com.anklebreaker.basketball.tw.recordboard.GameTimer;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
+import com.anklebreaker.basketball.tw.util.Custom_alert_Dialog;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 
 public class SummaryPage{
@@ -43,9 +50,11 @@ public class SummaryPage{
     final int EXPAND_BANNER = 5;
     final String NUM_NAME_COMPETITOR = "對手";
     final String COMPETITOR = "COMPETITOR_PLAYER";
-
+    final float CELL_TITLE_WIDTH_RATIO = 1.5f;
+    final float CELL_WIDTH_RATIO = 1.0f;
+    
     // control flag for expand banner
-    static public boolean IS_EXPAND = false;
+    public static boolean IS_EXPAND = false;
 
     //default definition of img
     Integer[] imageSet = {R.drawable.basketicon, R.drawable.basketicon,R.drawable.basketicon};
@@ -57,22 +66,27 @@ public class SummaryPage{
     Integer[] to_n_foul = {R.drawable.fail_press, R.drawable.fail_up,R.drawable.fail_down};
 
     Context mContext = null;
-    Activity mActivity = null;
+    FragmentActivity mActivity = null;
     
-    public static PlayerListAdapter select_list_adapter = null;
+    //public static PlayerListAdapter select_list_adapter = null;
     private ListView mListView;
     private PlayerListAdapter def_list_adapter = null;
-    ArrayList<PlayerObj> playerList = new ArrayList<PlayerObj>();
+    //private ArrayList<PlayerObj> playerList = new ArrayList<PlayerObj>();
+    private static HashMap<String, AlertDialog> dialogMap = new HashMap<String, AlertDialog>();
     
     ImageView bktCourt, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
     Button undo, settingBnt, competitor;
-    private TextView strTime, strTimeTitle, strScore, strFoul;
+    private static TextView strTime, strTimeTitle, strScore, strFoul;
+
     final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
 
+    ViewPager mViewPager;
+    FragmentPagerAdapter mFragmentPagerAdapter;
+    
     /**
      * constructor
      * */
-    public SummaryPage(Context c, Activity a){
+    public SummaryPage(Context c, FragmentActivity a){
         mActivity = a;
         mContext = c;
     }
@@ -184,15 +198,15 @@ public class SummaryPage{
                     if(IS_EXPAND){
                         // fold the listview
                         IS_EXPAND = false;
-                        select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-                        mListView.setAdapter(select_list_adapter);
-                        select_list_adapter.notifyDataSetChanged();
+                        TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+                        mListView.setAdapter(TeamObj.mPlayerListAdapter);
+                        TeamObj.mPlayerListAdapter.notifyDataSetChanged();
                     }else{
                         // expand the listview
                         IS_EXPAND = true;
-                        select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-                        mListView.setAdapter(select_list_adapter);
-                        select_list_adapter.notifyDataSetChanged();
+                        TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+                        mListView.setAdapter(TeamObj.mPlayerListAdapter);
+                        TeamObj.mPlayerListAdapter.notifyDataSetChanged();
                     }
 
                 }else{
@@ -218,9 +232,9 @@ public class SummaryPage{
 
         // init when opening the app
         if(PlayerObj.playerMap.size() != 0){
-            select_list_adapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-            mListView.setAdapter(select_list_adapter);
-            select_list_adapter.notifyDataSetChanged();
+            TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+            mListView.setAdapter(TeamObj.mPlayerListAdapter);
+            TeamObj.mPlayerListAdapter.notifyDataSetChanged();
         }else{
             def_list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
             mListView.setAdapter(def_list_adapter);	
@@ -241,10 +255,6 @@ public class SummaryPage{
         headerLayout.setLayoutParams(
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, MultiDevInit.headerH));
-        
-        // set setting and undo icon
-        //Button undoBut = (Button)mixedView.findViewById(R.id.undo);
-        //Button settingBut = (Button)mixedView.findViewById(R.id.setting);
         
         Log.i(TAG, "createSummaryPage E");
         return mixedView;
@@ -325,7 +335,72 @@ public class SummaryPage{
             @Override
             public void onClick(View v) {
                 v.startAnimation(settingAnimRotate);
+                View dialogView = customDialogInit_Setting("設定選單", R.layout.setting_main);
                 
+                // set layout param for score_table
+                TableLayout score_table = (TableLayout) dialogView.findViewById(R.id.score_table);
+                score_table.getLayoutParams().width = MultiDevInit.xPIXEL/2;
+                // set layout param for function buttons
+                ImageView game_summary = (ImageView) dialogView.findViewById(R.id.game_summary);
+                ImageView game_analysis = (ImageView) dialogView.findViewById(R.id.game_analysis);
+                ImageView restart = (ImageView) dialogView.findViewById(R.id.restart);
+                ImageView finish_upload = (ImageView) dialogView.findViewById(R.id.finish_upload);
+                
+                game_summary.getLayoutParams().width = MultiDevInit.yPIXEL/5;
+                game_analysis.getLayoutParams().width = MultiDevInit.yPIXEL/5;
+                restart.getLayoutParams().width = MultiDevInit.yPIXEL/5;
+                finish_upload.getLayoutParams().width = MultiDevInit.yPIXEL/5;
+                
+                // set current score
+                TextView myteam = (TextView)dialogView.findViewById(R.id.myteam);
+                TextView competitor = (TextView)dialogView.findViewById(R.id.competitor);
+                myteam.setText(((String)strScore.getText()).split(":")[0]);
+                competitor.setText(((String)strScore.getText()).split(":")[1]);
+                
+                // set name of each team
+                TextView myteam_title = (TextView)dialogView.findViewById(R.id.myteam_title);
+                TextView competitor_title = (TextView)dialogView.findViewById(R.id.competitor_title);
+                
+                myteam_title.setOnClickListener(new OnClickListener(){
+                    public void onClick(View v) {
+                        customDialogInit_teamname_change(v, "隊名設定", R.layout.modify_team_name, android.R.string.ok);
+                    }
+                });
+                
+                competitor_title.setOnClickListener(new OnClickListener(){
+                    public void onClick(View v) {
+                        customDialogInit_teamname_change(v, "隊名設定", R.layout.modify_team_name, android.R.string.ok);
+                    }
+                });
+                
+                
+                // set functions
+                game_summary.setOnClickListener(new OnClickListener(){
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "game_summary", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                
+                game_analysis.setOnClickListener(new OnClickListener(){
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "game_analysis", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                
+                restart.setOnClickListener(new OnClickListener(){
+                    public void onClick(View v) {
+                        Custom_alert_Dialog cdd= new Custom_alert_Dialog(mActivity, mListView);
+                        cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        cdd.show();
+                        
+                    }
+                });
+                
+                finish_upload.setOnClickListener(new OnClickListener(){
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "finish_upload", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -333,28 +408,51 @@ public class SummaryPage{
     
     
     /**
-     * init customized dialog
+     * init customized dialog without button
      * */
-    public void customDialogInit(String mTitle, int layoutId, int bntName) {
+    public View customDialogInit_Setting(String mTitle, int layoutId) {
         TextView title = new TextView(mActivity);
         title.setText(mTitle);
         title.setBackgroundColor(Color.DKGRAY);
-        title.setPadding(0, 0, 0, 0);
+        title.setPadding(10, 10, 10, 10);
         title.setGravity(Gravity.CENTER);
         title.setTextColor(Color.WHITE);
         title.setTextSize(20);
 
         final View rootView = LayoutInflater.from(mActivity).inflate(layoutId, null);
-        //ImageView bktCourt = (ImageView) rootView.findViewById(R.id.bktCourt);
-        //bktCourt.getLayoutParams().height = MultiDevInit.bktCourtH;
-        //bktCourt.getLayoutParams().width = MultiDevInit.bktCourtW;
+
+        final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
+        .setView(rootView)
+        .setCustomTitle(title)
+        .create();
+        defBuilder.show();
+        
+        // put dialog object to the map for managing
+        dialogMap.put("setting", defBuilder);
+        
+        return rootView;
+    }
+
+    /**
+     * init customized dialog with button
+     * */
+    public View customDialogInit(String mTitle, int layoutId, int bntName) {
+        TextView title = new TextView(mActivity);
+        title.setText(mTitle);
+        title.setBackgroundColor(Color.DKGRAY);
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
+
+        final View rootView = LayoutInflater.from(mActivity).inflate(layoutId, null);
 
         final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
         .setView(rootView)
         .setCustomTitle(title)
         .setPositiveButton(bntName, null) //Set to null. then override the onclick
         .create();
-
+        
         defBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -367,10 +465,51 @@ public class SummaryPage{
                 });
             }
         });
-
         defBuilder.show();
+        
+        return rootView;
     }
+    
+    /**
+     * init customized dialog with button
+     * */
+    public View customDialogInit_teamname_change(final View parentv, String mTitle, int layoutId, int bntName) {
+        TextView title = new TextView(mActivity);
+        title.setText(mTitle);
+        title.setBackgroundColor(Color.DKGRAY);
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
 
+        final View rootView = LayoutInflater.from(mActivity).inflate(layoutId, null);
+
+        final AlertDialog defBuilder = new AlertDialog.Builder(mActivity)
+        .setView(rootView)
+        .setCustomTitle(title)
+        .setPositiveButton(bntName, null) //Set to null. then override the onclick
+        .create();
+        
+        defBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button b = defBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText newTeamName = (EditText) rootView.findViewById(R.id.changeTeamName);
+                        ((TextView)parentv).setText(newTeamName.getText());
+                        defBuilder.dismiss();
+                    }
+                });
+            }
+        });
+        defBuilder.show();
+        
+        return rootView;
+    }
+    
+    
     
     /**
      * toast show in 0.5 second method
@@ -386,4 +525,35 @@ public class SummaryPage{
             public void run() {toast.cancel();}
         }, 500);
     }
+    
+    /**
+     * 
+     * */
+    public static void dismissDialog(String name){
+        AlertDialog tmp = dialogMap.remove(name);
+        tmp.dismiss();
+    }
+    
+    /**
+     * reset foul record
+     * */
+    public static void resetScore(){
+        strScore.setText("0:0");
+    }
+    
+    /**
+     * reset score record
+     * */
+    public static void resetFoul(){
+        strFoul.setText("0:0");
+    }
+    
+    /**
+     * reset score timer
+     * */
+    public static void resetTimer(){
+        GameTimer.gtInstance.update(0*60*1000 + 0*1000, 100);
+        GameTimer.gtInstance.create();
+    }
+    
 }

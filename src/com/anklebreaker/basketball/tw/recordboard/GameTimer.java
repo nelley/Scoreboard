@@ -8,10 +8,8 @@ import android.widget.Toast;
 
 public class GameTimer extends Timer{
 
-    public GameTimer(long millisOnTimer, long countDownInterval,
-            boolean runAtStart) {
-	    super(millisOnTimer, countDownInterval, runAtStart);
-	    // TODO Auto-generated constructor stub
+    public GameTimer(long millisOnTimer, long countDownInterval, boolean runAtStart) {
+        super(millisOnTimer, countDownInterval, runAtStart);
     }
 
 	Context mContext;
@@ -25,6 +23,7 @@ public class GameTimer extends Timer{
         }
         return gtInstance;
     }
+    
     public GameTimer(Context c, TextView t, long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval, false);
         mContext = c;
@@ -42,6 +41,7 @@ public class GameTimer extends Timer{
     @Override
     public void onFinish() {
         timerView.setText("00:00:0");
+        //gtInstance = null;
         Toast.makeText(mContext, "比賽結束!!!", Toast.LENGTH_SHORT).show();
     }
 

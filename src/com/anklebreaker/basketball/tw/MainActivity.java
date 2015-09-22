@@ -1,23 +1,18 @@
 package com.anklebreaker.basketball.tw;
 
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
-import com.anklebreaker.basketball.tw.tab.BasketFragment;
+import com.anklebreaker.basketball.tw.tab.BasketBallAdapter;
 import com.anklebreaker.basketball.tw.tab.CustomTab;
 import com.anklebreaker.basketball.tw.util.LogOutput;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 import com.anklebreaker.basketball.tw.util.ViewServer;
-import com.viewpagerindicator.IconPagerAdapter;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,16 +24,11 @@ public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "Scoreboard.MainActivity";
 
-    private static final String[] CONTENT = new String[] {"記錄板", "人氣鬥牛場"};//"人氣鬥牛場", "打卡",
-    private static final int[] ICONS = new int[] {
-        R.drawable.perm_group_calendar,
-        R.drawable.perm_group_camera,
-        R.drawable.perm_group_device_alarms,
-        R.drawable.perm_group_location,
-    };
+    private ViewPager pager;
+    private BasketBallAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.simple_tabs);
@@ -53,8 +43,9 @@ public class MainActivity extends FragmentActivity {
         TeamObj.getInstance(this.getApplicationContext());
 
         CookieSyncManager.createInstance(this);
-        FragmentPagerAdapter adapter = new BasketBallAdapter(getSupportFragmentManager());
-        ViewPager pager = (ViewPager)findViewById(R.id.pager);
+        
+        adapter = new BasketBallAdapter(getSupportFragmentManager(), this);
+        pager = (ViewPager)findViewById(R.id.pager);
 
         Log.i(TAG, "set pager");
         pager.setAdapter(adapter);
@@ -182,36 +173,5 @@ public class MainActivity extends FragmentActivity {
         return null;
     }
 
-    /**
-     * FragmentPagerAdapter
-     * */
-    class BasketBallAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
-        public BasketBallAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Log.i(TAG, "getItem");
-            return BasketFragment.newInstance(CONTENT[position % CONTENT.length], MainActivity.this);
-        }
-        @Override
-        //取得每個tab上的字
-        public CharSequence getPageTitle(int position) {
-            Log.i(TAG, "getPageTitle");
-            return CONTENT[position % CONTENT.length].toUpperCase();
-        }
-        //取得每個tab上的icon
-        @Override
-        public int getIconResId(int index) {
-            Log.i(TAG, "getIconResId");
-            return ICONS[index];
-        }
-
-        @Override
-        public int getCount() {
-            Log.i(TAG, "getCount");
-            return CONTENT.length;
-        }
-    }
+    
 }

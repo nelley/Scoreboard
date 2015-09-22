@@ -133,7 +133,7 @@ public class RecordEngine {
         TextView title = new TextView(mActivity);
         title.setText(sPlayer.getPlayerNum());
         title.setBackgroundColor(Color.DKGRAY);
-        title.setPadding(0, 0, 0, 0);
+        title.setPadding(10, 10, 10, 10);
         title.setGravity(Gravity.CENTER);
         title.setTextColor(Color.WHITE);
         title.setTextSize(20);
@@ -293,7 +293,7 @@ public class RecordEngine {
         TextView title = new TextView(mActivity);
         title.setText(sPlayer.getPlayerNum());
         title.setBackgroundColor(Color.DKGRAY);
-        title.setPadding(0, 0, 0, 0);
+        title.setPadding(10, 10, 10, 10);
         title.setGravity(Gravity.CENTER);
         title.setTextColor(Color.WHITE);
         title.setTextSize(20);

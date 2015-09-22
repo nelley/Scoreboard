@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.util.Utilities;
 
 import android.app.Activity;
@@ -99,9 +100,13 @@ public class PlayerDragListener implements OnDragListener{
                     // update the layout
                     View rootView = (View) destinationV.getRootView();
                     ListView mListView = (ListView) rootView.findViewById(R.id.player_list);
+                    
+                    mListView.setAdapter(TeamObj.mPlayerListAdapter);
+                    TeamObj.mPlayerListAdapter.notifyDataSetChanged();
+                    /*
                     mListView.setAdapter(SummaryPage.select_list_adapter);
                     SummaryPage.select_list_adapter.notifyDataSetChanged();
-                    
+                    */
                     Toast.makeText(mContext, "change player " + num + " to " + droppedNum, Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(mContext, "same group", Toast.LENGTH_SHORT).show();

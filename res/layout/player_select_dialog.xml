@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/curve_shape"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/select_dialog"
     android:orientation="vertical"
     android:rowOrderPreserved="true" >
     <TextView
@@ -15,14 +15,14 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:text="請設定上場球員"
-        android:textColor="#CF2435"
+        android:textColor="#110000"
         android:textSize="20dp"
         android:textStyle="bold"/>
     
     <GridView  
        android:id="@+id/playergrid"
        android:layout_below="@+id/txt_title"
-       android:layout_width="wrap_content" 
+       android:layout_width="fill_parent" 
        android:layout_height="wrap_content"
        android:padding="10dp"
        android:columnWidth="75dp"
@@ -31,16 +31,17 @@
        android:horizontalSpacing="5dp"
        android:stretchMode="columnWidth"
        android:listSelector="@android:color/transparent"
-       android:gravity="center"
-       >
+       android:gravity="center">
     </GridView>
     <Button
         android:id="@+id/btn_yes"
-        android:layout_below="@+id/playergrid"
+        
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_selector"
         android:clickable="true"
-        android:padding="10dp"
+        android:padding="0dp"
         android:text="我選好了"
         android:textColor="#000000"/>
 </RelativeLayout>

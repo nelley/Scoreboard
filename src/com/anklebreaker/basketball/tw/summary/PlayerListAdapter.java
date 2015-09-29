@@ -26,8 +26,8 @@ public class PlayerListAdapter extends BaseAdapter{
 
     private static final String TAG = "ScoreBoard.PlayerListAdapter";
 
-    private static final int TYPE_MAX_COUNT = 3;
-    private static Activity activity;
+    private final int TYPE_MAX_COUNT = 3;
+    private Activity activity;
     private static ArrayList<PlayerObj> playerData;
 
     private LayoutInflater mInflater;

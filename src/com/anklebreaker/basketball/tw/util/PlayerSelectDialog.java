@@ -48,6 +48,7 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         
         GridView setPlayers = (GridView) this.findViewById(R.id.playergrid);
         Button yesBtn = (Button)findViewById(R.id.btn_yes);
+        yesBtn.setBackground(mContext.getResources().getDrawable(R.drawable.btn_selector));
         
         yesBtn.setOnClickListener(this);
         //yesBtn.setOnKeyListener(this);

@@ -3,6 +3,7 @@ package com.anklebreaker.basketball.tw.recordboard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.RecordBoardBtn;
@@ -31,8 +33,8 @@ public class TeamObj {
     static final int CT_PANEL_STARTER = 5;
     static final int CT_PANEL_BENCH = 7;
     
-    static final String DUMMY_PLAYER = "DUMMY_PLAYER";
-    static final String NUM_DUMMY_PLAYER = "999";
+    public static final String DUMMY_PLAYER = "DUMMY_PLAYER";
+    public static final String NUM_DUMMY_PLAYER = "999";
     
     private Context mContext = null;
     //undo stack
@@ -43,6 +45,15 @@ public class TeamObj {
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
 
+    // array for keep score
+    public static int[][] scoreKeeper = new int[][]{
+        {0,0,0,0},// home team
+        {0,0,0,0}// away team
+        };
+    
+    public static final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
+    public static String[] teamName= new String[]{"主隊", "客隊"};
+    
     //pref
     public static final String PLAYER_FILE_NAME = "players";
     public static final String[] PLAYER_POS = new String[21];
@@ -110,14 +121,14 @@ public class TeamObj {
                     // add to PlayerObj's playermap(starters)
                     PlayerObj.getInstance(mContext, 9999, null, null, 
                                           mPlayer.playerNum, mPlayer.playerName, 
-                                          true, false, true, null, -999, -999);
+                                          true, false, true, null, -999, -999, -999);
                     startCnt = startCnt + 1;
                     
                 }else{
                     // add to PlayerObj's playermap(bench players)
                     PlayerObj.getInstance(mContext, 9999, null, null, 
                             mPlayer.playerNum, mPlayer.playerName, 
-                            false, true, false, null, -999, -999);
+                            false, true, false, null, -999, -999, -999);
                     benchCnt = benchCnt + 1;
                 }
             }
@@ -184,5 +195,22 @@ public class TeamObj {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * 
+     * */
+    static public void resetScoreKeeper(){
+        scoreKeeper = new int[][]{
+                {0,0,0,0},// home team
+                {0,0,0,0}// away team
+            };
+    }
+    
+    /**
+     * 
+     * */
+    static public void resetTeamName(){
+        teamName= new String[]{"主隊", "客隊"};
     }
 }

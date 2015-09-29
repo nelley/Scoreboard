@@ -1,9 +1,11 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.HashMap;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
@@ -52,7 +54,8 @@ public class SummaryPage{
     final String COMPETITOR = "COMPETITOR_PLAYER";
     final float CELL_TITLE_WIDTH_RATIO = 1.5f;
     final float CELL_WIDTH_RATIO = 1.0f;
-    
+    final int LEFT = 0;
+    final int RIGHT = 1;
     // control flag for expand banner
     public static boolean IS_EXPAND = false;
 
@@ -77,9 +80,10 @@ public class SummaryPage{
     ImageView bktCourt, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
     Button undo, settingBnt, competitor;
     private static TextView strTime, strTimeTitle, strScore, strFoul;
+    private static NumberPicker qp;
 
-    final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
-
+    private TextView teama, teamb;
+    
     ViewPager mViewPager;
     FragmentPagerAdapter mFragmentPagerAdapter;
     
@@ -118,10 +122,10 @@ public class SummaryPage{
                 title.setTextSize(20);
 
                 final View rootView = LayoutInflater.from(mActivity).inflate(R.layout.time_setting, null);
-                final NumberPicker qp = (NumberPicker) rootView.findViewById(R.id.quarter);
+                qp = (NumberPicker) rootView.findViewById(R.id.quarter);
                 qp.setMaxValue(5);
                 qp.setMinValue(0);
-                qp.setDisplayedValues(qString);
+                qp.setDisplayedValues(TeamObj.qString);
                 final NumberPicker npM = (NumberPicker) rootView.findViewById(R.id.npMinute);
                 npM.setMinValue(0);
                 npM.setMaxValue(48);
@@ -144,7 +148,7 @@ public class SummaryPage{
                             @Override
                             public void onClick(View v) {
                                 if(!(npM.getValue() == 0 && npS.getValue() == 0)){
-                                    String quarter = qString[qp.getValue()];
+                                    String quarter = TeamObj.qString[qp.getValue()];
                                     strTimeTitle.setText(quarter);
                                     int min = npM.getValue();
                                     int sec = npS.getValue();
@@ -335,7 +339,59 @@ public class SummaryPage{
             @Override
             public void onClick(View v) {
                 v.startAnimation(settingAnimRotate);
-                View dialogView = customDialogInit_Setting("設定選單", R.layout.setting_main);
+                View dialogView = null;
+                // set the 4quarter game or 2quarter game
+                if(qp == null || qp.getValue() > 1){
+                    dialogView = customDialogInit_Setting("設定選單", R.layout.setting_menu_def);
+                    // set score of each quarter
+                    TextView aFirst = (TextView) dialogView.findViewById(R.id.teama_1st);
+                    TextView aSecond = (TextView) dialogView.findViewById(R.id.teama_2nd);
+                    TextView aThird = (TextView) dialogView.findViewById(R.id.teama_3rd);
+                    TextView aFour = (TextView) dialogView.findViewById(R.id.teama_4th);
+                    
+                    TextView bFirst = (TextView) dialogView.findViewById(R.id.teamb_1st);
+                    TextView bSecond = (TextView) dialogView.findViewById(R.id.teamb_2nd);
+                    TextView bThird = (TextView) dialogView.findViewById(R.id.teamb_3rd);
+                    TextView bFour = (TextView) dialogView.findViewById(R.id.teamb_4th);
+                    
+                    TextView aTotal = (TextView) dialogView.findViewById(R.id.teama_total);
+                    TextView bTotal = (TextView) dialogView.findViewById(R.id.teamb_total);
+                    
+                    // 
+                    aFirst.setText(String.valueOf(TeamObj.scoreKeeper[0][0]));
+                    aSecond.setText(String.valueOf(TeamObj.scoreKeeper[0][1]));
+                    aThird.setText(String.valueOf(TeamObj.scoreKeeper[0][2]));
+                    aFour.setText(String.valueOf(TeamObj.scoreKeeper[0][3]));
+                    aTotal.setText(String.valueOf(TeamObj.scoreKeeper[0][0] + TeamObj.scoreKeeper[0][1] 
+                            + TeamObj.scoreKeeper[0][2] + TeamObj.scoreKeeper[0][3]));
+                    
+                    bFirst.setText(String.valueOf(TeamObj.scoreKeeper[1][0]));
+                    bSecond.setText(String.valueOf(TeamObj.scoreKeeper[1][1]));
+                    bThird.setText(String.valueOf(TeamObj.scoreKeeper[1][2]));
+                    bFour.setText(String.valueOf(TeamObj.scoreKeeper[1][3]));
+                    bTotal.setText(String.valueOf(TeamObj.scoreKeeper[1][0] + TeamObj.scoreKeeper[1][1] 
+                            + TeamObj.scoreKeeper[1][2] + TeamObj.scoreKeeper[1][3]));
+                    
+                }else{
+                    dialogView = customDialogInit_Setting("設定選單", R.layout.setting_menu_half);
+                    // set score of each quarter
+                    TextView aFirst = (TextView) dialogView.findViewById(R.id.teama_1st);
+                    TextView aSecond = (TextView) dialogView.findViewById(R.id.teama_2nd);
+                    
+                    TextView bFirst = (TextView) dialogView.findViewById(R.id.teamb_1st);
+                    TextView bSecond = (TextView) dialogView.findViewById(R.id.teamb_2nd);
+                    
+                    TextView aTotal = (TextView) dialogView.findViewById(R.id.teama_total);
+                    TextView bTotal = (TextView) dialogView.findViewById(R.id.teamb_total);
+                    
+                    aFirst.setText(String.valueOf(TeamObj.scoreKeeper[0][0]));
+                    aSecond.setText(String.valueOf(TeamObj.scoreKeeper[0][1]));
+                    aTotal.setText(String.valueOf(TeamObj.scoreKeeper[0][0] + TeamObj.scoreKeeper[0][1]));
+                    
+                    bFirst.setText(String.valueOf(TeamObj.scoreKeeper[1][0]));
+                    bSecond.setText(String.valueOf(TeamObj.scoreKeeper[1][1]));
+                    bTotal.setText(String.valueOf(TeamObj.scoreKeeper[1][0] + TeamObj.scoreKeeper[1][1]));
+                }
                 
                 // set layout param for score_table
                 TableLayout score_table = (TableLayout) dialogView.findViewById(R.id.score_table);
@@ -358,18 +414,31 @@ public class SummaryPage{
                 competitor.setText(((String)strScore.getText()).split(":")[1]);
                 
                 // set name of each team
-                TextView myteam_title = (TextView)dialogView.findViewById(R.id.myteam_title);
-                TextView competitor_title = (TextView)dialogView.findViewById(R.id.competitor_title);
+                final TextView myteam_title = (TextView)dialogView.findViewById(R.id.myteam_title);
+                final TextView competitor_title = (TextView)dialogView.findViewById(R.id.competitor_title);
+                
+                myteam_title.getLayoutParams().width = MultiDevInit.xPIXEL/6;
+                competitor_title.getLayoutParams().width = MultiDevInit.xPIXEL/6;
+                
+                myteam_title.setText(TeamObj.teamName[0]);
+                competitor_title.setText(TeamObj.teamName[1]);
+                
+                // set name of each team in table
+                teama = (TextView)dialogView.findViewById(R.id.teama);
+                teamb = (TextView)dialogView.findViewById(R.id.teamb);
+                
+                teama.setText(TeamObj.teamName[0]);
+                teamb.setText(TeamObj.teamName[1]);
                 
                 myteam_title.setOnClickListener(new OnClickListener(){
                     public void onClick(View v) {
-                        customDialogInit_teamname_change(v, "隊名設定", R.layout.modify_team_name, android.R.string.ok);
+                        customDialogInit_teamname_change(v, "隊名設定", R.layout.modify_team_name, android.R.string.ok, LEFT);
                     }
                 });
                 
                 competitor_title.setOnClickListener(new OnClickListener(){
                     public void onClick(View v) {
-                        customDialogInit_teamname_change(v, "隊名設定", R.layout.modify_team_name, android.R.string.ok);
+                        customDialogInit_teamname_change(v, "隊名設定", R.layout.modify_team_name, android.R.string.ok, RIGHT);
                     }
                 });
                 
@@ -377,13 +446,16 @@ public class SummaryPage{
                 // set functions
                 game_summary.setOnClickListener(new OnClickListener(){
                     public void onClick(View v) {
-                        Toast.makeText(mContext, "game_summary", Toast.LENGTH_SHORT).show();
+                        Intent myIntent = new Intent(mContext, GameSummaryActivity.class);
+                        mContext.startActivity(myIntent);
                     }
                 });
                 
                 game_analysis.setOnClickListener(new OnClickListener(){
                     public void onClick(View v) {
-                        Toast.makeText(mContext, "game_analysis", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "game_analysis", Toast.LENGTH_SHORT).show();
+                        Intent myIntent = new Intent(mContext, GameAnalysisActivity.class);
+                        mContext.startActivity(myIntent);
                     }
                 });
                 
@@ -392,15 +464,17 @@ public class SummaryPage{
                         Custom_alert_Dialog cdd= new Custom_alert_Dialog(mActivity, mListView);
                         cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         cdd.show();
-                        
                     }
                 });
                 
                 finish_upload.setOnClickListener(new OnClickListener(){
                     public void onClick(View v) {
-                        Toast.makeText(mContext, "finish_upload", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "finish_upload", Toast.LENGTH_SHORT).show();
+                        UploadAsyncTask task = new UploadAsyncTask();
+                        task.execute();
                     }
                 });
+                
             }
         });
     }
@@ -473,7 +547,7 @@ public class SummaryPage{
     /**
      * init customized dialog with button
      * */
-    public View customDialogInit_teamname_change(final View parentv, String mTitle, int layoutId, int bntName) {
+    public View customDialogInit_teamname_change(final View parentv, String mTitle, int layoutId, int bntName, final int position) {
         TextView title = new TextView(mActivity);
         title.setText(mTitle);
         title.setBackgroundColor(Color.DKGRAY);
@@ -499,6 +573,13 @@ public class SummaryPage{
                     public void onClick(View v) {
                         EditText newTeamName = (EditText) rootView.findViewById(R.id.changeTeamName);
                         ((TextView)parentv).setText(newTeamName.getText());
+                        if(position == LEFT){
+                            TeamObj.teamName[0] = newTeamName.getText().toString();
+                            teama.setText(newTeamName.getText().toString());
+                        }else{
+                            TeamObj.teamName[1] = newTeamName.getText().toString();
+                            teamb.setText(newTeamName.getText().toString());
+                        }
                         defBuilder.dismiss();
                     }
                 });
@@ -554,6 +635,13 @@ public class SummaryPage{
     public static void resetTimer(){
         GameTimer.gtInstance.update(0*60*1000 + 0*1000, 100);
         GameTimer.gtInstance.create();
+    }
+    
+    /**
+     * return the qp
+     * */
+    public static NumberPicker getQp(){
+        return qp;
     }
     
 }

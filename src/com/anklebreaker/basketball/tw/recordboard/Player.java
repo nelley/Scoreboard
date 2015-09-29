@@ -16,8 +16,9 @@ public class Player {
     public Context mContext = null;
     protected String playerNum =null;
     protected String playerName = null;
-    public String actTime =null;
-    protected int xPos = 0;
+    public String actTime = null;
+    protected int quarter = -1;
+	protected int xPos = 0;
     protected int yPos = 0;
     public int playerAct = -9;
 
@@ -101,4 +102,7 @@ public class Player {
 		this.playerNum = playerNum;
 	}
 
+    public int getQuarter() {
+		return quarter;
+	}
 }

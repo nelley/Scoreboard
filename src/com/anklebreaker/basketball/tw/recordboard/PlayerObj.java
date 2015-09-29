@@ -69,7 +69,7 @@ public class PlayerObj extends Player implements Cloneable{
      * @x x position for player's action
      * @y y position for player's action
      * */
-    public static PlayerObj getInstance(Context c, int act, Bitmap image_check, Bitmap image, String num, String name, boolean isS, boolean isB, boolean isO, String time, int x, int y){
+    public static PlayerObj getInstance(Context c, int act, Bitmap image_check, Bitmap image, String num, String name, boolean isS, boolean isB, boolean isO, String time, int quarter, int x, int y){
         objInstance = null;
         // check exist elements
         for (PlayerObj existPlayer : playerMap) {
@@ -87,6 +87,7 @@ public class PlayerObj extends Player implements Cloneable{
 
         objInstance.playerAct = act;
         objInstance.actTime = time;
+        objInstance.quarter = quarter;
         objInstance.xPos = x;
         objInstance.yPos = y;
         Log.i(TAG, objInstance.playerNum + "player act as" + objInstance.playerAct);

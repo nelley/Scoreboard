@@ -1,7 +1,6 @@
 package com.anklebreaker.basketball.tw.engine;
 
 import java.util.ArrayList;
-
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,6 +21,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +35,7 @@ import com.anklebreaker.basketball.tw.recordboard.Player;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
+import com.anklebreaker.basketball.tw.summary.SummaryPage;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 import com.anklebreaker.basketball.tw.util.Utilities;
 
@@ -84,6 +85,7 @@ public class RecordEngine {
     private int xInterval;
     private int yInterval;
     
+    private int tmpQuarter = -1;
     /**/
     int lastPos = -1;
     
@@ -482,6 +484,10 @@ public class RecordEngine {
                         floatView = layoutInflater.inflate(R.layout.overlay, null);
                         // set the imageview in the overlay
                         mFloat = (ImageView) floatView.findViewById(R.id.float_image);
+                        
+                        mFloat.getLayoutParams().width = 300;
+                        mFloat.getLayoutParams().height = 200;
+                        
                         mFloat.setImageResource(imageSet[0]);
                         // attach overlay to the view
                         wm.addView(floatView, params);
@@ -525,13 +531,18 @@ public class RecordEngine {
                     // get the player's number
                     currentY = event.getY();
                     actTime = strTime.getText().toString();
+                    if(SummaryPage.getQp() == null){
+                        tmpQuarter = 0;
+                    }else{
+                    	tmpQuarter = SummaryPage.getQp().getValue();
+                    }
                     // if touched icon is block/steal/assist
                     if(lastPos > 5){
                         // update score & actionCode
-                        isMade(lastPos);
+                        Made(lastPos);
                         PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null,null, 
                                                                     msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
-                                                                    true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                                                                    true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                         tmpPlayer.setSummary(tmpPlayer, 1);
                         updateSingleRow(tmpPlayer);
                         TeamObj.addTimeLine(tmpPlayer);
@@ -543,11 +554,11 @@ public class RecordEngine {
                         if(currentY < lastTouchY){
                             if(movingCheck(currentY)){
                                 // update score & actionCode
-                                isMade(lastPos);
+                                Made(lastPos);
                                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
                                 PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
-                                                                            true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                                                                            true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                                 tmpPlayer.setSummary(tmpPlayer, 1);
                                 updateSingleRow(tmpPlayer);
                                 TeamObj.addTimeLine(tmpPlayer);
@@ -568,10 +579,10 @@ public class RecordEngine {
                         }else{
                             if(movingCheck(currentY)){
                                 // update scroe & actionCode
-                                isMissed(lastPos);
+                                Missed(lastPos);
                                 PlayerObj tmpPlayer = PlayerObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
-                                                                            true, false, true, actTime, DEFAULT_X, DEFAULT_Y);
+                                                                            true, false, true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                                 tmpPlayer.setSummary(tmpPlayer, 1);
                                 updateSingleRow(tmpPlayer);
                                 updateFoul(tmpPlayer, 1, 0);
@@ -595,7 +606,7 @@ public class RecordEngine {
                                         Handler removeH = new Handler();
                                         removeH.postDelayed(new Runnable(){
                                             public void run(){
-                                            	mRelativeBkt.removeView(missIcon);
+                                                mRelativeBkt.removeView(missIcon);
                                             }
                                         }, 500);
                                     }
@@ -639,6 +650,10 @@ public class RecordEngine {
                         floatView = layoutInflater.inflate(R.layout.overlay, null);
                         // set the imageview in the overlay
                         mFloat = (ImageView) floatView.findViewById(R.id.float_image);
+                        
+                        mFloat.getLayoutParams().width = 300;
+                        mFloat.getLayoutParams().height = 200;
+                        
                         mFloat.setImageResource(imageSet[0]);
                         // attach overlay to the view
                         wm.addView(floatView, params);
@@ -682,13 +697,18 @@ public class RecordEngine {
                     // get the player's number
                     currentY = event.getY();
                     actTime = strTime.getText().toString();
+                    if(SummaryPage.getQp() == null){
+                        tmpQuarter = 0;
+                    }else{
+                    	tmpQuarter = SummaryPage.getQp().getValue();
+                    }
                     // if touched icon is block/steal/assist
                     if(lastPos > 5){
                         // update score & actionCode
-                        isMadeC(lastPos);
+                        MadeC(lastPos);
                         CompetitorObj tmpPlayer = CompetitorObj.getInstance(mContext, actionCode, null,null, 
                                                                     msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
-                                                                    true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                                                                    true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                         TeamObj.addTimeLine(tmpPlayer);
                         Utilities.CustomToast(mActivity, tmpPlayer.getPlayerName(), ActText);
 
@@ -698,11 +718,11 @@ public class RecordEngine {
                         if(currentY < lastTouchY){
                             if(movingCheck(currentY)){
                                 // update score & actionCode
-                                isMadeC(lastPos);
+                                MadeC(lastPos);
                                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
                                 CompetitorObj tmpPlayer = CompetitorObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
-                                                                            true, false,true, actTime, DEFAULT_X, DEFAULT_Y);
+                                                                            true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
 
                                 TeamObj.addTimeLine(tmpPlayer);
                                 Utilities. CustomToast(mActivity, tmpPlayer.getPlayerName(), ActText);
@@ -722,10 +742,10 @@ public class RecordEngine {
                         }else{
                             if(movingCheck(currentY)){
                                 // update scroe & actionCode
-                                isMissed(lastPos);
+                                Missed(lastPos);
                                 CompetitorObj tmpPlayer = CompetitorObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
-                                                                            true, false, true, actTime, DEFAULT_X, DEFAULT_Y);
+                                                                            true, false, true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                                 updateFoul(tmpPlayer, 0, 1);
                                 TeamObj.addTimeLine(tmpPlayer);
                                 Utilities.CustomToast(mActivity, tmpPlayer.getPlayerName(), ActText);
@@ -792,7 +812,7 @@ public class RecordEngine {
    /**
     * translate touched item to action code/action text
     * */
-    private void isMissed(int mLastPos) {
+    private void Missed(int mLastPos) {
        switch(String.valueOf(mLastPos)){
        case "0":
            actionCode = ActionDef.ACT_OR;
@@ -842,7 +862,7 @@ public class RecordEngine {
     }
   
   /**
-   * set the score to update the score board
+   * set the score to update the score board & scorekeeper
    * */
     private void setScore(int l, int r) {
         String tmpScore[] = strScore.getText().toString().split(":");
@@ -853,12 +873,104 @@ public class RecordEngine {
         String newLeftScore = String.valueOf(leftScore + l);
 
         strScore.setText(newLeftScore + ":" + newRightScore);
+        
     }
-  
+
+    /**
+     * setQuarterScore for formal pattern
+     * */
+    private void setQuarterScore(int l, int r){
+        // get the quarter info of that time
+        NumberPicker tmpQp = SummaryPage.getQp();
+        if(l != 0){
+            // update home team
+            if(tmpQp == null || tmpQp.getValue() == 0){
+                // add to 1st quarter if not setted
+                TeamObj.scoreKeeper[0][0] += l ;
+            }else if(tmpQp.getValue() == 1){
+                // 2nd half
+                TeamObj.scoreKeeper[0][1] += l ;
+            }else if(tmpQp.getValue() == 2){
+                // 1st
+                TeamObj.scoreKeeper[0][0] += l ;
+            }else if(tmpQp.getValue() == 3){
+                // 2nd
+                TeamObj.scoreKeeper[0][1] += l ;
+            }else if(tmpQp.getValue() == 4){
+                // 3rd
+                TeamObj.scoreKeeper[0][2] += l ;
+            }else if(tmpQp.getValue() == 5){
+                // 4th
+                TeamObj.scoreKeeper[0][3] += l ;
+            }
+        }else{
+            // update away team
+            if(tmpQp == null || tmpQp.getValue() == 0){
+                // add to 1st half if not setted
+                TeamObj.scoreKeeper[1][0] += r ;
+            }else if(tmpQp.getValue() == 1){
+                // 2nd half
+                TeamObj.scoreKeeper[1][1] += r ;
+            }else if(tmpQp.getValue() == 2){
+                // 1st
+                TeamObj.scoreKeeper[1][0] += r ;
+            }else if(tmpQp.getValue() == 3){
+                // 2nd
+                TeamObj.scoreKeeper[1][1] += r ;
+            }else if(tmpQp.getValue() == 4){
+                // 3rd
+                TeamObj.scoreKeeper[1][2] += r ;
+            }else if(tmpQp.getValue() == 5){
+                // 4th
+                TeamObj.scoreKeeper[1][3] += r ;
+            }
+        }
+    }
+    
+    /**
+     * setQuarterScore for undo
+     * */
+    private void undoQuarterScore(int l, int r, Player mPlayer){
+        // update the score keeper array
+        int tmpQp = mPlayer.getQuarter();
+        if(l != 0){
+            // update home team
+            if(tmpQp == 0){
+                // add to 1st quarter if not setted
+                TeamObj.scoreKeeper[0][0] += l ;
+            }else if(tmpQp == 1){
+                TeamObj.scoreKeeper[0][1] += l ;
+            }else if(tmpQp == 2){
+                TeamObj.scoreKeeper[0][0] += l ;
+            }else if(tmpQp == 3){
+                TeamObj.scoreKeeper[0][1] += l ;
+            }else if(tmpQp == 4){
+                TeamObj.scoreKeeper[0][2] += l ;
+            }else if(tmpQp == 5){
+                TeamObj.scoreKeeper[0][3] += l ;
+            }
+        }else{
+            // update away team
+            if(tmpQp == 0){
+                // add to 1st quarter if not setted
+                TeamObj.scoreKeeper[1][0] += r ;
+            }else if(tmpQp == 1){
+                TeamObj.scoreKeeper[1][1] += r ;
+            }else if(tmpQp == 2){
+                TeamObj.scoreKeeper[1][0] += r ;
+            }else if(tmpQp == 3){
+                TeamObj.scoreKeeper[1][1] += r ;
+            }else if(tmpQp == 4){
+                TeamObj.scoreKeeper[1][2] += r ;
+            }else if(tmpQp == 5){
+                TeamObj.scoreKeeper[1][3] += r ;
+            }
+        }
+    }
     /**
      * translate touched item to action code/action text
      * */
-    private void isMadeC(int mlastPos) {
+    private void MadeC(int mlastPos) {
         switch(String.valueOf(mlastPos)){
         case "0":
             actionCode = ActionDef.ACT_DR;
@@ -868,41 +980,45 @@ public class RecordEngine {
             actionCode = ActionDef.ACT_TWOP_MA;
             ActText = ActionDef.ACT_strTWOP_MA;
             setScore(0,2);
+            setQuarterScore(0,2);
             break;
         case "2":
             actionCode = ActionDef.ACT_THREEP_MA;
             ActText = ActionDef.ACT_strTHREEP_MA;
             setScore(0,3);
+            setQuarterScore(0,3);
             break;
-      case "3":
-          actionCode = ActionDef.ACT_FTMA;
-          ActText = ActionDef.ACT_strFTMA;
-          setScore(0,1);
-          break;
-      case "5":
-          actionCode = ActionDef.ACT_TO;
-          ActText = ActionDef.ACT_strTO;
-          break;
-      case "6":
-          actionCode = ActionDef.ACT_BS;
-          ActText = ActionDef.ACT_strBS;
-          break;
-      case "7":
-          actionCode = ActionDef.ACT_ST;
-          ActText = ActionDef.ACT_strST;
-          break;
-      case "8":
-          actionCode = ActionDef.ACT_AS;
-          ActText = ActionDef.ACT_strAS;
-          break;
-      default:
-      }
+        case "3":
+            actionCode = ActionDef.ACT_FTMA;
+            ActText = ActionDef.ACT_strFTMA;
+            setScore(0,1);
+            setQuarterScore(0,1);
+            break;
+        case "5":
+            actionCode = ActionDef.ACT_TO;
+            ActText = ActionDef.ACT_strTO;
+            break;
+        case "6":
+            actionCode = ActionDef.ACT_BS;
+            ActText = ActionDef.ACT_strBS;
+            break;
+        case "7":
+            actionCode = ActionDef.ACT_ST;
+            ActText = ActionDef.ACT_strST;
+            break;
+        case "8":
+            actionCode = ActionDef.ACT_AS;
+            ActText = ActionDef.ACT_strAS;
+            break;
+        default:
+        
+        }
   }
   
   /**
    * translate touched item to action code/action text
    * */
-    private void isMade(int mlastPos) {
+    private void Made(int mlastPos) {
       switch(String.valueOf(mlastPos)){
       case "0":
           actionCode = ActionDef.ACT_DR;
@@ -912,16 +1028,19 @@ public class RecordEngine {
           actionCode = ActionDef.ACT_TWOP_MA;
           ActText = ActionDef.ACT_strTWOP_MA;
           setScore(2,0);
+          setQuarterScore(2,0);
           break;
       case "2":
           actionCode = ActionDef.ACT_THREEP_MA;
           ActText = ActionDef.ACT_strTHREEP_MA;
           setScore(3,0);
+          setQuarterScore(3,0);
           break;
       case "3":
           actionCode = ActionDef.ACT_FTMA;
           ActText = ActionDef.ACT_strFTMA;
           setScore(1,0);
+          setQuarterScore(1,0);
           break;
       case "5":
           actionCode = ActionDef.ACT_TO;
@@ -1083,84 +1202,76 @@ public class RecordEngine {
      * transform number to act
      **/
     public void undo(View mainView){
+        // rival
+        int rightUndo = 0;
+        // our team
+        int leftUndo = 0;
+        // seperate competitor and our player
         if (TeamObj.undoStack.lastElement() instanceof PlayerObj) {
             PlayerObj mPlayerObj = (PlayerObj) TeamObj.undoStack.pop();
-            // rival
-            int rightUndo = 0;
-            // our team
-            int leftUndo = 0;
-            if(mPlayerObj.playerAct == RIVAL_ACTION){
-                rightUndo = -1;
-                setScore(leftUndo, rightUndo);
-            }else{
-                switch(mPlayerObj.playerAct){
-                case ActionDef.ACT_TWOP_MA:
-                    leftUndo = -2;
-                  break;
-                case ActionDef.ACT_THREEP_MA:
-                    leftUndo = -3;
-                    break;
-                case ActionDef.ACT_FTMA:
-                    leftUndo = -1;
-                    break;
-                case ActionDef.ACT_FOUL:
-                    // decrement foul counter in header.xml
-                    updateFoul(mPlayerObj, -1, 0);
-                    break;
-                default:
-                    break;
-                }
-                //undo score board(summary board)
-                mPlayerObj.setSummary(mPlayerObj, -1);
-                //undo score board
-                setScore(leftUndo, rightUndo);
-                // update UI view
-                updateSingleRow(mPlayerObj);
-                Utilities.CustomToast(mActivity, mPlayerObj.getPlayerName(), actionToText(mPlayerObj.playerAct));
+            
+            switch(mPlayerObj.playerAct){
+            case ActionDef.ACT_TWOP_MA:
+                leftUndo = -2;
+              break;
+            case ActionDef.ACT_THREEP_MA:
+                leftUndo = -3;
+                break;
+            case ActionDef.ACT_FTMA:
+                leftUndo = -1;
+                break;
+            case ActionDef.ACT_FOUL:
+                // decrement foul counter in header.xml
+                updateFoul(mPlayerObj, -1, 0);
+                break;
+            default:
+                break;
             }
+            //undo score board(summary board)
+            mPlayerObj.setSummary(mPlayerObj, -1);
+            //undo score board
+            setScore(leftUndo, rightUndo);
+            undoQuarterScore(leftUndo,rightUndo, mPlayerObj);
+            // update UI view
+            updateSingleRow(mPlayerObj);
+            Utilities.CustomToast(mActivity, mPlayerObj.getPlayerName(), actionToText(mPlayerObj.playerAct, "取消"));
         }else{
             // if target of undo is CompetitorObj
             CompetitorObj CPObj = (CompetitorObj) TeamObj.undoStack.pop();
-            // rival
-            int rightUndo = 0;
-            // our team
-            int leftUndo = 0;
-            if(CPObj.playerAct == RIVAL_ACTION){
+
+            switch(CPObj.playerAct){
+            case ActionDef.ACT_TWOP_MA:
+                rightUndo = -2;
+                break;
+            case ActionDef.ACT_THREEP_MA:
+                rightUndo = -3;
+                break;
+            case ActionDef.ACT_FTMA:
                 rightUndo = -1;
-                setScore(leftUndo, rightUndo);
-            }else{
-                switch(CPObj.playerAct){
-                case ActionDef.ACT_TWOP_MA:
-                    rightUndo = -2;
-                    break;
-                case ActionDef.ACT_THREEP_MA:
-                    rightUndo = -3;
-                    break;
-                case ActionDef.ACT_FTMA:
-                    rightUndo = -1;
-                    break;
-                case ActionDef.ACT_FOUL:
-                    // decrement foul counter in header.xml
-                    updateFoul(CPObj, 0, -1);
-                    break;
-                default:
-                    break;
-                }
-                //undo score board(summary board)
-                //mPlayerObj.setSummary(mPlayerObj, -1);
-                //undo score board
-                setScore(leftUndo, rightUndo);
-                // update UI view
-                //updateSingleRow(mPlayerObj);
-                Utilities.CustomToast(mActivity, CPObj.getPlayerName(), actionToText(CPObj.playerAct));
+                break;
+            case ActionDef.ACT_FOUL:
+                // decrement foul counter in header.xml
+                updateFoul(CPObj, 0, -1);
+                break;
+            default:
+                break;
             }
+            //undo score board(summary board)
+            //mPlayerObj.setSummary(mPlayerObj, -1);
+            //undo score board
+            setScore(leftUndo, rightUndo);
+            undoQuarterScore(leftUndo,rightUndo, CPObj);
+            // update UI view
+            //updateSingleRow(mPlayerObj);
+            Utilities.CustomToast(mActivity, CPObj.getPlayerName(), actionToText(CPObj.playerAct, "取消"));
+
         }
     }
 
     /**
      * translate playerAct to text
      * */
-    private String actionToText(int playerAct) {
+    public static String actionToText(int playerAct, String append) {
         String text = "";
         switch(playerAct){
             case ActionDef.ACT_TWOP_MA:
@@ -1206,7 +1317,7 @@ public class RecordEngine {
                 text = "DEFAULT";
                 break;
         }
-        text = text + "取消";
+        text = text + append;
         return text;
     }
 }

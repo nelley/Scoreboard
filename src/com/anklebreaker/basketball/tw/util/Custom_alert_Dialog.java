@@ -57,7 +57,7 @@ public class Custom_alert_Dialog extends Dialog implements android.view.View.OnC
     }
 
     /**
-     * handling the click actions
+     * handling the click actions(reset)
      * */
     @Override
     public void onClick(View v) {
@@ -70,6 +70,8 @@ public class Custom_alert_Dialog extends Dialog implements android.view.View.OnC
                 
                 PlayerObj.playerMap.clear();
                 TeamObj.undoStack.clear();
+                TeamObj.resetScoreKeeper();
+                TeamObj.resetTeamName();
                 SummaryPage.resetFoul();
                 SummaryPage.resetScore();
                 SummaryPage.resetTimer();

@@ -9,23 +9,20 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayerSelectDialog extends Dialog implements android.view.View.OnClickListener{
 
     private static final String TAG = "PlayerSelectDialog";
     
-    private PlayerGridViewAdapter mInitialAdapter;
+    // initial players for selection
+    private static PlayerGridViewAdapter mInitialAdapter;
+    
     private Context mContext;
     private Button yesBtn;
     
@@ -77,7 +74,6 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
             }
         }
         
-        //mInitialAdapter = BasketFragment.getInitialAdapter();
         mInitialAdapter = new PlayerGridViewAdapter(mContext, R.layout.player_grid, BasketFragment.player_settingGrid);
         setPlayers.setAdapter(mInitialAdapter);
     }
@@ -106,6 +102,8 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         //super.onBackPressed();
          Toast.makeText(mContext, "請重新選擇球員", Toast.LENGTH_SHORT).show();
     }
-    
 
+    public static PlayerGridViewAdapter getmInitialAdapter() {
+        return mInitialAdapter;
+    }
 }

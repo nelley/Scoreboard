@@ -470,7 +470,7 @@ public class SummaryPage{
                 finish_upload.setOnClickListener(new OnClickListener(){
                     public void onClick(View v) {
                         //Toast.makeText(mContext, "finish_upload", Toast.LENGTH_SHORT).show();
-                        UploadAsyncTask task = new UploadAsyncTask();
+                        UploadAsyncTask task = new UploadAsyncTask(mActivity);
                         task.execute();
                     }
                 });

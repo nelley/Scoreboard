@@ -7,6 +7,7 @@ import com.anklebreaker.basketball.tw.R.drawable;
 import com.anklebreaker.basketball.tw.recordboard.Player;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
+import com.anklebreaker.basketball.tw.util.PlayerSelectDialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -97,11 +98,12 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
                 RecordHolder touchItem= (RecordHolder)touchView.getTag();
                 //get the whole dialog view
                 touchView = (View)touchView.getParent();
-                GridView setPlayers = (GridView)touchView.findViewById(R.id.setplayer);
+                GridView setPlayers = (GridView)touchView.findViewById(R.id.playergrid);
                 //remove touched item
                 data.remove(touchItem.pos);
 
-                setPlayers.setAdapter(BasketFragment.getInitialAdapter());
+                setPlayers.setAdapter(PlayerSelectDialog.getmInitialAdapter());
+                PlayerSelectDialog.getmInitialAdapter().notifyDataSetChanged();
                 return false;
             }
         });
@@ -181,7 +183,7 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
                                             }
                                         }
                                         if(chk_flg){
-                                            GridView setPlayers = (GridView) dialogView.findViewById(R.id.setplayer);
+                                            GridView setPlayers = (GridView) dialogView.findViewById(R.id.playergrid);
                                             //add new player item at the position before plus
 
                                             data.add(data.size()-1,
@@ -189,11 +191,12 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
                                                             context,
                                                             BitmapFactory.decodeResource(context.getResources(), R.drawable.unchecked),
                                                             BitmapFactory.decodeResource(context.getResources(), R.drawable.basketball_player),
-                                                            inputNum,
-                                                            "noName",
+                                                            inputNum,// for player's number
+                                                            inputNum,// for player's name
                                                             false,false,false));
 
-                                            setPlayers.setAdapter(BasketFragment.getInitialAdapter());
+                                            setPlayers.setAdapter(PlayerSelectDialog.getmInitialAdapter());
+                                            PlayerSelectDialog.getmInitialAdapter().notifyDataSetChanged();
                                             defBuilder.dismiss();
                                         }
                                     }

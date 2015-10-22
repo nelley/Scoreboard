@@ -1,6 +1,8 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
@@ -55,7 +57,12 @@ public class PlayerDragListener implements OnDragListener{
             case DragEvent.ACTION_DROP:
                 // retrieve the data from dragged item
                 String num = (String) event.getClipData().getItemAt(0).getText();
-                if(num.length() == 1){
+                
+                String pstr = "號"; 
+                Pattern p = Pattern.compile(pstr);
+                
+                Matcher m = p.matcher(num);
+                if(!m.find()){
                     num = num + "號";
                 }
                 // retireve the dragged view
@@ -72,7 +79,8 @@ public class PlayerDragListener implements OnDragListener{
                 // retrieve the data from dropped location
                 TextView destinationV = (TextView)v;
                 String droppedNum = (String) destinationV.getText();
-                if(droppedNum.length() == 1){
+                m = p.matcher(droppedNum);
+                if(!m.find()){
                     droppedNum = droppedNum  + "號";
                 }
                 int drop = 0;

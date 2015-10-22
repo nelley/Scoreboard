@@ -1,6 +1,8 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
@@ -213,7 +215,15 @@ public class PlayerListAdapter extends BaseAdapter{
                             iv.setLayoutParams(lay);
                             // change icon's image here
                             iv.setBackgroundResource(R.drawable.benchplayer);
-                            iv.setText(Character.toString(p.getPlayerNum().charAt(0)));
+                            // use reg to extract integer only
+                            Pattern pat = Pattern.compile("-?\\d+");
+                            Matcher m = pat.matcher(p.getPlayerNum());
+                            StringBuffer tmpNum = new StringBuffer();
+                            while(m.find()){
+                                tmpNum.append(m.group());
+                            }
+                            
+                            iv.setText(tmpNum.toString());
                             iv.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
                             iv.setTextColor(Color.WHITE);
 

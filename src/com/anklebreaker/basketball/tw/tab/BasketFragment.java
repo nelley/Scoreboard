@@ -1,21 +1,10 @@
 package com.anklebreaker.basketball.tw.tab;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
-import com.anklebreaker.basketball.tw.recordboard.TeamObj;
-import com.anklebreaker.basketball.tw.summary.PlayerGridViewAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
 import com.anklebreaker.basketball.tw.util.PlayerSelectDialog;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -34,7 +23,6 @@ public final class BasketFragment extends Fragment{
     
     // player list(GridView) for init
     public static ArrayList<PlayerObj> player_settingGrid = new ArrayList<PlayerObj>();
-    private static PlayerGridViewAdapter InitialAdapter;
     public static Boolean setMenu_flg = false;
     public static final String DEFAUT_STRING = "";
     
@@ -112,33 +100,13 @@ public final class BasketFragment extends Fragment{
         super.setMenuVisibility(visible);
         Log.i(TAG, "setMenuVisibility S");
         if (visible && mContent == "記錄板" && setMenu_flg == false) {
-        	// re-select players
+            // re-select players
             PlayerSelectDialog PSDialog = new PlayerSelectDialog(mContext);
             PSDialog.setCanceledOnTouchOutside(false);
             PSDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             PSDialog.show();
         }
         Log.i(TAG, "setMenuVisibility E");
-    }
-    
-    
-    /**
-     * getter and setter
-     * */
-    public ArrayList<PlayerObj> getPlayer_settingGrid() {
-         return player_settingGrid;
-    }
-
-    public void setPlayer_settingGrid(ArrayList<PlayerObj> pg) {
-        player_settingGrid = pg;
-    }
-
-    public static PlayerGridViewAdapter getInitialAdapter() {
-        return InitialAdapter;
-    }
-
-    public static void setInitialAdapter(PlayerGridViewAdapter initialAdapter) {
-        InitialAdapter = initialAdapter;
     }
 }
 

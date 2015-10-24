@@ -17,6 +17,7 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,25 +33,46 @@ public class PlayerDragListener implements OnDragListener{
     public boolean onDrag(View v, DragEvent event) {
 
         // Handles each of the expected events
-        Drawable normalShape = mContext.getResources().getDrawable(R.drawable.normal_color);
-        Drawable targetShape = mContext.getResources().getDrawable(R.drawable.target_shape);
+        //Drawable normalShape = mContext.getResources().getDrawable(R.drawable.normal_color);
+        //Drawable targetShape = mContext.getResources().getDrawable(R.drawable.target_shape);
+        
+        TextView draggedV = (TextView)event.getLocalState();
+        View dragPv = (View) draggedV.getParent();
+        
+        TextView destinationV = (TextView)v;
+        View desPv = (View) destinationV.getParent();
+        TextView nameView = (TextView) desPv.findViewById(R.id.name);
         
         switch (event.getAction()) {
         //signal for the start of a drag and drop operation.
             case DragEvent.ACTION_DRAG_STARTED:
                 Utilities.CustomToast(((Activity)mContext), "請拖曳到板凳區或背號上以進行更換");
+                
                 break;
                 
                 //the drag point has entered the bounding box of the View
             case DragEvent.ACTION_DRAG_ENTERED:
                 // have to handle different layout object(textview to tablerow)
-                //v.setBackgroundColor(Color.YELLOW);    //change the shape of the view
-
+                v.setBackgroundColor(Color.argb(142, 142, 142, 142));
+                if(nameView != null){
+                    nameView.setBackgroundColor(Color.argb(142, 142, 142, 142));
+                }
+                // change the color(#8e8e8e) of the view
                 break;
-                
+
                 //the user has moved the drag shadow outside the bounding box of the View
             case DragEvent.ACTION_DRAG_EXITED:
-                //v.setBackgroundColor(Color.BLUE);    //change the shape of the view back to normal
+                if(desPv instanceof RelativeLayout){
+                    // bench players
+                    v.setBackgroundColor(Color.TRANSPARENT);
+                }else{
+                    // change starters's background to white
+                    v.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    if(nameView != null){
+                        nameView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+                    }
+                }
+                
                 break;
                 
             //drag shadow has been released,the drag point is within the bounding box of the View
@@ -65,8 +87,7 @@ public class PlayerDragListener implements OnDragListener{
                 if(!m.find()){
                     num = num + "號";
                 }
-                // retireve the dragged view
-                TextView draggedV = (TextView)event.getLocalState();
+
                 // retrieve the dragged player
                 int drag = 0;
                 for(; drag< PlayerObj.playerMap.size(); drag++){
@@ -77,7 +98,6 @@ public class PlayerDragListener implements OnDragListener{
                 }
                 
                 // retrieve the data from dropped location
-                TextView destinationV = (TextView)v;
                 String droppedNum = (String) destinationV.getText();
                 m = p.matcher(droppedNum);
                 if(!m.find()){
@@ -117,7 +137,16 @@ public class PlayerDragListener implements OnDragListener{
                     */
                     Toast.makeText(mContext, "change player " + num + " to " + droppedNum, Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(mContext, "same group", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "這樣子換不了人喔", Toast.LENGTH_SHORT).show();
+                }
+                
+                // restore background color
+                if(desPv instanceof RelativeLayout){
+                    // bench players
+                    v.setBackgroundColor(Color.TRANSPARENT);
+                }else{
+                    // change starters's background to white
+                    v.setBackgroundColor(Color.argb(255, 255, 255, 255));
                 }
                 
                 break;

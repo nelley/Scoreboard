@@ -35,9 +35,9 @@
     </GridView>
     <Button
         android:id="@+id/btn_yes"
-        
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/playergrid"
         android:layout_alignParentBottom="true"
         android:background="@drawable/btn_selector"
         android:clickable="true"

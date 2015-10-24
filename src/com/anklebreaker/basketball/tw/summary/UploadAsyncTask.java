@@ -31,8 +31,9 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
     
     private final String TAG = "ScoreBoard.UploadAsyncTask";
     private final String msg = "資料上傳中...";
-    private final String URL = "http://192.168.0.3/shop/uploadGameRecord/";
-    private ProgressDialog progressDialog;				//與server連結處理時顯示進度的視窗
+    //private final String URL = "http://192.168.0.3/shop/uploadGameRecord/";
+    private final String URL = "http://www.namimochi.com/shop/uploadGameRecord/";
+    private ProgressDialog progressDialog;// 與server連結處理時顯示進度的視窗
     private JSONArray uploadObj = new JSONArray();
     private Activity tmpActivity;
     
@@ -50,6 +51,20 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
         progressDialog.setProgress(0);
         progressDialog.show();
         try{
+            // insert game info
+            JSONObject infoObj = new JSONObject();
+            infoObj.put("homeTeam",TeamObj.teamName[0]);
+            infoObj.put("awayTeam",TeamObj.teamName[1]);
+            infoObj.put("h_1st",TeamObj.scoreKeeper[0][0]);
+            infoObj.put("h_2nd",TeamObj.scoreKeeper[0][1]);
+            infoObj.put("h_3rd",TeamObj.scoreKeeper[0][2]);
+            infoObj.put("h_4th",TeamObj.scoreKeeper[0][3]);
+            infoObj.put("a_1st",TeamObj.scoreKeeper[1][0]);
+            infoObj.put("a_2nd",TeamObj.scoreKeeper[1][1]);
+            infoObj.put("a_3rd",TeamObj.scoreKeeper[1][2]);
+            infoObj.put("a_4th",TeamObj.scoreKeeper[1][3]);
+            uploadObj.put(infoObj);
+            
             for(int i=0; i<PlayerObj.playerMap.size(); i++){
                 if(PlayerObj.playerMap.get(i).getPlayerName() != TeamObj.DUMMY_PLAYER){
                     JSONObject playerObj = new JSONObject();
@@ -70,7 +85,8 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
                     playerObj.put("turnover", PlayerObj.playerMap.get(i).recordsArray[13]);
                     playerObj.put("foul", PlayerObj.playerMap.get(i).recordsArray[14]);
                     playerObj.put("totalPoint", PlayerObj.playerMap.get(i).recordsArray[15]);
-                    uploadObj.put(playerObj);	
+                    // insert player's game record
+                    uploadObj.put(playerObj);
                 }
             }
         }catch(JSONException e){
@@ -125,12 +141,10 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
         return sb.toString();
     }
 
-
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         Toast.makeText(tmpActivity, "上傳成功", Toast.LENGTH_SHORT).show();
         progressDialog.dismiss();
     }
-
 }

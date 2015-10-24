@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 
@@ -34,7 +33,7 @@ public class TeamObj {
     static final int CT_PANEL_BENCH = 7;
     
     public static final String DUMMY_PLAYER = "DUMMY_PLAYER";
-    public static final String NUM_DUMMY_PLAYER = "999";
+    public static final String NUM_DUMMY_PLAYER = "-1";
     
     private Context mContext = null;
     //undo stack
@@ -45,14 +44,14 @@ public class TeamObj {
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
 
-    // array for keep score
+    // array for keeping score
     public static int[][] scoreKeeper = new int[][]{
         {0,0,0,0},// home team
         {0,0,0,0}// away team
-        };
+    };
     
     public static final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
-    public static String[] teamName= new String[]{"主隊", "客隊"};
+    public static String[] teamName= new String[]{"己隊", "敵隊"};
     
     //pref
     public static final String PLAYER_FILE_NAME = "players";
@@ -165,21 +164,18 @@ public class TeamObj {
             mPlayerListAdapter.notifyDataSetChanged();
 
             //-----------------------------
-            //store info of players to local storage with no duplicate number
+            // store info of players to local storage with no duplicate number
             //-----------------------------
-            /*
             SharedPreferences pref = mContext.getSharedPreferences(PLAYER_FILE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             editor.clear();
-            int i = 0;
-            for(; i<selectedStarters.size(); i++){
-                editor.putString(PLAYER_POS[i], selectedStarters.get(i).getPlayerNum());
-            }
-            for(int k=0; k<selectedBenches.size(); k++){
-                editor.putString(PLAYER_POS[i+k], selectedBenches.get(k).getPlayerNum());
+            for(int i = 0; i < PlayerObj.playerMap.size(); i++){
+                if(PlayerObj.playerMap.get(i).getPlayerNum() != "-1"){
+                    editor.putString(PlayerObj.playerMap.get(i).getPlayerNum(), PlayerObj.playerMap.get(i).getPlayerNum());
+                }
             }
             editor.commit();
-            */
+            
             results = "ok";
         }
         return results;

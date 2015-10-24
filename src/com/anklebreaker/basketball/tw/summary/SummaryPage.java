@@ -108,6 +108,9 @@ public class SummaryPage{
         strFoul = (TextView)mixedView.findViewById(R.id.foul);
         mListView = (ListView) mixedView.findViewById(R.id.player_list);
         
+        // set the score
+        setHeaderScore();
+        
         // set the timer
         GameTimer.getInstance(mActivity, strTime, 180000, 100);
         strTime.setOnLongClickListener(new OnLongClickListener(){
@@ -644,4 +647,14 @@ public class SummaryPage{
         return qp;
     }
     
+    /**
+     * set the score to update the score board & scorekeeper
+     * */
+    private void setHeaderScore() {
+        int home_score = TeamObj.scoreKeeper[0][0] + TeamObj.scoreKeeper[0][1] +
+                         TeamObj.scoreKeeper[0][2] + TeamObj.scoreKeeper[0][3];
+        int away_score = TeamObj.scoreKeeper[1][0] + TeamObj.scoreKeeper[1][1] +
+                         TeamObj.scoreKeeper[1][2] + TeamObj.scoreKeeper[1][3];
+        strScore.setText(String.valueOf(home_score) + ":" + String.valueOf(away_score));
+    }
 }

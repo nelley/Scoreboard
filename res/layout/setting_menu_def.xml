@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="36sp"
-            android:text="主隊"/>
+            android:text="自己隊"/>
         <TextView
             android:id="@+id/myteam"
             android:padding="10dp"
@@ -50,7 +50,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="36sp"
-            android:text="客隊"/>
+            android:text="敵隊"/>
     </LinearLayout>
     <TableLayout 
         android:id="@+id/score_table"

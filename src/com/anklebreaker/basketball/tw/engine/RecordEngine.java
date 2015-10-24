@@ -103,7 +103,9 @@ public class RecordEngine {
     ImageView summary, rival, mBallAnim, mBallAna, missIcon, testBtn;
     Button undo, settingBnt, competitor;
     private String actTime;
-    private TextView strTime, strScore, strFoul;
+    private TextView strTime;
+	private TextView strScore;
+	private TextView strFoul;
     final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
     private float midX, midY, disX, disY;
     //for animation
@@ -864,16 +866,12 @@ public class RecordEngine {
   /**
    * set the score to update the score board & scorekeeper
    * */
-    private void setScore(int l, int r) {
-        String tmpScore[] = strScore.getText().toString().split(":");
-        int leftScore = Integer.valueOf(tmpScore[0]);
-        int rightScore = Integer.valueOf(tmpScore[1]);
-
-        String newRightScore = String.valueOf(rightScore + r);
-        String newLeftScore = String.valueOf(leftScore + l);
-
-        strScore.setText(newLeftScore + ":" + newRightScore);
-        
+    private void setHeaderScore() {
+        int home_score = TeamObj.scoreKeeper[0][0] + TeamObj.scoreKeeper[0][1] +
+                         TeamObj.scoreKeeper[0][2] + TeamObj.scoreKeeper[0][3];
+        int away_score = TeamObj.scoreKeeper[1][0] + TeamObj.scoreKeeper[1][1] +
+                         TeamObj.scoreKeeper[1][2] + TeamObj.scoreKeeper[1][3];
+        strScore.setText(String.valueOf(home_score) + ":" + String.valueOf(away_score));
     }
 
     /**
@@ -979,20 +977,20 @@ public class RecordEngine {
         case "1":
             actionCode = ActionDef.ACT_TWOP_MA;
             ActText = ActionDef.ACT_strTWOP_MA;
-            setScore(0,2);
             setQuarterScore(0,2);
+            setHeaderScore();
             break;
         case "2":
             actionCode = ActionDef.ACT_THREEP_MA;
             ActText = ActionDef.ACT_strTHREEP_MA;
-            setScore(0,3);
             setQuarterScore(0,3);
+            setHeaderScore();
             break;
         case "3":
             actionCode = ActionDef.ACT_FTMA;
             ActText = ActionDef.ACT_strFTMA;
-            setScore(0,1);
             setQuarterScore(0,1);
+            setHeaderScore();
             break;
         case "5":
             actionCode = ActionDef.ACT_TO;
@@ -1027,20 +1025,20 @@ public class RecordEngine {
       case "1":
           actionCode = ActionDef.ACT_TWOP_MA;
           ActText = ActionDef.ACT_strTWOP_MA;
-          setScore(2,0);
           setQuarterScore(2,0);
+          setHeaderScore();
           break;
       case "2":
           actionCode = ActionDef.ACT_THREEP_MA;
           ActText = ActionDef.ACT_strTHREEP_MA;
-          setScore(3,0);
           setQuarterScore(3,0);
+          setHeaderScore();
           break;
       case "3":
           actionCode = ActionDef.ACT_FTMA;
           ActText = ActionDef.ACT_strFTMA;
-          setScore(1,0);
           setQuarterScore(1,0);
+          setHeaderScore();
           break;
       case "5":
           actionCode = ActionDef.ACT_TO;
@@ -1230,8 +1228,8 @@ public class RecordEngine {
             //undo score board(summary board)
             mPlayerObj.setSummary(mPlayerObj, -1);
             //undo score board
-            setScore(leftUndo, rightUndo);
             undoQuarterScore(leftUndo,rightUndo, mPlayerObj);
+            setHeaderScore();
             // update UI view
             updateSingleRow(mPlayerObj);
             Utilities.CustomToast(mActivity, mPlayerObj.getPlayerName(), actionToText(mPlayerObj.playerAct, "取消"));
@@ -1259,8 +1257,8 @@ public class RecordEngine {
             //undo score board(summary board)
             //mPlayerObj.setSummary(mPlayerObj, -1);
             //undo score board
-            setScore(leftUndo, rightUndo);
             undoQuarterScore(leftUndo,rightUndo, CPObj);
+            setHeaderScore();
             // update UI view
             //updateSingleRow(mPlayerObj);
             Utilities.CustomToast(mActivity, CPObj.getPlayerName(), actionToText(CPObj.playerAct, "取消"));

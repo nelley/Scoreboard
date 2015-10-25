@@ -70,6 +70,7 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
                     JSONObject playerObj = new JSONObject();
                     playerObj.put("number", PlayerObj.playerMap.get(i).getPlayerNum());
                     playerObj.put("name", PlayerObj.playerMap.get(i).getPlayerName());
+                    playerObj.put("teamName", "Default");
                     playerObj.put("isStarter", PlayerObj.playerMap.get(i).getIsStarter());
                     playerObj.put("twoMade", PlayerObj.playerMap.get(i).recordsArray[2]);
                     playerObj.put("twoTried", PlayerObj.playerMap.get(i).recordsArray[3]);

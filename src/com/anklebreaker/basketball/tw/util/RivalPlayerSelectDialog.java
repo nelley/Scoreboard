@@ -15,8 +15,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -27,9 +25,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PlayerSelectDialog extends Dialog implements android.view.View.OnClickListener{
+public class RivalPlayerSelectDialog extends Dialog implements android.view.View.OnClickListener{
 
-    private static final String TAG = "PlayerSelectDialog";
+    private static final String TAG = "RivalPlayerSelectDialog";
     
     private Context mContext;
     private ListView mListView;
@@ -39,7 +37,7 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
     /**
      * @mListView the target of update listview
      * */
-    public PlayerSelectDialog(Context c, ListView mListView) {
+    public RivalPlayerSelectDialog(Context c, ListView mListView) {
         super(c);
         this.mContext = c;
         this.mListView = mListView;
@@ -67,15 +65,15 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         Button yesBtn = (Button)findViewById(R.id.btn_yes);
         yesBtn.setBackground(mContext.getResources().getDrawable(R.drawable.btn_selector));
         
+        // change the title's text
+        TextView title = (TextView) this.findViewById(R.id.txt_title);
+        title.setText("請設定B隊的上場球員");
+        
         yesBtn.setOnClickListener(this);
         //yesBtn.setOnKeyListener(this);
         
-        // change the title's text
-        TextView title = (TextView) this.findViewById(R.id.txt_title);
-        title.setText("請設定A隊的上場球員");
-        
         // get player list when last time using
-        SharedPreferences pref = mContext.getSharedPreferences(TeamObj.PLAYER_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences pref = mContext.getSharedPreferences(TeamObj.RIVAL_PLAYER_FILE_NAME, Context.MODE_PRIVATE);
         Map<String,?> keys = pref.getAll();
         
         // reset player_settingGrid
@@ -144,15 +142,10 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         switch (v.getId()) {
         case R.id.btn_yes:
             // set the players
-            set_text = TeamObj.setByUser(v, mContext, mListView);
+            set_text = TeamObj.setByUserRival(v, mContext, mListView);
             if(set_text=="ok"){
                 BasketFragment.setMenu_flg = true;
                 dismiss();
-                // team B selection
-                RivalPlayerSelectDialog PSDialog = new RivalPlayerSelectDialog(mContext, BasketFragment.listViewB);
-                PSDialog.setCanceledOnTouchOutside(false);
-                PSDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                PSDialog.show();
             }else{
                 Toast.makeText(mContext, set_text, Toast.LENGTH_SHORT).show();
             }
@@ -168,5 +161,4 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         //super.onBackPressed();
          Toast.makeText(mContext, "請重新選擇球員", Toast.LENGTH_SHORT).show();
     }
-
 }

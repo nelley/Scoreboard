@@ -1,7 +1,6 @@
 package com.anklebreaker.basketball.tw.tab;
 
-import java.util.ArrayList;
-import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
 import com.anklebreaker.basketball.tw.util.PlayerSelectDialog;
 import android.content.Context;
@@ -21,10 +20,15 @@ public final class BasketFragment extends Fragment{
     private String mContent = "???";
     private static Context mContext = null;
     
-    // player list(GridView) for init
-    public static ArrayList<PlayerObj> player_settingGrid = new ArrayList<PlayerObj>();
     public static Boolean setMenu_flg = false;
     public static final String DEFAUT_STRING = "";
+    
+    // team A listview
+    public static ListView listViewA;
+    // team B listview
+    public static ListView listViewB;
+    
+    PlayerSelectDialog PSDialog;
     
     //Constructor:TestFragment初始化,傳進陣列裡定義好的東西進來
     public static BasketFragment newInstance(String content, Context c) {
@@ -49,22 +53,18 @@ public final class BasketFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
         LinearLayout layout = null;
-        if(mContent.equals("記錄板")){
-            Log.i(TAG, "onCreateView summary");
+        if(mContent.equals(BasketBallAdapter.CONTENT[0])){
+            Log.i(TAG, "team A scoreboard init");
             SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
-            return mSummaryPage.createSummaryPage(inflater);
-        }else if(mContent.equals("比賽數據")){
-            Log.i(TAG, "onCreateView 4");
-            layout = new LinearLayout(getActivity());
-            TextView text = new TextView(getActivity());
-            text.setGravity(Gravity.CENTER);
-            text.setText(mContent);
-            text.setTextSize(20 * getResources().getDisplayMetrics().density);
-            text.setPadding(20, 20, 20, 20);
-            layout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-            layout.setGravity(Gravity.CENTER);
-            layout.addView(text);
-            return layout;
+            View mixedView = mSummaryPage.createSummaryPage(inflater);
+            listViewA = (ListView) mixedView.findViewById(R.id.player_list);
+            return mixedView;
+        }else if(mContent.equals(BasketBallAdapter.CONTENT[1])){
+            Log.i(TAG, "team B scoreboard init");
+            SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
+            View mixedView = mSummaryPage.createSummaryPage(inflater);
+            listViewB = (ListView) mixedView.findViewById(R.id.player_list);
+            return mixedView;
         }else{
             Log.i(TAG, "onCreateView else");
             layout = new LinearLayout(getActivity());
@@ -99,9 +99,15 @@ public final class BasketFragment extends Fragment{
     public void setMenuVisibility(boolean visible) {
         super.setMenuVisibility(visible);
         Log.i(TAG, "setMenuVisibility S");
-        if (visible && mContent == "記錄板" && setMenu_flg == false) {
-            // re-select players
-            PlayerSelectDialog PSDialog = new PlayerSelectDialog(mContext);
+        // prevent activity leak
+        if(PSDialog != null){
+            PSDialog = null;
+        }
+        
+        // show player selection dialog
+        if (visible && mContent == BasketBallAdapter.CONTENT[0] && setMenu_flg == false) {
+            // re-select players(listViewA will be null at first time)
+            PSDialog = new PlayerSelectDialog(mContext, listViewA);
             PSDialog.setCanceledOnTouchOutside(false);
             PSDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             PSDialog.show();

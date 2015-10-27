@@ -3,9 +3,11 @@ package com.anklebreaker.basketball.tw.util;
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.def.ActionDef;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
+import com.anklebreaker.basketball.tw.tab.BasketBallAdapter;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
 
 import android.app.Activity;
@@ -66,17 +68,22 @@ public class Custom_alert_Dialog extends Dialog implements android.view.View.OnC
                 // enable player select dialog
                 BasketFragment.setMenu_flg = false;
                 // reset listview
-                SummaryPage.IS_EXPAND = false;
+                SummaryPage.IS_EXPAND_A = false;
+                SummaryPage.IS_EXPAND_B = false;
                 
                 PlayerObj.playerMap.clear();
+                RivalPlayerObj.rivalPlayerMap.clear();
+                
                 TeamObj.undoStack.clear();
                 TeamObj.resetScoreKeeper();
                 TeamObj.resetTeamName();
+                TeamObj.resetCascadeDialogCnt();
                 SummaryPage.resetFoul();
                 SummaryPage.resetScore();
                 SummaryPage.resetTimer();
                 Log.i(TAG, "cleared!!");
                 Log.i(TAG, "playerMap: " + PlayerObj.playerMap.toString());
+                
                 Log.i(TAG, "undo stack: " + TeamObj.undoStack.toString());
                 
                 // re-locate default players()
@@ -85,7 +92,7 @@ public class Custom_alert_Dialog extends Dialog implements android.view.View.OnC
                 def_list_adapter.notifyDataSetChanged();
                 
                 // re-select players
-                PlayerSelectDialog PSDialog = new PlayerSelectDialog(mActivity);
+                PlayerSelectDialog PSDialog = new PlayerSelectDialog(mActivity, BasketFragment.listViewA);
                 PSDialog.setCanceledOnTouchOutside(false);
                 PSDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 PSDialog.show();

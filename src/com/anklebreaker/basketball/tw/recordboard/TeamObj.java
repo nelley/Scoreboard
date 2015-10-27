@@ -15,9 +15,10 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.anklebreaker.basketball.tw.R;
+import com.anklebreaker.basketball.tw.summary.PlayerGridViewAdapter;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.RecordBoardBtn;
-import com.anklebreaker.basketball.tw.tab.BasketFragment;
+import com.anklebreaker.basketball.tw.summary.RivalPlayerListAdapter;
 import com.anklebreaker.basketball.tw.util.StarterComparator;
 
 /**
@@ -25,25 +26,33 @@ import com.anklebreaker.basketball.tw.util.StarterComparator;
  * */
 public class TeamObj {
 
-	private static final String TAG = "ScoreBoard.TeamObj";
+    private static final String TAG = "ScoreBoard.TeamObj";
 
     static TeamObj ObjInstance = null;
     static final int CT_PANEL = 9;
     static final int CT_PANEL_STARTER = 5;
     static final int CT_PANEL_BENCH = 7;
     
+    public static int cascadeDialogCnt = 0;
+    
     public static final String DUMMY_PLAYER = "DUMMY_PLAYER";
     public static final String NUM_DUMMY_PLAYER = "-1";
+
+    // player list(GridView) for init
+    public static ArrayList<PlayerObj> player_settingGrid = new ArrayList<PlayerObj>();
+    // keep the data inside gridview
+    public static PlayerGridViewAdapter mInitialAdapter;
     
     private Context mContext = null;
-    //undo stack
+    // undo stack
     public static Stack<Player> undoStack = new Stack<Player>();
-    //3*3 record board
+    // 3*3 record board
     public static ArrayList<RecordBoardBtn> gridArray = new ArrayList<RecordBoardBtn>();
 
     // playerList adapter
     public static PlayerListAdapter mPlayerListAdapter = null;
-
+    public static RivalPlayerListAdapter mRivalPlayerListAdapter = null;
+    
     // array for keeping score
     public static int[][] scoreKeeper = new int[][]{
         {0,0,0,0},// home team
@@ -55,6 +64,8 @@ public class TeamObj {
     
     //pref
     public static final String PLAYER_FILE_NAME = "players";
+    public static final String RIVAL_PLAYER_FILE_NAME = "rival_players";
+    
     public static final String[] PLAYER_POS = new String[21];
     //
     int[] icons = {R.drawable.r, R.drawable.two, R.drawable.three,
@@ -108,13 +119,13 @@ public class TeamObj {
     /**
      * set starter and bench player dialog's method
      * */
-    static public String setByUser(View v, Context mContext){
+    static public String setByUser(View v, Context mContext, ListView mListView){
         int startCnt = 0;
         int benchCnt = 0;
         String results = null;
         // loop all players in the setting panel
-        for(int i = 0; i< BasketFragment.player_settingGrid.size(); i++){
-            PlayerObj mPlayer = BasketFragment.player_settingGrid.get(i);
+        for(int i = 0; i< player_settingGrid.size(); i++){
+            Player mPlayer = player_settingGrid.get(i);
             if(mPlayer.getIsBench()){
                 if(mPlayer.getIsStarter()){
                     // add to PlayerObj's playermap(starters)
@@ -157,10 +168,10 @@ public class TeamObj {
             View rootView = ((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content);
 
             //for starters
-            ListView startList = (ListView)rootView.findViewById(R.id.player_list);
+            mListView = (ListView)rootView.findViewById(R.id.player_list);
 
             //notify data changed
-            startList.setAdapter(mPlayerListAdapter);
+            mListView.setAdapter(mPlayerListAdapter);
             mPlayerListAdapter.notifyDataSetChanged();
 
             //-----------------------------
@@ -208,5 +219,86 @@ public class TeamObj {
      * */
     static public void resetTeamName(){
         teamName= new String[]{"主隊", "客隊"};
+    }
+    
+    /**
+     * 
+     * */
+    static public void resetCascadeDialogCnt(){
+        cascadeDialogCnt = 0;
+    }
+    
+    /**
+     * set starter and bench player dialog's method
+     * */
+    static public String setByUserRival(View v, Context mContext, ListView mListView){
+        int startCnt = 0;
+        int benchCnt = 0;
+        String results = null;
+        // loop all players in the setting panel
+        for(int i = 0; i< player_settingGrid.size(); i++){
+            Player mPlayer = player_settingGrid.get(i);
+            if(mPlayer.getIsBench()){
+                if(mPlayer.getIsStarter()){
+                    // add to PlayerObj's playermap(starters)
+                    RivalPlayerObj.getInstance(mContext, 9999, null, null, 
+                                          mPlayer.playerNum, mPlayer.playerName, 
+                                          true, false, true, null, -999, -999, -999);
+                    startCnt = startCnt + 1;
+                    
+                }else{
+                    // add to PlayerObj's playermap(bench players)
+                    RivalPlayerObj.getInstance(mContext, 9999, null, null, 
+                            mPlayer.playerNum, mPlayer.playerName, 
+                            false, true, false, null, -999, -999, -999);
+                    benchCnt = benchCnt + 1;
+                }
+            }
+        }
+        
+        if((startCnt + benchCnt) > 12){
+            results = "可登錄球員上限為十二人";
+            RivalPlayerObj.rivalPlayerMap.clear();
+        }else if(startCnt < 5){
+            results = "請選五位球員為先發";
+            RivalPlayerObj.rivalPlayerMap.clear();
+        }else if(startCnt > 5){
+            results = "先發球員不得超過五位";
+            RivalPlayerObj.rivalPlayerMap.clear();
+        }else{
+            //-----------------------------X
+            //update info to bench/starter players
+            //-----------------------------
+            // add expand banner
+            RivalPlayerObj.rivalPlayerMap.add(new RivalPlayerObj(NUM_DUMMY_PLAYER, DUMMY_PLAYER, false, false, false));
+            // sort by isStarter flag & isBench(Starters + DUMMY_PLAYER + Benches)
+            Collections.sort(RivalPlayerObj.rivalPlayerMap, new StarterComparator());
+            // set starters into listview(init)
+            mRivalPlayerListAdapter = new RivalPlayerListAdapter((Activity) mContext, RivalPlayerObj.rivalPlayerMap, false);
+
+            //notify data changed
+            mListView.setAdapter(mRivalPlayerListAdapter);
+            mRivalPlayerListAdapter.notifyDataSetChanged();
+
+            //-----------------------------
+            // store info of players to local storage with no duplicate number
+            //-----------------------------
+            SharedPreferences pref = mContext.getSharedPreferences(RIVAL_PLAYER_FILE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.clear();
+            for(int i = 0; i < RivalPlayerObj.rivalPlayerMap.size(); i++){
+                if(RivalPlayerObj.rivalPlayerMap.get(i).getPlayerNum() != "-1"){
+                    editor.putString(RivalPlayerObj.rivalPlayerMap.get(i).getPlayerNum(), RivalPlayerObj.rivalPlayerMap.get(i).getPlayerNum());
+                }
+            }
+            editor.commit();
+            
+            results = "ok";
+        }
+        return results;
+    }
+    
+    public static PlayerGridViewAdapter getmInitialAdapter() {
+        return mInitialAdapter;
     }
 }

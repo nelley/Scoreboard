@@ -15,7 +15,7 @@ public class BasketBallAdapter extends FragmentPagerAdapter implements IconPager
     
     private static final String TAG = "BasketBallAdapter";
     private Activity mActivity;
-    public final String[] CONTENT = new String[] {"記錄板", "人氣鬥牛場"};
+    public static final String[] CONTENT = new String[] {"比賽球隊A", "比賽球隊B"};
     public final int[] ICONS = new int[] {
         R.drawable.perm_group_calendar,
         R.drawable.perm_group_camera,

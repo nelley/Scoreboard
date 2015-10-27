@@ -6,6 +6,7 @@ import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.R.drawable;
 import com.anklebreaker.basketball.tw.recordboard.Player;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.tab.BasketFragment;
 import com.anklebreaker.basketball.tw.util.PlayerSelectDialog;
 
@@ -102,8 +103,8 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
                 //remove touched item
                 data.remove(touchItem.pos);
 
-                setPlayers.setAdapter(PlayerSelectDialog.getmInitialAdapter());
-                PlayerSelectDialog.getmInitialAdapter().notifyDataSetChanged();
+                setPlayers.setAdapter(TeamObj.getmInitialAdapter());
+                TeamObj.getmInitialAdapter().notifyDataSetChanged();
                 return false;
             }
         });
@@ -195,8 +196,8 @@ public class PlayerGridViewAdapter extends ArrayAdapter<PlayerObj>{
                                                             inputNum,// for player's name
                                                             false,false,false));
 
-                                            setPlayers.setAdapter(PlayerSelectDialog.getmInitialAdapter());
-                                            PlayerSelectDialog.getmInitialAdapter().notifyDataSetChanged();
+                                            setPlayers.setAdapter(TeamObj.getmInitialAdapter());
+                                            TeamObj.getmInitialAdapter().notifyDataSetChanged();
                                             defBuilder.dismiss();
                                         }
                                     }

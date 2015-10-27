@@ -1,17 +1,11 @@
 package com.anklebreaker.basketball.tw.recordboard;
 
-import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Bitmap;
 
 public class Player {
 
 	private static final String TAG = "RecordBoard.Player";
-    private static final int DIFF = 1;
-
-    //HashMap for managing the players
-    public static ArrayList<PlayerObj> playerMap = new ArrayList<PlayerObj>();
-    public static PlayerObj objInstance = null;
 
     public Context mContext = null;
     protected String playerNum =null;

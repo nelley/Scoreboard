@@ -1,6 +1,7 @@
 package com.anklebreaker.basketball.tw.engine;
 
 import java.util.ArrayList;
+
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +34,7 @@ import com.anklebreaker.basketball.tw.def.ActionDef;
 import com.anklebreaker.basketball.tw.recordboard.CompetitorObj;
 import com.anklebreaker.basketball.tw.recordboard.Player;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
@@ -57,9 +59,6 @@ public class RecordEngine {
     
     final String NUM_NAME_COMPETITOR = "對手";
     final String COMPETITOR = "COMPETITOR_PLAYER";
-
-    // control flag for expand banner
-    static public boolean IS_EXPAND = false;
 
     final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
     final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -131,7 +130,7 @@ public class RecordEngine {
     /**
      * initialize engine of record board
      * */
-    public void customPlayerObjDialogInit(final PlayerObj sPlayer, int layoutId, final View mixedV, 
+    public void customPlayerObjDialogInit(final Player sPlayer, int layoutId, final View mixedV, 
             final WindowManager.LayoutParams xParams){
         
         TextView title = new TextView(mActivity);
@@ -212,27 +211,45 @@ public class RecordEngine {
         // set the touch event
         twoBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 1, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 1, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 1, xParams, sPlayer);
+                }
+                
                 return true;
             }
         });
         freeBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 3, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 3, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 3, xParams, sPlayer);
+                }
+                
                 return true;
             }
         	
         });
         blockBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 6, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 6, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 6, xParams, sPlayer);
+                }
                 return true;
             }
         	
         });
         failBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 5, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 5, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 5, xParams, sPlayer);
+                }
                 return true;
             }
         	
@@ -240,28 +257,44 @@ public class RecordEngine {
         
         threeBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 2, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 2, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 2, xParams, sPlayer);
+                }
                 return true;
             }
         	
         });
         reboundBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 0, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 0, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 0, xParams, sPlayer);
+                }
                 return true;
             }
         	
         });
         assistBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 8, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 8, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 8, xParams, sPlayer);
+                }
                 return true;
             }
         	
         });
         stealBtn.setOnTouchListener(new OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event) {
-                doRecord(mixedV, event, 7, xParams, sPlayer);
+                if(sPlayer instanceof PlayerObj){
+                    doRecord(mixedV, event, 7, xParams, sPlayer);
+                }else{
+                    doRecordC(mixedV, event, 7, xParams, sPlayer);
+                }
                 return true;
             }
         	
@@ -465,7 +498,7 @@ public class RecordEngine {
      * record engine for players
      * */
     public void doRecord(View v, MotionEvent event, int touched, 
-            WindowManager.LayoutParams params, PlayerObj msPlayer){
+            WindowManager.LayoutParams params, Player msPlayer){
 
         //no response to player item + ACTION_DOWN/ACTION_MOVE
         if(!((event.getAction() == 0 || event.getAction() == 2) && touched == 4)){
@@ -631,7 +664,7 @@ public class RecordEngine {
      * record engine for competitors
      * */
     public void doRecordC(View v, MotionEvent event, int touched, 
-            WindowManager.LayoutParams params, CompetitorObj msPlayer){
+            WindowManager.LayoutParams params, Player msPlayer){
 
         //no response to player item + ACTION_DOWN/ACTION_MOVE
         if(!((event.getAction() == 0 || event.getAction() == 2) && touched == 4)){
@@ -708,7 +741,7 @@ public class RecordEngine {
                     if(lastPos > 5){
                         // update score & actionCode
                         MadeC(lastPos);
-                        CompetitorObj tmpPlayer = CompetitorObj.getInstance(mContext, actionCode, null,null, 
+                        RivalPlayerObj tmpPlayer = RivalPlayerObj.getInstance(mContext, actionCode, null,null, 
                                                                     msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
                                                                     true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                         TeamObj.addTimeLine(tmpPlayer);
@@ -722,7 +755,7 @@ public class RecordEngine {
                                 // update score & actionCode
                                 MadeC(lastPos);
                                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mBall.getLayoutParams();
-                                CompetitorObj tmpPlayer = CompetitorObj.getInstance(mContext, actionCode, null, null,
+                                RivalPlayerObj tmpPlayer = RivalPlayerObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
                                                                             true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
 
@@ -745,7 +778,7 @@ public class RecordEngine {
                             if(movingCheck(currentY)){
                                 // update scroe & actionCode
                                 Missed(lastPos);
-                                CompetitorObj tmpPlayer = CompetitorObj.getInstance(mContext, actionCode, null, null,
+                                RivalPlayerObj tmpPlayer = RivalPlayerObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
                                                                             true, false, true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
                                 updateFoul(tmpPlayer, 0, 1);
@@ -1235,7 +1268,7 @@ public class RecordEngine {
             Utilities.CustomToast(mActivity, mPlayerObj.getPlayerName(), actionToText(mPlayerObj.playerAct, "取消"));
         }else{
             // if target of undo is CompetitorObj
-            CompetitorObj CPObj = (CompetitorObj) TeamObj.undoStack.pop();
+            RivalPlayerObj CPObj = (RivalPlayerObj) TeamObj.undoStack.pop();
 
             switch(CPObj.playerAct){
             case ActionDef.ACT_TWOP_MA:

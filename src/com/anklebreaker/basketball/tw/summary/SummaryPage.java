@@ -41,7 +41,9 @@ import com.anklebreaker.basketball.tw.engine.RecordEngine;
 import com.anklebreaker.basketball.tw.recordboard.CompetitorObj;
 import com.anklebreaker.basketball.tw.recordboard.GameTimer;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
+import com.anklebreaker.basketball.tw.tab.BasketFragment;
 import com.anklebreaker.basketball.tw.util.Custom_alert_Dialog;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 
@@ -57,7 +59,8 @@ public class SummaryPage{
     final int LEFT = 0;
     final int RIGHT = 1;
     // control flag for expand banner
-    public static boolean IS_EXPAND = false;
+    public static boolean IS_EXPAND_A = false;
+    public static boolean IS_EXPAND_B = false;
 
     //default definition of img
     Integer[] imageSet = {R.drawable.basketicon, R.drawable.basketicon,R.drawable.basketicon};
@@ -165,7 +168,6 @@ public class SummaryPage{
                                 }else{
                                     Toast.makeText(mActivity, "ok", Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         });
                     }
@@ -200,48 +202,95 @@ public class SummaryPage{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                // change the listview by watching bench player's data or not
-                if(position == EXPAND_BANNER){
-                    if(IS_EXPAND){
-                        // fold the listview
-                        IS_EXPAND = false;
-                        TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-                        mListView.setAdapter(TeamObj.mPlayerListAdapter);
-                        TeamObj.mPlayerListAdapter.notifyDataSetChanged();
-                    }else{
-                        // expand the listview
-                        IS_EXPAND = true;
-                        TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
-                        mListView.setAdapter(TeamObj.mPlayerListAdapter);
-                        TeamObj.mPlayerListAdapter.notifyDataSetChanged();
-                    }
 
-                }else{
-                    // init overlay's view param object
-                    WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                            WindowManager.LayoutParams.WRAP_CONTENT,
-                            WindowManager.LayoutParams.WRAP_CONTENT,
-                            WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                            PixelFormat.TRANSLUCENT);
-                    
-                    // get alertDialog's title
-                    PlayerObj selectPlayer = PlayerObj.playerMap.get(position);
-                    // create alertDialog to show the 9*9 panel
-                    RecordEngine competitorDialog = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
-                    competitorDialog.customPlayerObjDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
-                    competitorDialog = null;
-                    // update the player_list's content
-                    // end
+                // team A change the mode
+                if(parent.getAdapter() instanceof PlayerListAdapter){
+                    // change the listview by watching bench player's data or not
+                    if(position == EXPAND_BANNER){
+                        if(IS_EXPAND_A){
+                            // fold the listview
+                            IS_EXPAND_A = false;
+                            TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND_A);
+                            mListView.setAdapter(TeamObj.mPlayerListAdapter);
+                            TeamObj.mPlayerListAdapter.notifyDataSetChanged();
+                        }else{
+                            // expand the listview
+                            IS_EXPAND_A = true;
+                            TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND_A);
+                            mListView.setAdapter(TeamObj.mPlayerListAdapter);
+                            TeamObj.mPlayerListAdapter.notifyDataSetChanged();
+                        }
+
+                    }else{
+                        // init overlay's view param object
+                        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                                WindowManager.LayoutParams.WRAP_CONTENT,
+                                WindowManager.LayoutParams.WRAP_CONTENT,
+                                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                                PixelFormat.TRANSLUCENT);
+                        
+                        // get alertDialog's title
+                        PlayerObj selectPlayer = PlayerObj.playerMap.get(position);
+                        // create alertDialog to show the 9*9 panel
+                        RecordEngine recordDialogA = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
+                        recordDialogA.customPlayerObjDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
+                        recordDialogA = null;
+                        // update the player_list's content
+                        // end
+                    }
+                }else{// team B change the mode
+                    //Toast.makeText(mContext, TAG, Toast.LENGTH_SHORT).show();
+                    // change the listview by watching bench player's data or not
+                    if(position == EXPAND_BANNER){
+                        if(IS_EXPAND_B){
+                            // fold the listview
+                            IS_EXPAND_B = false;
+                            TeamObj.mRivalPlayerListAdapter = new RivalPlayerListAdapter(mActivity, RivalPlayerObj.rivalPlayerMap, IS_EXPAND_B);
+                            mListView.setAdapter(TeamObj.mRivalPlayerListAdapter);
+                            TeamObj.mRivalPlayerListAdapter.notifyDataSetChanged();
+                        }else{
+                            // expand the listview
+                            IS_EXPAND_B = true;
+                            TeamObj.mRivalPlayerListAdapter = new RivalPlayerListAdapter(mActivity, RivalPlayerObj.rivalPlayerMap, IS_EXPAND_B);
+                            mListView.setAdapter(TeamObj.mRivalPlayerListAdapter);
+                            TeamObj.mRivalPlayerListAdapter.notifyDataSetChanged();
+                        }
+
+                    }else{
+                        // init overlay's view param object
+                        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                                WindowManager.LayoutParams.WRAP_CONTENT,
+                                WindowManager.LayoutParams.WRAP_CONTENT,
+                                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                                PixelFormat.TRANSLUCENT);
+                        
+                        // get alertDialog's title
+                        RivalPlayerObj selectPlayer = RivalPlayerObj.rivalPlayerMap.get(position);
+                        // create alertDialog to show the 9*9 panel
+                        RecordEngine recordDialogB = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
+                        recordDialogB.customPlayerObjDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
+                        recordDialogB = null;
+                        // update the player_list's content
+                        // end
+                    }
                 }
+                
             }
         });
 
         // init when opening the app
         if(PlayerObj.playerMap.size() != 0){
-            TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND);
+            // team A init
+            TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND_A);
             mListView.setAdapter(TeamObj.mPlayerListAdapter);
             TeamObj.mPlayerListAdapter.notifyDataSetChanged();
+        }else if(RivalPlayerObj.rivalPlayerMap.size() != 0){
+            // team B init
+            TeamObj.mRivalPlayerListAdapter = new RivalPlayerListAdapter(mActivity, RivalPlayerObj.rivalPlayerMap, IS_EXPAND_B);
+            mListView.setAdapter(TeamObj.mRivalPlayerListAdapter);
+            TeamObj.mRivalPlayerListAdapter.notifyDataSetChanged();
         }else{
             def_list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
             mListView.setAdapter(def_list_adapter);	
@@ -252,7 +301,7 @@ public class SummaryPage{
         initUndo(mixedView);
         
         // init competitor
-        initCompetitor(mixedView);
+        //initCompetitor(mixedView);
         
         // init setting button
         initSettingBtn(mixedView);

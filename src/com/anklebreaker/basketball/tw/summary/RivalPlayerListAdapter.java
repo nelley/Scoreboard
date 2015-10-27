@@ -3,12 +3,12 @@ package com.anklebreaker.basketball.tw.summary;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.recordboard.Player;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
+import com.anklebreaker.basketball.tw.summary.PlayerListAdapter.PlayerHolder;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -22,16 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 
-/**
- * adapter for showing players in the main listview
- * */
-public class PlayerListAdapter extends BaseAdapter{
-
-    private static final String TAG = "ScoreBoard.PlayerListAdapter";
+public class RivalPlayerListAdapter extends BaseAdapter{
+	private static final String TAG = "ScoreBoard.RivalPlayerListAdapter";
 
     private final int TYPE_MAX_COUNT = 3;
     private Activity activity;
-    private static ArrayList<PlayerObj> playerData;
+    private static ArrayList<RivalPlayerObj> playerData;
 
     private LayoutInflater mInflater;
     private boolean isExpand;
@@ -47,7 +43,7 @@ public class PlayerListAdapter extends BaseAdapter{
      * @a activity
      * @player players(all players OR bench players)
      * */
-    public PlayerListAdapter(Activity a, ArrayList<PlayerObj> player, boolean f) {
+    public RivalPlayerListAdapter(Activity a, ArrayList<RivalPlayerObj> player, boolean f) {
         super();
         activity = a;
         playerData = player;

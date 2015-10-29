@@ -59,6 +59,9 @@ public class TeamObj {
         {0,0,0,0}// away team
     };
     
+    // array for keeping foul info
+    public static int[] foulKeeper = new int[]{0,0};
+    
     public static final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
     public static String[] teamName= new String[]{"己隊", "敵隊"};
     
@@ -214,6 +217,9 @@ public class TeamObj {
             };
     }
     
+    static public void resetFoulKeeper(){
+        foulKeeper = new int[]{0, 0};
+    }
     /**
      * 
      * */

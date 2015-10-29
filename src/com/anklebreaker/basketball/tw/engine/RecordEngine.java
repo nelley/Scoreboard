@@ -38,6 +38,7 @@ import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.PlayerListAdapter;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
+import com.anklebreaker.basketball.tw.tab.BasketFragment;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 import com.anklebreaker.basketball.tw.util.Utilities;
 
@@ -103,7 +104,7 @@ public class RecordEngine {
     Button undo, settingBnt, competitor;
     private String actTime;
     private TextView strTime;
-	private TextView strScore;
+	//private TextView strScore;
 	private TextView strFoul;
     final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
     private float midX, midY, disX, disY;
@@ -114,13 +115,13 @@ public class RecordEngine {
     View floatView = null;
     
     public RecordEngine(Context c, Activity act, ImageView bktC, 
-            TextView st, ListView mlv, TextView sS, TextView sF){
+            TextView st, ListView mlv, TextView sF){
         this.mContext = c;
         this.mActivity = act;
         this.bktCourt = bktC;
         this.strTime = st;
         this.mListView = mlv;
-        this.strScore = sS;
+        //this.strScore = sS;
         this.strFoul = sF;
     }
     
@@ -744,6 +745,8 @@ public class RecordEngine {
                         RivalPlayerObj tmpPlayer = RivalPlayerObj.getInstance(mContext, actionCode, null,null, 
                                                                     msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
                                                                     true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
+                        tmpPlayer.setSummary(tmpPlayer, 1);
+                        updateSingleRow(tmpPlayer);
                         TeamObj.addTimeLine(tmpPlayer);
                         Utilities.CustomToast(mActivity, tmpPlayer.getPlayerName(), ActText);
 
@@ -759,6 +762,8 @@ public class RecordEngine {
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(), 
                                                                             true, false,true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
 
+                                tmpPlayer.setSummary(tmpPlayer, 1);
+                                updateSingleRow(tmpPlayer);
                                 TeamObj.addTimeLine(tmpPlayer);
                                 Utilities. CustomToast(mActivity, tmpPlayer.getPlayerName(), ActText);
                                 //if 2 or 3 point made, show animation
@@ -781,6 +786,9 @@ public class RecordEngine {
                                 RivalPlayerObj tmpPlayer = RivalPlayerObj.getInstance(mContext, actionCode, null, null,
                                                                             msPlayer.getPlayerNum(), msPlayer.getPlayerName(),
                                                                             true, false, true, actTime, tmpQuarter, DEFAULT_X, DEFAULT_Y);
+                                
+                                tmpPlayer.setSummary(tmpPlayer, 1);
+                                updateSingleRow(tmpPlayer);
                                 updateFoul(tmpPlayer, 0, 1);
                                 TeamObj.addTimeLine(tmpPlayer);
                                 Utilities.CustomToast(mActivity, tmpPlayer.getPlayerName(), ActText);
@@ -904,7 +912,8 @@ public class RecordEngine {
                          TeamObj.scoreKeeper[0][2] + TeamObj.scoreKeeper[0][3];
         int away_score = TeamObj.scoreKeeper[1][0] + TeamObj.scoreKeeper[1][1] +
                          TeamObj.scoreKeeper[1][2] + TeamObj.scoreKeeper[1][3];
-        strScore.setText(String.valueOf(home_score) + ":" + String.valueOf(away_score));
+        BasketFragment.getStrScoreA().setText(String.valueOf(home_score) + ":" + String.valueOf(away_score));
+        BasketFragment.getStrScoreB().setText(String.valueOf(home_score) + ":" + String.valueOf(away_score));
     }
 
     /**
@@ -1175,7 +1184,7 @@ public class RecordEngine {
   /**
    * refresh single row in player's listview
    * */
-    private void updateSingleRow(PlayerObj tPlayer) {
+    private void updateSingleRow(Player tPlayer) {
       // get touched player's number
       String touchedNumString = tPlayer.getPlayerNum();
       // check the visible range of the listview
@@ -1216,17 +1225,13 @@ public class RecordEngine {
    * refresh foul textview in header.xml
    * */
     private void updateFoul(Player tPlayer, int l, int r){
-      if(tPlayer.playerAct == ActionDef.ACT_FOUL){
-          String tmpFoul[] = strFoul.getText().toString().split(":");
-          int leftScore = Integer.valueOf(tmpFoul[0]);
-          int rightScore = Integer.valueOf(tmpFoul[1]);
 
-          String newLeftScore = String.valueOf(leftScore + l);
-          String newRightScore = String.valueOf(rightScore + r);
-
-          strFoul.setText(newLeftScore + ":" + newRightScore);
-      }
-      
+        if(tPlayer.playerAct == ActionDef.ACT_FOUL){
+            TeamObj.foulKeeper[0] += l;
+            TeamObj.foulKeeper[1] += r;
+            BasketFragment.getStrFoulA().setText(String.valueOf(TeamObj.foulKeeper[0]) + ":" + String.valueOf(TeamObj.foulKeeper[1]));
+            BasketFragment.getStrFoulB().setText(String.valueOf(TeamObj.foulKeeper[0]) + ":" + String.valueOf(TeamObj.foulKeeper[1]));
+        }
     }
 
     /**
@@ -1288,14 +1293,13 @@ public class RecordEngine {
                 break;
             }
             //undo score board(summary board)
-            //mPlayerObj.setSummary(mPlayerObj, -1);
+            CPObj.setSummary(CPObj, -1);
             //undo score board
             undoQuarterScore(leftUndo,rightUndo, CPObj);
             setHeaderScore();
             // update UI view
-            //updateSingleRow(mPlayerObj);
+            updateSingleRow(CPObj);
             Utilities.CustomToast(mActivity, CPObj.getPlayerName(), actionToText(CPObj.playerAct, "取消"));
-
         }
     }
 

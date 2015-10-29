@@ -230,7 +230,7 @@ public class PlayerListAdapter extends BaseAdapter{
 
                             
                             // preprocess of the drag & drop in bench players
-                            iv.setOnLongClickListener(new DragNDropTouchListener(activity, iv));
+                            iv.setOnLongClickListener(new DragNDropTouchListener(activity, iv, playerData.get(0)));
                             // definition of each process in drag & drop 
                             iv.setOnDragListener(new PlayerDragListener(activity));
                             
@@ -276,7 +276,7 @@ public class PlayerListAdapter extends BaseAdapter{
             // register drag n drop listener to each player's number
             TextView tmpNum = (TextView) convertView.findViewById(R.id.playerrow).findViewById(R.id.number);
             tmpNum.setOnDragListener(new PlayerDragListener(activity));
-            tmpNum.setOnLongClickListener(new DragNDropTouchListener(activity, tmpNum));
+            tmpNum.setOnLongClickListener(new DragNDropTouchListener(activity, tmpNum, playerData.get(0)));
         }
         return convertView;
     }

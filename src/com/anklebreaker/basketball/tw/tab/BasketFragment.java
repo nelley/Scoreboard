@@ -3,6 +3,7 @@ package com.anklebreaker.basketball.tw.tab;
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
 import com.anklebreaker.basketball.tw.util.PlayerSelectDialog;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +28,11 @@ public final class BasketFragment extends Fragment{
     public static ListView listViewA;
     // team B listview
     public static ListView listViewB;
+    
+    // team A score textview
+    private static TextView strScoreA, strFoulA, strTimeA, strTimeTitleA;
+    // team B score textview
+    private static TextView strScoreB, strFoulB, strTimeB, strTimeTitleB;
     
     PlayerSelectDialog PSDialog;
     
@@ -58,12 +64,20 @@ public final class BasketFragment extends Fragment{
             SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
             View mixedView = mSummaryPage.createSummaryPage(inflater);
             listViewA = (ListView) mixedView.findViewById(R.id.player_list);
+            strTimeTitleA = (TextView) mixedView.findViewById(R.id.timeTitle);
+            strScoreA = (TextView) mixedView.findViewById(R.id.score);
+            strFoulA = (TextView) mixedView.findViewById(R.id.foul);
+            strTimeA = (TextView) mixedView.findViewById(R.id.time);
             return mixedView;
         }else if(mContent.equals(BasketBallAdapter.CONTENT[1])){
             Log.i(TAG, "team B scoreboard init");
             SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
             View mixedView = mSummaryPage.createSummaryPage(inflater);
             listViewB = (ListView) mixedView.findViewById(R.id.player_list);
+            strTimeTitleB = (TextView) mixedView.findViewById(R.id.timeTitle);
+            strScoreB = (TextView) mixedView.findViewById(R.id.score);
+            strFoulB = (TextView) mixedView.findViewById(R.id.foul);
+            strTimeB = (TextView) mixedView.findViewById(R.id.time);
             return mixedView;
         }else{
             Log.i(TAG, "onCreateView else");
@@ -113,6 +127,38 @@ public final class BasketFragment extends Fragment{
             PSDialog.show();
         }
         Log.i(TAG, "setMenuVisibility E");
+    }
+    
+    /**
+     * reset foul record
+     * */
+    public static void resetScore(){
+        strScoreA.setText("0:0");
+        strScoreB.setText("0:0");
+    }
+    
+    /**
+     * reset score record
+     * */
+    public static void resetFoul(){
+        strFoulA.setText("0:0");
+        strFoulB.setText("0:0");
+    }
+
+    public static TextView getStrScoreA() {
+        return strScoreA;
+    }
+
+    public static TextView getStrFoulA() {
+        return strFoulA;
+    }
+
+    public static TextView getStrScoreB() {
+        return strScoreB;
+    }
+
+    public static TextView getStrFoulB() {
+        return strFoulB;
     }
 }
 

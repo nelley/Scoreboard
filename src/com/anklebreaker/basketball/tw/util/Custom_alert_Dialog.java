@@ -78,9 +78,13 @@ public class Custom_alert_Dialog extends Dialog implements android.view.View.OnC
                 TeamObj.resetScoreKeeper();
                 TeamObj.resetTeamName();
                 TeamObj.resetCascadeDialogCnt();
-                SummaryPage.resetFoul();
-                SummaryPage.resetScore();
+                
+                BasketFragment.resetFoul();
+                BasketFragment.resetScore();
+                BasketFragment.resetFoul();
+                
                 SummaryPage.resetTimer();
+                
                 Log.i(TAG, "cleared!!");
                 Log.i(TAG, "playerMap: " + PlayerObj.playerMap.toString());
                 

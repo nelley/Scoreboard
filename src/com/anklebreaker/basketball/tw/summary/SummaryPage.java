@@ -1,7 +1,6 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.HashMap;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,7 +33,6 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.def.ActionDef;
 import com.anklebreaker.basketball.tw.engine.RecordEngine;
@@ -43,7 +41,6 @@ import com.anklebreaker.basketball.tw.recordboard.GameTimer;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
-import com.anklebreaker.basketball.tw.tab.BasketFragment;
 import com.anklebreaker.basketball.tw.util.Custom_alert_Dialog;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 
@@ -82,7 +79,7 @@ public class SummaryPage{
     
     ImageView bktCourt, summary, rival, mBall, mBallAnim, mBallAna, missIcon, testBtn;
     Button undo, settingBnt, competitor;
-    private static TextView strTime, strTimeTitle, strScore, strFoul;
+    private TextView strTime, strTimeTitle, strScore, strFoul;
     private static NumberPicker qp;
 
     private TextView teama, teamb;
@@ -233,7 +230,7 @@ public class SummaryPage{
                         // get alertDialog's title
                         PlayerObj selectPlayer = PlayerObj.playerMap.get(position);
                         // create alertDialog to show the 9*9 panel
-                        RecordEngine recordDialogA = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
+                        RecordEngine recordDialogA = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strFoul);
                         recordDialogA.customPlayerObjDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
                         recordDialogA = null;
                         // update the player_list's content
@@ -269,7 +266,7 @@ public class SummaryPage{
                         // get alertDialog's title
                         RivalPlayerObj selectPlayer = RivalPlayerObj.rivalPlayerMap.get(position);
                         // create alertDialog to show the 9*9 panel
-                        RecordEngine recordDialogB = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
+                        RecordEngine recordDialogB = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strFoul);
                         recordDialogB.customPlayerObjDialogInit(selectPlayer, R.layout.summarypage_record_board, mixedView, params);
                         recordDialogB = null;
                         // update the player_list's content
@@ -334,7 +331,7 @@ public class SummaryPage{
                 if(!TeamObj.undoStack.empty()){
                     // animation
                     v.startAnimation(animRotate);
-                    RecordEngine tmp = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
+                    RecordEngine tmp = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strFoul);
                     tmp.undo(v);
                     
                 }else{
@@ -369,7 +366,7 @@ public class SummaryPage{
                 // get alertDialog's title
                 CompetitorObj competitorPlayer = new CompetitorObj(NUM_NAME_COMPETITOR, COMPETITOR, false, false, false);
                 // create alertDialog to show the 9*9 panelX
-                RecordEngine competitorDialog = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strScore, strFoul);
+                RecordEngine competitorDialog = new RecordEngine(mContext, mActivity, bktCourt, strTime, mListView, strFoul);
                 competitorDialog.CompetitorDialogInit(competitorPlayer, R.layout.summarypage_record_board, v, params);
                 competitorDialog = null;
             }
@@ -667,19 +664,6 @@ public class SummaryPage{
         tmp.dismiss();
     }
     
-    /**
-     * reset foul record
-     * */
-    public static void resetScore(){
-        strScore.setText("0:0");
-    }
-    
-    /**
-     * reset score record
-     * */
-    public static void resetFoul(){
-        strFoul.setText("0:0");
-    }
     
     /**
      * reset score timer

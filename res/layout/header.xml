@@ -12,45 +12,54 @@
             android:paddingLeft="10dp"
             android:textSize="18sp"
             android:text="Time">
-        </TextView >
-        <TextView 
+        </TextView>
+        <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingRight="20dp"
             android:textSize="36sp"
             android:layout_toRightOf="@+id/timeTitle"
             android:text="00:00:0">
-        </TextView >
+        </TextView>
         <TextView 
-            android:id="@+id/scoreTitle"
+            android:id="@+id/teamA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="10dp"
             android:textSize="18sp"
             android:layout_toRightOf="@+id/time"
-            android:text="Score">
-        </TextView >
-        <TextView 
+            android:text="球隊A">
+        </TextView>
+        <TextView
             android:id="@+id/score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="36sp"
-            android:layout_toRightOf="@+id/scoreTitle"
+            android:layout_toRightOf="@+id/teamA"
             android:text="0:0">
-        </TextView >
+        </TextView>
         <TextView 
+            android:id="@+id/teamB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:layout_toRightOf="@+id/score"
+            android:text="球隊B">
+        </TextView>
+        <TextView
             android:id="@+id/foulTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="10dp"
+            android:paddingLeft="20dp"
             android:textSize="18sp"
-            android:layout_toRightOf="@+id/score"
+            android:layout_toRightOf="@+id/teamB"
             android:text="Foul">
-        </TextView >
+        </TextView>
         <TextView 
             android:id="@+id/foul"
             android:layout_width="wrap_content"

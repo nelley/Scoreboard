@@ -1,6 +1,7 @@
 package com.anklebreaker.basketball.tw.summary;
 
 import java.util.HashMap;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.anklebreaker.basketball.tw.R;
 import com.anklebreaker.basketball.tw.def.ActionDef;
 import com.anklebreaker.basketball.tw.engine.RecordEngine;
@@ -41,6 +43,7 @@ import com.anklebreaker.basketball.tw.recordboard.GameTimer;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
+import com.anklebreaker.basketball.tw.tab.BasketBallAdapter;
 import com.anklebreaker.basketball.tw.util.Custom_alert_Dialog;
 import com.anklebreaker.basketball.tw.util.MultiDevInit;
 
@@ -68,8 +71,9 @@ public class SummaryPage{
     Integer[] freeThrow = {R.drawable.free_press, R.drawable.in,R.drawable.miss};
     Integer[] to_n_foul = {R.drawable.fail_press, R.drawable.fail_up,R.drawable.fail_down};
 
-    Context mContext = null;
-    FragmentActivity mActivity = null;
+    private Context mContext = null;
+    private FragmentActivity mActivity = null;
+    private String label = null;
     
     //public static PlayerListAdapter select_list_adapter = null;
     private ListView mListView;
@@ -90,9 +94,10 @@ public class SummaryPage{
     /**
      * constructor
      * */
-    public SummaryPage(Context c, FragmentActivity a){
+    public SummaryPage(Context c, FragmentActivity a, String l){
         mActivity = a;
         mContext = c;
+        label = l;
     }
 
     /*
@@ -279,15 +284,17 @@ public class SummaryPage{
 
         // init when opening the app
         if(PlayerObj.playerMap.size() != 0){
-            // team A init
-            TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND_A);
-            mListView.setAdapter(TeamObj.mPlayerListAdapter);
-            TeamObj.mPlayerListAdapter.notifyDataSetChanged();
-        }else if(RivalPlayerObj.rivalPlayerMap.size() != 0){
-            // team B init
-            TeamObj.mRivalPlayerListAdapter = new RivalPlayerListAdapter(mActivity, RivalPlayerObj.rivalPlayerMap, IS_EXPAND_B);
-            mListView.setAdapter(TeamObj.mRivalPlayerListAdapter);
-            TeamObj.mRivalPlayerListAdapter.notifyDataSetChanged();
+            if(label == BasketBallAdapter.CONTENT[0]){
+                // team A init
+                TeamObj.mPlayerListAdapter = new PlayerListAdapter(mActivity, PlayerObj.playerMap, IS_EXPAND_A);
+                mListView.setAdapter(TeamObj.mPlayerListAdapter);
+                TeamObj.mPlayerListAdapter.notifyDataSetChanged();
+            }else if(label == BasketBallAdapter.CONTENT[1]){
+                // team B init
+                TeamObj.mRivalPlayerListAdapter = new RivalPlayerListAdapter(mActivity, RivalPlayerObj.rivalPlayerMap, IS_EXPAND_B);
+                mListView.setAdapter(TeamObj.mRivalPlayerListAdapter);
+                TeamObj.mRivalPlayerListAdapter.notifyDataSetChanged();
+            }
         }else{
             def_list_adapter = new PlayerListAdapter(mActivity, ActionDef.defaultTotalPlayer, false);
             mListView.setAdapter(def_list_adapter);	

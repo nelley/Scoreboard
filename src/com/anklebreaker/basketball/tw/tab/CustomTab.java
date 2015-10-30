@@ -3,6 +3,10 @@ package com.anklebreaker.basketball.tw.tab;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint.Style;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -69,6 +73,8 @@ public class CustomTab extends HorizontalScrollView implements PageIndicator{
 
         mTabLayout = new IcsLinearLayout(context, R.attr.vpiTabPageIndicatorStyle);
         addView(mTabLayout, new ViewGroup.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
+        
+
     }
 
     public void setOnTabReselectedListener(OnTabReselectedListener listener) {
@@ -236,6 +242,9 @@ public class CustomTab extends HorizontalScrollView implements PageIndicator{
                 animateToTab(item);
             }
         }
+        
+        // NELLEY added
+        BasketFragment.setScoreTextBorder(item);
     }
 
     @Override

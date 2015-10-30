@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,29 @@ public class RivalPlayerSelectDialog extends Dialog implements android.view.View
         params.height = MultiDevInit.yPIXEL*9/10;
         getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         
+        // set color list's size
+        for(int i=0; i<TeamObj.teamColor.length; i++){
+            final ImageView tmpIV = (ImageView) findViewById(TeamObj.teamColor[i]);
+            tmpIV.getLayoutParams().width = MultiDevInit.IndicatorH;
+            tmpIV.getLayoutParams().height = MultiDevInit.IndicatorH;
+            tmpIV.setTag(TeamObj.teamColorCode[i]);
+            tmpIV.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                	// remove selected color
+                    TeamObj.teamColorKeeper[1] = -1;
+                    // remove all the select icon
+                    for(int j=0; j<TeamObj.teamColor.length; j++){
+                        ((ImageView)findViewById(TeamObj.teamColor[j])).setImageResource(android.R.color.transparent);	
+                    }
+                    // set the image icon to the selected one
+                    tmpIV.setImageResource(R.drawable.select_icon);
+                    // keep the select color
+                    TeamObj.teamColorKeeper[1] = (int) v.getTag();
+                }
+            });
+        }
+        
         // set gridview's size
         GridView setPlayers = (GridView) this.findViewById(R.id.playergrid);
         setPlayers.getLayoutParams().height = MultiDevInit.yPIXEL*6/10;
@@ -67,7 +91,7 @@ public class RivalPlayerSelectDialog extends Dialog implements android.view.View
         
         // change the title's text
         TextView title = (TextView) this.findViewById(R.id.txt_title);
-        title.setText("請設定B隊的上場球員");
+        title.setText("請設定B隊的球衣顏色,比賽球員");
         
         yesBtn.setOnClickListener(this);
         //yesBtn.setOnKeyListener(this);
@@ -145,6 +169,8 @@ public class RivalPlayerSelectDialog extends Dialog implements android.view.View
             set_text = TeamObj.setByUserRival(v, mContext, mListView);
             if(set_text=="ok"){
                 BasketFragment.setMenu_flg = true;
+                // update color of score's underline
+                BasketFragment.setScoreTextBorder(1);
                 dismiss();
             }else{
                 Toast.makeText(mContext, set_text, Toast.LENGTH_SHORT).show();

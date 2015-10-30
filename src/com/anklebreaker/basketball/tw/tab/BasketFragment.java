@@ -1,12 +1,17 @@
 package com.anklebreaker.basketball.tw.tab;
 
 import com.anklebreaker.basketball.tw.R;
+import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.SummaryPage;
 import com.anklebreaker.basketball.tw.util.PlayerSelectDialog;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint.Style;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.*;
@@ -28,6 +33,10 @@ public final class BasketFragment extends Fragment{
     public static ListView listViewA;
     // team B listview
     public static ListView listViewB;
+    
+    // using in view pager synchronization
+    public static TextView teamA_score_title;
+    public static TextView teamB_score_title;
     
     // team A score textview
     private static TextView strScoreA, strFoulA, strTimeA, strTimeTitleA;
@@ -61,23 +70,25 @@ public final class BasketFragment extends Fragment{
         LinearLayout layout = null;
         if(mContent.equals(BasketBallAdapter.CONTENT[0])){
             Log.i(TAG, "team A scoreboard init");
-            SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
+            SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity(), BasketBallAdapter.CONTENT[0]);
             View mixedView = mSummaryPage.createSummaryPage(inflater);
             listViewA = (ListView) mixedView.findViewById(R.id.player_list);
             strTimeTitleA = (TextView) mixedView.findViewById(R.id.timeTitle);
             strScoreA = (TextView) mixedView.findViewById(R.id.score);
             strFoulA = (TextView) mixedView.findViewById(R.id.foul);
             strTimeA = (TextView) mixedView.findViewById(R.id.time);
+            teamA_score_title = (TextView) mixedView.findViewById(R.id.teamA);
             return mixedView;
         }else if(mContent.equals(BasketBallAdapter.CONTENT[1])){
             Log.i(TAG, "team B scoreboard init");
-            SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity());
+            SummaryPage mSummaryPage = new SummaryPage(mContext, getActivity(), BasketBallAdapter.CONTENT[1]);
             View mixedView = mSummaryPage.createSummaryPage(inflater);
             listViewB = (ListView) mixedView.findViewById(R.id.player_list);
             strTimeTitleB = (TextView) mixedView.findViewById(R.id.timeTitle);
             strScoreB = (TextView) mixedView.findViewById(R.id.score);
             strFoulB = (TextView) mixedView.findViewById(R.id.foul);
             strTimeB = (TextView) mixedView.findViewById(R.id.time);
+            teamB_score_title = (TextView) mixedView.findViewById(R.id.teamB);
             return mixedView;
         }else{
             Log.i(TAG, "onCreateView else");
@@ -127,6 +138,16 @@ public final class BasketFragment extends Fragment{
             PSDialog.show();
         }
         Log.i(TAG, "setMenuVisibility E");
+    }
+    
+    public static void setScoreTextBorder(int item){
+        if(BasketFragment.teamA_score_title != null && BasketFragment.teamB_score_title != null){
+            if(item == 0){
+                BasketFragment.teamA_score_title.setBackground(mContext.getResources().getDrawable(TeamObj.teamColorKeeper[0]));
+            }else{
+                BasketFragment.teamB_score_title.setBackground(mContext.getResources().getDrawable(TeamObj.teamColorKeeper[1]));
+            }
+        }
     }
     
     /**

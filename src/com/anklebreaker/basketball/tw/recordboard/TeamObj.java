@@ -53,6 +53,25 @@ public class TeamObj {
     public static PlayerListAdapter mPlayerListAdapter = null;
     public static RivalPlayerListAdapter mRivalPlayerListAdapter = null;
     
+    // color of each team
+    public static int[] teamColor = new int[]{
+        R.id.color_red, R.id.color_black, R.id.color_deepBlue, R.id.color_green,
+        R.id.color_white, R.id.color_lightBlue, R.id.color_lightGreen, R.id.color_lightGold
+    };
+    
+    // color code
+    public static int[] teamColorCode = new int[]{
+        R.drawable.team_name_red,R.drawable.team_name_black,
+        R.drawable.team_name_deepblue,R.drawable.team_name_green,
+        R.drawable.team_name_white,R.drawable.team_name_lightblue,
+        R.drawable.team_name_lightgreen,R.drawable.team_name_lightgold
+    };
+    
+    //
+    public static int[] teamColorKeeper = new int[]{
+        R.drawable.team_name_red, R.drawable.team_name_red,
+    };
+    
     // array for keeping score
     public static int[][] scoreKeeper = new int[][]{
         {0,0,0,0},// home team
@@ -63,7 +82,7 @@ public class TeamObj {
     public static int[] foulKeeper = new int[]{0,0};
     
     public static final String[] qString = new String[]{"上半場", "下半場", "第一節", "第二節", "第三節", "第四節"};
-    public static String[] teamName= new String[]{"己隊", "敵隊"};
+    public static String[] teamName= new String[]{"球隊A", "球隊B"};
     
     //pref
     public static final String PLAYER_FILE_NAME = "players";
@@ -120,7 +139,7 @@ public class TeamObj {
     }
 
     /**
-     * set starter and bench player dialog's method
+     * set the starter and the bench players' method
      * */
     static public String setByUser(View v, Context mContext, ListView mListView){
         int startCnt = 0;
@@ -207,6 +226,12 @@ public class TeamObj {
         }
     }
     
+    static public void resetTeamColorKeeper(){
+        teamColorKeeper = new int[]{
+        		R.drawable.team_name_red, R.drawable.team_name_red
+        };
+    }
+    
     /**
      * 
      * */
@@ -224,7 +249,7 @@ public class TeamObj {
      * 
      * */
     static public void resetTeamName(){
-        teamName= new String[]{"主隊", "客隊"};
+        teamName= new String[]{"球隊A", "球隊B"};
     }
     
     /**
@@ -271,6 +296,10 @@ public class TeamObj {
         }else if(startCnt > 5){
             results = "先發球員不得超過五位";
             RivalPlayerObj.rivalPlayerMap.clear();
+        }else if(TeamObj.teamColorKeeper[0] == TeamObj.teamColorKeeper[1]){
+            results = "球衣顏色不能選一樣的喔";
+            RivalPlayerObj.rivalPlayerMap.clear();
+            teamColorKeeper[1] = R.id.color_red; 
         }else{
             //-----------------------------X
             //update info to bench/starter players

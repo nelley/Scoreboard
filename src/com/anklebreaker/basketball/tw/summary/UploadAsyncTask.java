@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
+import com.anklebreaker.basketball.tw.recordboard.RivalPlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 
 import android.app.Activity;
@@ -70,7 +71,7 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
                     JSONObject playerObj = new JSONObject();
                     playerObj.put("number", PlayerObj.playerMap.get(i).getPlayerNum());
                     playerObj.put("name", PlayerObj.playerMap.get(i).getPlayerName());
-                    playerObj.put("teamName", "Default");
+                    playerObj.put("teamName", TeamObj.teamName[0]);
                     playerObj.put("isStarter", PlayerObj.playerMap.get(i).getIsStarter());
                     playerObj.put("twoMade", PlayerObj.playerMap.get(i).recordsArray[2]);
                     playerObj.put("twoTried", PlayerObj.playerMap.get(i).recordsArray[3]);
@@ -86,6 +87,33 @@ public class UploadAsyncTask extends AsyncTask<Integer, Integer, String> {
                     playerObj.put("turnover", PlayerObj.playerMap.get(i).recordsArray[13]);
                     playerObj.put("foul", PlayerObj.playerMap.get(i).recordsArray[14]);
                     playerObj.put("totalPoint", PlayerObj.playerMap.get(i).recordsArray[15]);
+                    // insert player's game record
+                    uploadObj.put(playerObj);
+                }
+            }
+            
+            // insert game info of the rival team
+            for(int i=0; i<RivalPlayerObj.rivalPlayerMap.size(); i++){
+                if(RivalPlayerObj.rivalPlayerMap.get(i).getPlayerName() != TeamObj.DUMMY_PLAYER){
+                    JSONObject playerObj = new JSONObject();
+                    playerObj.put("number", RivalPlayerObj.rivalPlayerMap.get(i).getPlayerNum());
+                    playerObj.put("name", RivalPlayerObj.rivalPlayerMap.get(i).getPlayerName());
+                    playerObj.put("teamName", TeamObj.teamName[1]);
+                    playerObj.put("isStarter", RivalPlayerObj.rivalPlayerMap.get(i).getIsStarter());
+                    playerObj.put("twoMade", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[2]);
+                    playerObj.put("twoTried", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[3]);
+                    playerObj.put("threeMade", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[4]);
+                    playerObj.put("threeTried", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[5]);
+                    playerObj.put("freeMade", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[6]);
+                    playerObj.put("freeMiss", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[7]);
+                    playerObj.put("DR", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[8]);
+                    playerObj.put("OR", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[9]);
+                    playerObj.put("assist", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[10]);
+                    playerObj.put("block", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[11]);
+                    playerObj.put("steal", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[12]);
+                    playerObj.put("turnover", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[13]);
+                    playerObj.put("foul", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[14]);
+                    playerObj.put("totalPoint", RivalPlayerObj.rivalPlayerMap.get(i).recordsArray[15]);
                     // insert player's game record
                     uploadObj.put(playerObj);
                 }

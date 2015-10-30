@@ -75,6 +75,8 @@ public class Custom_alert_Dialog extends Dialog implements android.view.View.OnC
                 RivalPlayerObj.rivalPlayerMap.clear();
                 
                 TeamObj.undoStack.clear();
+                
+                TeamObj.resetTeamColorKeeper();
                 TeamObj.resetScoreKeeper();
                 TeamObj.resetTeamName();
                 TeamObj.resetCascadeDialogCnt();

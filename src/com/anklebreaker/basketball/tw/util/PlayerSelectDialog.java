@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.anklebreaker.basketball.tw.R;
+import com.anklebreaker.basketball.tw.R.drawable;
 import com.anklebreaker.basketball.tw.recordboard.PlayerObj;
 import com.anklebreaker.basketball.tw.recordboard.TeamObj;
 import com.anklebreaker.basketball.tw.summary.PlayerGridViewAdapter;
@@ -13,6 +14,7 @@ import com.anklebreaker.basketball.tw.tab.BasketFragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -23,6 +25,7 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +63,29 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         params.height = MultiDevInit.yPIXEL*9/10;
         getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         
+        // set color list's size
+        for(int i=0; i<TeamObj.teamColor.length; i++){
+            final ImageView tmpIV = (ImageView) findViewById(TeamObj.teamColor[i]);
+            tmpIV.getLayoutParams().width = MultiDevInit.IndicatorH;
+            tmpIV.getLayoutParams().height = MultiDevInit.IndicatorH;
+            tmpIV.setTag(TeamObj.teamColorCode[i]);
+            tmpIV.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    // remove selected color
+                    TeamObj.teamColorKeeper[0] = -1;
+                    // remove all the select icon
+                    for(int j=0; j<TeamObj.teamColor.length; j++){
+                        ((ImageView)findViewById(TeamObj.teamColor[j])).setImageResource(android.R.color.transparent);	
+                    }
+                    // set the image icon to the selected one
+                    tmpIV.setImageResource(R.drawable.select_icon);
+                    // keep the select color
+                    TeamObj.teamColorKeeper[0] = (int) v.getTag();
+                }
+            });
+        }
+        
         // set gridview's size
         GridView setPlayers = (GridView) this.findViewById(R.id.playergrid);
         setPlayers.getLayoutParams().height = MultiDevInit.yPIXEL*6/10;
@@ -72,7 +98,7 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
         
         // change the title's text
         TextView title = (TextView) this.findViewById(R.id.txt_title);
-        title.setText("請設定A隊的上場球員");
+        title.setText("請設定A隊的球衣顏色,比賽球員");
         
         // get player list when last time using
         SharedPreferences pref = mContext.getSharedPreferences(TeamObj.PLAYER_FILE_NAME, Context.MODE_PRIVATE);
@@ -147,6 +173,9 @@ public class PlayerSelectDialog extends Dialog implements android.view.View.OnCl
             set_text = TeamObj.setByUser(v, mContext, mListView);
             if(set_text=="ok"){
                 BasketFragment.setMenu_flg = true;
+                // update the team color
+                BasketFragment.setScoreTextBorder(0);
+                
                 dismiss();
                 // team B selection
                 RivalPlayerSelectDialog PSDialog = new RivalPlayerSelectDialog(mContext, BasketFragment.listViewB);
